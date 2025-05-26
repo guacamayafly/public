@@ -1,0 +1,209 @@
+/* CARD COMPONENT */
+
+.card-container {
+    display: grid;
+    grid-auto-flow: column;
+    height: auto;
+    padding: 2rem;
+    overflow-x: auto;
+  }
+  
+  @media( max-width: 468px ) {
+    .card-container {
+      height: 30rem;
+      
+    }
+  }
+  .card-container:last-child {
+    margin-right: 2rem;
+  }
+  
+  .card-container > * + * {
+    margin-left: 2rem;
+  }
+  
+  .card {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 35vw;
+    max-width: 30rem;
+    height: 27rem;
+    border-radius: 1rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    box-shadow: 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.25);
+    transform: scale(1);
+    transition: transform 500ms ease-out;
+    transform-origin: left;
+}
+@media( max-width: 468px ) {
+.card {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 71vw;
+    max-width: 30rem;
+    height: 27rem;
+    border-radius: 1rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    box-shadow: 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.25);
+    transform: scale(1);
+    transition: transform 500ms ease-out;
+    transform-origin: left;
+}
+}
+.card-container > * + * {
+    margin-left: 2rem;
+}
+  
+  .card > * + * {
+    margin-left: 2rem;
+  }
+  
+  .card__content {
+    --flow-space: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 55%;
+    padding: 12% 2rem 3rem;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.3) 10%,
+      #000000 100%
+    );
+  }
+  
+  .card__content--container {
+    --flow-space: 2rem;
+  }
+  
+  .card__title {
+    position: relative;
+    top: -60px;
+    left: -1rem;
+    width: fit-content;
+    color: #ffffff;
+  }
+  
+  .card__title::after {
+    content: "";
+    position: absolute;
+    height: 0.5rem;
+    width: calc(100% + 2rem);
+    bottom: calc((2rem - 0.5rem) * -1);
+    left: -2rem;
+    background-color: var(--brand-color);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: opacity 500ms ease-in, transform 500ms ease-out;
+    transition-delay: 500ms;
+  }
+  
+  .card__button {
+    padding: 0.75em 1.6em;
+    width: fit-content;
+    font-variant: small-caps;
+    font-weight: bold;
+    border-radius: 0.45em;
+    border: none;
+    background-color: var(--brand-color);
+  }
+  
+  .card .card__content--container > :not(.card__title),
+  .card .card__button {
+    opacity: 0;
+    transition: opacity 500ms ease-out;
+  }
+  
+  /* Animation for hover items */
+  
+  @media (hover: hover) {
+    .card__content {
+      transform: translateY(62%);
+      transition: transform 500ms ease-out;
+      transition-delay: 500ms;
+    }
+  
+    .card__content--container > :not(.card__title),
+    .card__title::after,
+    .card__button {
+      opacity: 0;
+      transition: transform 500ms ease-out;
+    }
+  
+    .card__title::after {
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 500 ease-out;
+    }
+  
+    .card:hover,
+    .card:focus-within {
+      transform: scale(1.05);
+      transition: transform 500ms ease-in;
+      transform-origin: left;
+    }
+  
+    .card:hover ~ .card,
+    .card:focus-within ~ .card {
+      transform: translateX(2rem);
+      transition: transform 500ms ease-in;
+    }
+  
+    .card:hover .card__content,
+    .card:focus-within .card__content {
+      transform: translateY(0);
+      transition: transform 500ms ease-in;
+    }
+  
+    .card:hover .card__content--container > :not(.card__title),
+    .card:hover .card__button,
+    .card:focus-within .card__content--container > :not(.card__title),
+    .card:focus-within .card__button {
+      opacity: 1;
+      transition: opacity 500ms ease-in;
+      transition-delay: 1000ms;
+    }
+  
+    .card:hover .card__title::after,
+    .card:focus-within .card__title::after {
+      opacity: 1;
+      transform: scaleX(1);
+      transform-origin: left;
+      transition: opacity 500ms ease-in, transform 500ms ease-in;
+      transition-delay: 500ms;
+    }
+  }
+  
+  .filler {
+    width: 0.1rem;
+    height: 100%;
+  }
+  
+  /* BACKGROUND IMAGES */
+  
+  .georgia {
+    background-image: url("https://images.unsplash.com/photo-1563770549-dd6dc8cdd629?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=375&q=80");
+  }
+  
+  .kyrgyzstan {
+    background-image: url("https://images.unsplash.com/photo-1606296672103-4783b174ca71?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80");
+  }
+  
+  .lesotho {
+    background-image: url("https://images.unsplash.com/photo-1583744628291-4743e8da1c8c?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80");
+  }
+  
+  .romania {
+    background-image: url("https://images.unsplash.com/photo-1563480022576-120c8505cf9b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80");
+  }
+  
+  .fiji {
+    background-image: url("https://images.unsplash.com/photo-1541292426587-b6ca8230532b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80");
+  }
