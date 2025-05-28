@@ -8,13 +8,14 @@
    <link rel="shortcut icon" type="image/x-icon" href="./assets/img/logo-6.svg" />
 
   <!-- ========================= CSS here ========================= -->
+
      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
-   
   <link rel="stylesheet" href="./assets/css/bootstrap-5.0.0-alpha-2.min.css" />
   <link rel="stylesheet" href="./assets/css/animate.css" />
   <link rel="stylesheet" href="./assets/css/partial.css">
-  
+
+
  
 
 
@@ -22,10 +23,148 @@
    body {
       font-family: 'Inter', sans-serif;
     }
-    
+    root {
+      --white-color: #ffffff;
+    }
+    .preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: table;
+      height: 100%;
+      width: 100%;
+      background: var(--white-color);
+      z-index: 99999;
+    }
+    .preloader .loader {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+    }
+    .preloader .loader .spinner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 64px;
+      margin-left: -32px;
+      z-index: 18;
+      pointer-events: none;
+    }
+    .preloader .loader .spinner .spinner-container {
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      padding-bottom: 100%;
+      top: 50%;
+      left: 50%;
+      margin-top: -50%;
+      margin-left: -50%;
+      animation: spinner-linspin 1568.2353ms linear infinite;
+    }
+    .preloader .loader .spinner .spinner-container .spinner-rotator {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      animation: spinner-easespin 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+    }
+    .preloader .loader .spinner .spinner-container .spinner-rotator .spinner-left,
+    .preloader .loader .spinner .spinner-container .spinner-rotator .spinner-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      overflow: hidden;
+    }
+    .preloader .loader .spinner .spinner-container .spinner-rotator .spinner-left {
+      left: 0;
+      right: 50%;
+    }
+    .preloader .loader .spinner .spinner-container .spinner-rotator .spinner-right {
+      right: 0;
+      left: 50%;
+    }
+    .preloader .loader .spinner-circle {
+      box-sizing: border-box;
+      position: absolute;
+      width: 200%;
+      height: 100%;
+      border-style: solid;
+      border-color: #2f80ed #2f80ed #e9e9e9;
+      border-radius: 50%;
+      border-width: 6px;
+    }
+    .preloader .loader .spinner-left .spinner-circle {
+      left: 0;
+      right: -100%;
+      border-right-color: var(--white-color);
+      animation: spinner-left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+    }
+    .preloader .loader .spinner-right .spinner-circle {
+      left: -100%;
+      right: 0;
+      border-left-color: var(--white-color);
+      animation: right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
+    }
+    @keyframes spinner-linspin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes spinner-easespin {
+      12.5% { transform: rotate(135deg); }
+      25% { transform: rotate(270deg); }
+      37.5% { transform: rotate(405deg); }
+      50% { transform: rotate(540deg); }
+      62.5% { transform: rotate(675deg); }
+      75% { transform: rotate(810deg); }
+      87.5% { transform: rotate(945deg); }
+      to { transform: rotate(1080deg); }
+    }
+    @keyframes spinner-left-spin {
+      0% { transform: rotate(130deg); }
+      50% { transform: rotate(-5deg); }
+      to { transform: rotate(130deg); }
+    }
+    @keyframes right-spin {
+      0% { transform: rotate(-130deg); }
+      50% { transform: rotate(5deg); }
+      to { transform: rotate(-130deg); }
+    }
   </style>
  </head>
+ 
  <body class="bg-white text-gray-900">
+    <!-- ========================= preloader start ========================= -->
+  <div class="preloader">
+    <div class="loader">
+      <div class="spinner">
+        <div class="spinner-container">
+          <div class="spinner-rotator">
+            <div class="spinner-left">
+              <div class="spinner-circle"></div>
+            </div>
+            <div class="spinner-right">
+              <div class="spinner-circle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ========================= preloader end ========================= -->
+
+  <!-- Tu contenido existente comienza aquí -->
+  <header class="flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 border-b border-gray-200">
+    <!-- ... el resto del contenido ... -->
+  </header>
+
+  <!-- Aquí continuarías con <main> y demás secciones -->
+
+  <!-- OPCIONAL: Script para ocultar el preloader al cargar -->
+  <script>
+    window.addEventListener("load", function () {
+      document.querySelector(".preloader").style.display = "none";
+    });
+  </script>
+
+
   <header class="flex items-center justify-between px-4 sm:px-6 md:px-10 py-3 border-b border-gray-200">
    <div class="flex items-center space-x-2">
     <img alt="Guacamayafly logo arrow icon" class="w-6 h-6" height="24" src="./assets/img/logo-6.svg" width="24"/>
