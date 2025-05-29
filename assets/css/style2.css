@@ -1,0 +1,526 @@
+
+        /* ------------------------------------ */
+        /* 1. Global Styles            */
+        /* ------------------------------------ */
+        /* Regla global para box-sizing para un modelo de caja consistente */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* Estilos del cuerpo, corregidos y centralizados */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: white; /* Asegurado como blanco */
+            color: #1a202c; /* Color de texto predeterminado (similar a gray-900 de Tailwind) */
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden; /* CRÍTICO: Previene el scroll horizontal */
+            z-index: 0;
+        }
+
+        /* Ocultar barra de desplazamiento para elementos con overflow-x-auto */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* ------------------------------------ */
+        /* 2. Loader Styles            */
+        /* ------------------------------------ */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader-overlay.hidden {
+            opacity: 0;
+            pointer-events: none; /* Permite clics a través una vez oculto */
+        }
+
+        .loader-plane {
+            font-size: 4rem; /* Tamaño del icono del avión */
+            color: #FF7F00; /* Color naranja de Guacamayafly */
+            animation: fly-across 2s infinite ease-in-out;
+        }
+
+        @keyframes fly-across {
+            0% {
+                transform: translateX(-100vw) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(0) rotate(-10deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) rotate(0deg);
+                opacity: 0;
+            }
+        }
+
+        /* ------------------------------------ */
+        /* 3. Header Styles            */
+        /* ------------------------------------ */
+        /* No hay CSS personalizado significativo aquí, se usan mayormente clases de Tailwind */
+
+        /* ------------------------------------ */
+        /* 4. Search Bar Section Styles*/
+        /* ------------------------------------ */
+        .search-input-container {
+            position: relative;
+            display: flex;
+            align-items: center; /* Centra verticalmente el contenido */
+            border: 1px solid #e2e8f0; /* gray-300 */
+            border-radius: 9999px; /* rounded-full */
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+        }
+
+        .search-input-container .search-icon {
+            position: absolute;
+            left: 1rem; /* Espacio para el icono */
+            color: #a0aec0; /* gray-400 */
+            font-size: 1.125rem; /* text-lg */
+        }
+
+        .search-input-container input[type="search"] {
+            flex-grow: 1;
+            padding-left: 2.5rem; /* Espacio para el icono + padding */
+            padding-right: 1rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            font-size: 0.875rem; /* text-sm */
+            outline: none;
+            border: none; /* Eliminar el borde del input */
+            background-color: transparent;
+        }
+
+        .search-button-optimized {
+            /* Estilos base para todos los tamaños de pantalla */
+            padding-left: 1.5rem; /* px-6 */
+            padding-right: 1.5rem; /* px-6 */
+            padding-top: 0.75rem; /* py-3 - aumentado para un mejor objetivo táctil */
+            padding-bottom: 0.75rem; /* py-3 - aumentado para un mejor objetivo táctil */
+            font-size: 0.875rem; /* text-sm - predeterminado para pantallas pequeñas */
+            line-height: 1.25rem; /* leading-5, típico para text-sm para evitar que el texto se comprima */
+            border-radius: 9999px; /* rounded-full */
+            margin-right: 0.5rem; /* Espacio entre el botón y el borde del contenedor */
+            white-space: nowrap; /* Evita que el texto se rompa */
+        }
+
+        /* Ajustes responsivos para el botón "Buscar" en pantallas más grandes */
+        @media (min-width: 640px) { /* sm breakpoint */
+            .search-button-optimized {
+                font-size: 1rem; /* sm:text-base */
+                padding-left: 2rem; /* sm:px-8 */
+                padding-right: 2rem; /* sm:px-8 */
+            }
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .search-button-optimized {
+                font-size: 1.125rem; /* md:text-lg */
+            }
+        }
+
+        /* ------------------------------------ */
+        /* 5. Hero Section Styles      */
+        /* ------------------------------------ */
+        .section-hero-image img {
+            width: 100%;
+            max-height: 400px; /* Limita la altura en pantallas grandes */
+            height: 288px; /* Altura predeterminada para pantallas pequeñas (h-72) */
+            object-fit: cover;
+        }
+
+        /* Ajusta la altura de la imagen hero para pantallas medianas y superiores */
+        @media (min-width: 640px) { /* sm breakpoint */
+            .section-hero-image img {
+                height: 400px; /* sm:h-[400px] */
+            }
+        }
+
+        .hero-text-overlay {
+            background-color: rgba(0, 0, 0, 0.5); /* Negro semi-transparente */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.375rem; /* rounded-md */
+        }
+
+        /* ------------------------------------ */
+        /* 6. Carousel Navigation Styles */
+        /* ------------------------------------ */
+        .carousel-nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 9999px; /* Completamente redondo */
+            width: 44px; /* Tamaño más grande */
+            height: 44px; /* Tamaño más grande */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568; /* gray-700 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra suave */
+            transition: all 0.2s ease-in-out;
+            z-index: 10; /* Asegura que estén por encima de las tarjetas */
+            cursor: pointer;
+        }
+
+        .carousel-nav-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+            color: #2d3748; /* gray-800 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-nav-button.left {
+            left: -22px; /* Sobresale un poco del contenedor */
+        }
+
+        .carousel-nav-button.right {
+            right: -22px; /* Sobresale un poco del contenedor */
+        }
+
+        /* Ocultar botones de navegación en pantallas pequeñas (mobile) */
+        @media (max-width: 767px) { /* md breakpoint */
+            .carousel-nav-button {
+                display: none !important;
+            }
+        }
+
+        /* ------------------------------------ */
+        /* 7. Fixed Help Button Styles */
+        /* ------------------------------------ */
+        /* No hay CSS personalizado significativo aquí, se usan mayormente clases de Tailwind */
+
+        /* ------------------------------------ */
+        /* 8. Footer Styles            */
+        /* ------------------------------------ */
+        /* No hay CSS personalizado significativo aquí, se usan mayormente clases de Tailwind */
+
+         <style>
+        /* ------------------------------------ */
+        /* 1. Estilos Globales                  */
+        /* ------------------------------------ */
+        /* Regla global para box-sizing para un modelo de caja consistente */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* Estilos del cuerpo, corregidos y centralizados */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: white; /* Asegurado como blanco */
+            color: #1a202c; /* Color de texto predeterminado (similar a gray-900 de Tailwind) */
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden; /* CRÍTICO: Previene el scroll horizontal */
+            z-index: 0;
+        }
+
+        /* Ocultar barra de desplazamiento para elementos con overflow-x-auto */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* ------------------------------------ */
+        /* 2. Estilos del Loader de Avión       */
+        /* ------------------------------------ */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader-overlay.hidden {
+            opacity: 0;
+            pointer-events: none; /* Permite clics a través una vez oculto */
+        }
+
+        .loader-plane {
+            font-size: 4rem; /* Tamaño del icono del avión */
+            color: #FF7F00; /* Color naranja de Guacamayafly */
+            animation: fly-across 2s infinite ease-in-out;
+        }
+
+        @keyframes fly-across {
+            0% {
+                transform: translateX(-100vw) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(0) rotate(-10deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) rotate(0deg);
+                opacity: 0;
+            }
+        }
+
+        /* ------------------------------------ */
+        /* 3. Estilos de la Barra de Búsqueda (Nueva) */
+        /* ------------------------------------ */
+        .search-form-container {
+            display: flex;
+            flex-direction: column; /* Apila los inputs en mobile */
+            gap: 0.75rem; /* Espacio entre los inputs */
+            max-width: 700px; /* Ancho máximo del formulario */
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .search-form-container {
+                flex-direction: row; /* En fila en desktop */
+                flex-wrap: wrap; /* Permite que los elementos se envuelvan si es necesario */
+                justify-content: center;
+                align-items: stretch; /* Estira los elementos para que tengan la misma altura */
+            }
+        }
+
+        .search-input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e2e8f0; /* gray-300 */
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.5rem 1rem; /* py-2 px-4 */
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-sm */
+            flex-grow: 1; /* Permite que los inputs crezcan */
+            min-width: 150px; /* Ancho mínimo para inputs en desktop */
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .search-input-group {
+                flex: 1 1 20%; /* Permite que crezcan y se ajusten en 4 columnas */
+            }
+            .search-input-group:nth-child(3), /* Fechas */
+            .search-input-group:nth-child(4) { /* Viajeros */
+                flex: 1 1 25%; /* Un poco más de ancho para estos */
+            }
+        }
+
+        .search-input-group i {
+            color: #a0aec0; /* gray-400 */
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .search-input-group input,
+        .search-input-group span { /* Para el texto de fechas/viajeros */
+            flex-grow: 1;
+            outline: none;
+            border: none;
+            background-color: transparent;
+            font-size: 0.875rem; /* text-sm */
+            color: #1a202c; /* gray-900 */
+            cursor: pointer; /* Indica que es interactivo */
+        }
+
+        .search-input-group input::placeholder {
+            color: #a0aec0; /* gray-400 */
+        }
+
+        .search-main-button {
+            background-color: #00c897; /* guacamayafly-green */
+            color: white;
+            font-weight: 600; /* font-semibold */
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            font-size: 1rem; /* text-base */
+            width: 100%; /* Ocupa todo el ancho en mobile */
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .search-main-button:hover {
+            background-color: #00b386; /* guacamayafly-dark-green */
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .search-main-button {
+                width: auto; /* Ancho automático en desktop */
+                flex: 1 1 auto; /* Permite que el botón se ajuste al contenido */
+                margin-left: 0.75rem; /* Espacio a la izquierda del botón */
+            }
+            .search-form-container {
+                gap: 0.5rem; /* Reduce el espacio entre elementos en desktop para que quepan mejor */
+            }
+        }
+
+        /* ------------------------------------ */
+        /* 4. Estilos de la Sección Hero        */
+        /* ------------------------------------ */
+        .section-hero-image img {
+            width: 100%;
+            max-height: 400px; /* Limita la altura en pantallas grandes */
+            height: 288px; /* Altura predeterminada para pantallas pequeñas (h-72) */
+            object-fit: cover;
+        }
+
+        /* Ajusta la altura de la imagen hero para pantallas medianas y superiores */
+        @media (min-width: 640px) { /* sm breakpoint */
+            .section-hero-image img {
+                height: 400px; /* sm:h-[400px] */
+            }
+        }
+
+        .hero-text-overlay {
+            background-color: rgba(0, 0, 0, 0.5); /* Negro semi-transparente */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.375rem; /* rounded-md */
+        }
+
+        /* ------------------------------------ */
+        /* 5. Estilos de Navegación de Carrusel */
+        /* ------------------------------------ */
+        .carousel-nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 9999px; /* Completamente redondo */
+            width: 44px; /* Tamaño más grande */
+            height: 44px; /* Tamaño más grande */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568; /* gray-700 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra suave */
+            transition: all 0.2s ease-in-out;
+            z-index: 10; /* Asegura que estén por encima de las tarjetas */
+            cursor: pointer;
+        }
+
+        .carousel-nav-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+            color: #2d3748; /* gray-800 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-nav-button.left {
+            left: -22px; /* Sobresale un poco del contenedor */
+        }
+
+        .carousel-nav-button.right {
+            right: -22px; /* Sobresale un poco del contenedor */
+        }
+
+        /* Ocultar botones de navegación en pantallas pequeñas (mobile) */
+        @media (max-width: 767px) { /* md breakpoint */
+            .carousel-nav-button {
+                display: none !important;
+            }
+        }
+
+        /* ------------------------------------ */
+        /* 6. Estilos de Tarjetas de Producto   */
+        /* ------------------------------------ */
+        /* Estilos generales para las tarjetas de producto */
+        .product-card {
+            /* Asegura que el texto dentro de las tarjetas se alinee a la izquierda por defecto */
+            text-align: left; 
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de vuelos */
+        .flight-card .text-xs {
+            font-size: 0.75rem; /* 12px */
+        }
+        .flight-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .flight-card .text-[10px] {
+            font-size: 0.625rem; /* 10px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de ofertas */
+        .offer-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .offer-card .text-[10px] {
+            font-size: 0.625rem; /* 10px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de alojamientos populares */
+        .popular-accommodation-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .popular-accommodation-card .text-[8px] {
+            font-size: 0.5rem; /* 8px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de paquetes de vacaciones */
+        .package-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .package-card .text-[10px] {
+            font-size: 0.625rem; /* 10px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de alojamientos especiales */
+        .special-accommodation-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .special-accommodation-card .text-[8px] {
+            font-size: 0.5rem; /* 8px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de búsquedas recientes */
+        .recent-search-card .text-[11px] {
+            font-size: 0.6875rem; /* 11px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de alojamientos recomendados */
+        .recommended-accommodation-card .text-[10px] {
+            font-size: 0.625rem; /* 10px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de puntos de interés */
+        .point-of-interest-card .text-[6px] {
+            font-size: 0.375rem; /* 6px */
+        }
+        .point-of-interest-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de experiencias */
+        .experience-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+
+        /* ------------------------------------ */
+        /* 7. Estilos del Botón de Ayuda Fijo   */
+        /* ------------------------------------ */
+        /* No hay CSS personalizado significativo aquí, se usan mayormente clases de Tailwind */
+
+        /* ------------------------------------ */
+        /* 8. Estilos del Footer                */
+        /* ------------------------------------ */
+        /* No hay CSS personalizado significativo aquí, se usan mayormente clases de Tailwind */
