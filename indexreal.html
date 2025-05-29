@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -29,7 +28,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
     
-    <link rel="stylesheet" href="  ./assets/css/style2.css"  />
+    <link rel="stylesheet" href="./assets/css/style2.css" />
 </head>
 <body class="bg-white text-gray-900">
 
@@ -94,7 +93,7 @@
                     Alquileres vacacionales
                 </button>
             </nav>
-            <form aria-label="Buscar vuelos" class="search-form-container mb-8" role="search">
+            <form aria-label="Buscar vuelos" class="search-form-container mb-12" role="search">
                 <div class="search-input-group">
                     <i class="fas fa-plane-departure"></i>
                     <input id="origin-input" placeholder="Origen: Origen" type="text"/>
@@ -119,10 +118,7 @@
 
         <section aria-label="Los mejores hoteles del mundo, elegidos por ti" class="relative rounded-lg overflow-hidden mb-8 max-w-[1200px] mx-auto section-hero-image">
             <img alt="Hotel moderno con piscina y parasol blanco en terraza con montañas al fondo" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1" width="1200" height="400"/>
-            <div aria-label="Premio 2025" class="absolute top-4 right-4 bg-yellow-400 rounded-full w-12 h-12 flex items-center justify-center">
-                <img alt="Icono de búho negro" class="w-6 h-6" height="24" src="./assets/img/logo-7.svg" width="24"/>
-                <span class="sr-only">Premio 2025</span>
-            </div>
+            
             <div class="absolute bottom-6 left-6 max-w-lg text-white drop-shadow-lg hero-text-overlay">
                 <h2 class="font-extrabold text-xl sm:text-2xl mb-1">
                     Los mejores hoteles del mundo, elegidos por ti
@@ -277,9 +273,6 @@
                             <span class="text-xs text-gray-400">•</span>
                             <span class="text-xs text-gray-500">Sin escalas</span>
                         </div>
-                        <p class="text-xs font-semibold text-gray-900 mb-0.5">
-                            Tokio (HND)<span class="text-gray-500"> → </span>Naha (OKA)
-                        </p>
                         <p class="text-xs text-gray-600 mb-3">06:30 - 09:10</p>
                         <hr class="border-gray-200 mb-3"/>
                         <div class="flex items-center space-x-1 mb-1">
@@ -357,7 +350,7 @@
                 Descubre tu nuevo alojamiento favorito
             </h2>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="accommodation-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
+                <div id="accommodation-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Apartotel">
                         <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/ebef129d-66a1-4cb9-bf8f-08fcfe8f5d35.jpg" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
@@ -417,8 +410,8 @@
         </section>
 
         <section class="relative mt-8 rounded-2xl overflow-hidden" style="background-color: #FF7F00;">
-            <img alt="" class="absolute inset-0 w-full h-full object-cover opacity-30" height="400" src="https://storage.googleapis.com/a1aa/image/1ab494ab-7725-4800-b387-862b1cf98652.jpg" width="1200"/>
-            <div class="relative p-6 sm:p-8 lg:p-10 text-white">
+            <img alt="" class="absolute inset-0 w-full h-full object-cover" height="400" src="https://storage.googleapis.com/a1aa/image/1ab494ab-7725-4800-b387-862b1cf98652.jpg" width="1200"/>
+            <div class="relative p-6 sm:p-8 lg:p-10 text-white offers-text-overlay">
                 <div class="flex justify-between items-start mb-4">
                     <div>
                         <h3 class="text-lg font-semibold leading-tight max-w-xl">
@@ -428,6 +421,9 @@
                             Se muestran ofertas para estas fechas:
                             <span class="font-semibold">18 ago - 21 ago</span>
                         </p>
+                        <p class="text-xs sm:text-sm max-w-md mt-2 leading-tight">
+                            Descubre las mejores ofertas de vuelos y hoteles seleccionadas especialmente para ti, basadas en tus búsquedas recientes. ¡No te pierdas estas oportunidades únicas para viajar!
+                        </p>
                     </div>
                     <button class="bg-white text-blue-600 text-xs font-semibold rounded-md px-3 py-1 whitespace-nowrap hover:bg-blue-50 transition" onclick="window.location.href='https://wa.me/5804243156057'">
                         Abrir todas las ofertas
@@ -435,41 +431,9 @@
                 </div>
                 <div class="relative">
                     <div id="offers-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
-                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Naha Tomarin House">
-                            <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/0efc6bce-b1a0-447f-6d42-5e0f092022d0.jpg" width="224"/>
-                            </div>
-                            <p class="text-[9px] font-semibold mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold leading-tight mb-1">Naha Tomarin House</h4>
-                            <div class="flex items-center space-x-1 mb-1">
-                                <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">10</span>
-                                <span class="text-[9px] font-normal">Excepcional</span>
-                                <span class="text-[9px] font-normal opacity-50">(0 comentarios)</span>
-                            </div>
-                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">4.482 €</div>
-                            <div class="text-xs font-bold mb-0.5">4032 €</div>
-                            <div class="text-[9px] font-normal opacity-80 mb-1">13.444 € por noche</div>
-                            <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">10 % de descuento</div>
-                        </div>
-                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="LACER OKINAWA NAHA MIEBASHI">
-                            <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg" width="224"/>
-                            </div>
-                            <p class="text-[9px] font-semibold mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold leading-tight mb-1">LACER OKINAWA NAHA MIEBASHI</h4>
-                            <div class="flex items-center space-x-1 mb-1">
-                                <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">8.8</span>
-                                <span class="text-[9px] font-normal">Excelente</span>
-                                <span class="text-[9px] font-normal opacity-50">(5 comentarios)</span>
-                            </div>
-                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">530 €</div>
-                            <div class="text-xs font-bold mb-0.5">424 €</div>
-                            <div class="text-[9px] font-normal opacity-80 mb-1">341 € por noche</div>
-                            <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">20 % de descuento</div>
-                        </div>
                         <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="The Naha Terrace">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg" width="224"/>
+                                <img alt="Hotel The Naha Terrace" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg" width="224"/>
                                 <span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>
                             </div>
                             <p class="text-[9px] font-semibold mb-0.5">Naha</p>
@@ -483,25 +447,30 @@
                             <div class="text-xs font-bold mb-0.5">587 €</div>
                             <div class="text-[9px] font-normal opacity-80 mb-1">190 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">15 % de descuento</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
                         </div>
-                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Branchera naha akebono premist R65">
+
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="LACER OKINAWA NAHA MIEBASHI">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/9e1e2fae-bae8-477b-6e3f-54ae910fa3a3.jpg" width="224"/>
+                                <img alt="Hotel LACER OKINAWA NAHA MIEBASHI" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg" width="224"/>
                             </div>
                             <p class="text-[9px] font-semibold mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold leading-tight mb-1">Branchera naha akebono premist R65</h4>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">LACER OKINAWA NAHA MIEBASHI</h4>
                             <div class="flex items-center space-x-1 mb-1">
-                                <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">0</span>
-                                <span class="text-[9px] font-normal">0 comentarios</span>
+                                <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">8.8</span>
+                                <span class="text-[9px] font-normal">Excelente</span>
+                                <span class="text-[9px] font-normal opacity-50">(5 comentarios)</span>
                             </div>
-                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">999 €</div>
-                            <div class="text-xs font-bold mb-0.5">903 €</div>
-                            <div class="text-[9px] font-normal opacity-80 mb-1">301 € por noche</div>
-                            <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">9 % de descuento</div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">530 €</div>
+                            <div class="text-xs font-bold mb-0.5">424 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">341 € por noche</div>
+                            <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">20 % de descuento</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
                         </div>
+
                         <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Daikichi Okinawa">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg" width="224"/>
+                                <img alt="Hotel Daikichi Okinawa" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg" width="224"/>
                             </div>
                             <p class="text-[9px] font-semibold mb-0.5">Naha</p>
                             <h4 class="text-xs font-semibold leading-tight mb-1">Daikichi Okinawa</h4>
@@ -514,10 +483,12 @@
                             <div class="text-xs font-bold mb-0.5">312 €</div>
                             <div class="text-[9px] font-normal opacity-80 mb-1">104 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">16 % de descuento</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
                         </div>
+
                         <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Hotel Playa Sol">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/06/70/25/b4.jpg" onerror="this.onerror=null;this.src='https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/06/70/25/b4.jpg';" width="224"/>
+                                <img alt="Hotel Playa Sol" class="w-full h-32 object-cover rounded-lg" height="112" src="https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/06/70/25/b4.jpg" onerror="this.onerror=null;this.src='https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/06/70/25/b4.jpg';" width="224"/>
                             </div>
                             <p class="text-[9px] font-semibold mb-0.5">Naha</p>
                             <h4 class="text-xs font-semibold leading-tight mb-1">Hotel Playa Sol</h4>
@@ -530,7 +501,81 @@
                             <div class="text-xs font-bold mb-0.5">200 €</div>
                             <div class="text-[9px] font-normal opacity-80 mb-1">100 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">20 % de descuento</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
                         </div>
+
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Hotel Moderno">
+                            <div class="relative rounded-lg overflow-hidden mb-2">
+                                <img alt="Hotel Moderno" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg" width="224"/>
+                            </div>
+                            <p class="text-[9px] font-semibold mb-0.5">Ciudad</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">Hotel Moderno</h4>
+                            <div class="flex items-center space-x-1 mb-1">
+                                <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">8.5</span>
+                                <span class="text-[9px] font-normal">Muy bueno</span>
+                                <span class="text-[9px] font-normal opacity-50">(150 comentarios)</span>
+                            </div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">180 €</div>
+                            <div class="text-xs font-bold mb-0.5">153 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">76 € por noche</div>
+                            <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">15 % de descuento</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
+                        </div>
+
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Resort Tranquilo">
+                            <div class="relative rounded-lg overflow-hidden mb-2">
+                                <img alt="Resort Tranquilo" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg" width="224"/>
+                            </div>
+                            <p class="text-[9px] font-semibold mb-0.5">Playa</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">Resort Tranquilo</h4>
+                            <div class="flex items-center space-x-1 mb-1">
+                                <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">9.5</span>
+                                <span class="text-[9px] font-normal">Excepcional</span>
+                                <span class="text-[9px] font-normal opacity-50">(300 comentarios)</span>
+                            </div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">400 €</div>
+                            <div class="text-xs font-bold mb-0.5">320 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">160 € por noche</div>
+                            <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">20 % de descuento</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
+                        </div>
+
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Hostal Céntrico">
+                            <div class="relative rounded-lg overflow-hidden mb-2">
+                                <img alt="Hostal Céntrico" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg" width="224"/>
+                            </div>
+                            <p class="text-[9px] font-semibold mb-0.5">Centro</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">Hostal Céntrico</h4>
+                            <div class="flex items-center space-x-1 mb-1">
+                                <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">7.8</span>
+                                <span class="text-[9px] font-normal">Bueno</span>
+                                <span class="text-[9px] font-normal opacity-50">(500 comentarios)</span>
+                            </div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">80 €</div>
+                            <div class="text-xs font-bold mb-0.5">72 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">36 € por noche</div>
+                            <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">10 % de descuento</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
+                        </div>
+
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Apartamento Urbano">
+                            <div class="relative rounded-lg overflow-hidden mb-2">
+                                <img alt="Apartamento Urbano" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg" width="224"/>
+                            </div>
+                            <p class="text-[9px] font-semibold mb-0.5">Urbano</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">Apartamento Urbano</h4>
+                            <div class="flex items-center space-x-1 mb-1">
+                                <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">9.0</span>
+                                <span class="text-[9px] font-normal">Increíble</span>
+                                <span class="text-[9px] font-normal opacity-50">(200 comentarios)</span>
+                            </div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">220 €</div>
+                            <div class="text-xs font-bold mb-0.5">198 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">99 € por noche</div>
+                            <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">10 % de descuento</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
+                        </div>
+
                     </div>
                     <button aria-label="Desplazar ofertas a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('offers-carousel', -1)">
                         <i class="fas fa-chevron-left"></i>
@@ -557,7 +602,7 @@
                 <button class="pb-1 opacity-70 hover:opacity-100">Bienestar y relajación</button>
             </nav>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="popular-accommodations-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
+                <div id="popular-accommodations-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Honolulu">
                         <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/1654483c-a154-43d3-a153-e0b776fb1a54.jpg" width="192"/>
                         <div class="p-2">
@@ -604,7 +649,7 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Venecia">
-                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c9/67/0e/caption.jpg?w=1200&h=-1&s=1&cx=1041&cy=774&chk=v1_611676068082a8b7b18d" onerror="this.onerror=null;this.src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c9/67/0e/caption.jpg?w=1200&h=-1&s=1&cx=1041&cy=774&chk=v1_611676068082a8b7b18d';" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/1654483c-a154-43d3-a153-e0b776fb1a54.jpg" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Venecia</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Véneto, Italia</p>
@@ -613,7 +658,7 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Alpes Suizos">
-                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1" onerror="this.onerror=null;this.src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1';" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/2a8543fe-318e-48fa-2bbe-797a2713a043.jpg" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Alpes Suizos</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Suiza</p>
@@ -765,7 +810,7 @@
                 <span class="font-semibold">20 jun - 22 jun</span>
             </p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="special-accommodations-carousel" class="flex space-x-3 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
+                <div id="special-accommodations-carousel" class="flex space-x-3 scrollbar-hide pb-2 carousel-content-wrapper">
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 product-card special-accommodation-card" data-name="Kutsurogian">
                         <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/bb36a323-a947-46d8-fe7a-052d160a3ec5.jpg" width="200"/>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">10</div>
@@ -827,7 +872,7 @@
                         <p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">20 % de descuento</p>
                     </article>
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 product-card special-accommodation-card" data-name="Grand Mountain Resort">
-                        <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1" onerror="this.onerror=null;this.src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1';" width="200"/>
+                        <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" src="https://storage.googleapis.com/a1aa/image/bb36a323-a947-46d8-fe7a-052d160a3ec5.jpg" width="200"/>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">9.8</div>
                         <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Magnífico</p>
                         <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(150 comentarios)</p>
@@ -861,7 +906,7 @@
             <h2 class="text-lg font-semibold mb-1">Alojamientos recomendados para ti</h2>
             <p class="text-xs text-gray-600 mb-3">Según el último alojamiento que has visto</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="recommended-accommodations-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
+                <div id="recommended-accommodations-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Roco Inn Okinawa">
                         <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/34c742f8-ba16-44c6-3b15-f5028ee587d2.jpg" width="192"/>
                         <button aria-label="Favorite Roco Inn Okinawa" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
@@ -923,7 +968,7 @@
                         </div>
                     </article>
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Hotel">
-                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1" onerror="this.onerror=null;this.src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1';" width="192"/>
+                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/34c742f8-ba16-44c6-3b15-f5028ee587d2.jpg" width="192"/>
                         <button aria-label="Favorite Hotel" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
                             <i class="far fa-heart fa-lg"></i>
                         </button>
@@ -938,7 +983,7 @@
                         </div>
                     </article>
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Urban Oasis Hotel">
-                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1" onerror="this.onerror=null;this.src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1';" width="192"/>
+                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/6006d9ea-79d0-49b5-7c17-7f0e4d3a344f.jpg" width="192"/>
                         <button aria-label="Favorite Hotel Urbano" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
                             <i class="far fa-heart fa-lg"></i>
                         </button>
@@ -970,7 +1015,7 @@
             <h2 class="text-sm font-semibold text-gray-900 mb-0.5">Igual te interesan estos puntos de interés</h2>
             <p class="text-xs text-gray-500 mb-4">Más sitios donde alojarse en Kovalam</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="points-of-interest-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
+                <div id="points-of-interest-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card point-of-interest-card" data-name="The Leela Kovalam">
                         <div class="relative">
                             <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/1e57a6ed-fcf0-46e8-4d29-b24bdf7d3db5.jpg" width="192"/>
@@ -1061,7 +1106,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card point-of-interest-card" data-name="Templo de Angkor Wat">
                         <div class="relative">
-                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1" onerror="this.onerror=null;this.src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1';" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/1e57a6ed-fcf0-46e8-4d29-b24bdf7d3db5.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1095,7 +1140,7 @@
             <h3 class="text-sm font-semibold text-gray-900 mb-0.5">Las mejores experiencias en Guacamayafly</h3>
             <p class="text-xs text-gray-500 mb-4">Los mejores tours, actividades y entradas</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="experiences-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
+                <div id="experiences-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card experience-card" data-name="Torre Eiffel">
                         <div class="relative">
                             <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/19ec5e29-fbee-4962-ff5d-7a42211f7405.jpg" width="192"/>
@@ -1193,7 +1238,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card experience-card" data-name="Globo aerostático Capadocia">
                         <div class="relative">
-                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1" onerror="this.onerror=null;this.src='https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/96/34/d2/triglav-national-park.jpg?w=900&h=-1&s=1';" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/19ec5e29-fbee-4962-ff5d-7a42211f7405.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1311,6 +1356,8 @@
         window.addEventListener('load', function() {
             const loader = document.getElementById('loader');
             if (loader) {
+                // Aumentar la duración de la transición a 3 segundos para que se aprecie más
+                loader.style.transition = 'opacity 3s ease-out'; 
                 loader.classList.add('hidden');
                 // Eliminar el loader del DOM después de la transición
                 loader.addEventListener('transitionend', function() {
