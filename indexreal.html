@@ -156,8 +156,8 @@
             background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente */
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 9999px; /* Completamente redondo */
-            width: 40px; /* Tamaño más grande */
-            height: 40px; /* Tamaño más grande */
+            width: 44px; /* Tamaño más grande */
+            height: 44px; /* Tamaño más grande */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -175,11 +175,11 @@
         }
 
         .carousel-nav-button.left {
-            left: -20px; /* Sobresale un poco del contenedor */
+            left: -22px; /* Sobresale un poco del contenedor */
         }
 
         .carousel-nav-button.right {
-            right: -20px; /* Sobresale un poco del contenedor */
+            right: -22px; /* Sobresale un poco del contenedor */
         }
 
         /* Ocultar botones de navegación en pantallas pequeñas (mobile) */
@@ -323,7 +323,28 @@
                 </button>
             </div>
         </section>
-
+<!--  -->
+        <section aria-label="Recent searches" class="mb-6">
+    <h2 class="text-lg font-semibold mb-3">
+     Tus búsquedas recientes
+    </h2>
+    <div class="flex items-center bg-gray-100 rounded-lg p-3 max-w-xs text-xs text-gray-700 font-semibold">
+     <i class="fas fa-suitcase-rolling mr-3 text-gray-600 text-lg">
+     </i>
+     <div>
+      <p class="font-bold leading-tight">
+       Paquetes de Tokio, Japón (HND-Haneda) a Naha
+      </p>
+      <p class="leading-tight font-normal text-[11px] mt-0.5">
+       Del lun, 18 ago al jue, 21 ago
+      </p>
+      <p class="leading-tight font-normal text-[11px] mt-0.5">
+       Hotel + vuelo
+      </p>
+     </div>
+    </div>
+   </section>
+        <!--  -->
         <section aria-label="Guía para visitar Roma por segunda vez" class="bg-[#f3eaff] rounded-lg p-6 max-w-[1200px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <img alt="Ruinas romanas con cielo azul y árboles verdes" class="rounded-lg w-full sm:w-[120px] h-auto object-cover flex-shrink-0" height="80" src="https://storage.googleapis.com/a1aa/image/bb820f8e-70a1-43a4-4538-bd88d493f019.jpg" width="120"/>
             <div class="flex flex-col flex-grow">
@@ -361,7 +382,7 @@
                 </ul>
             </nav>
             <div class="max-w-4xl relative mx-auto">
-                <div id="flight-carousel" class="flex space-x-4 overflow-x-hidden scrollbar-hide pb-2">
+                <div id="flight-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
                     <li class="border border-gray-300 rounded-lg p-3 w-56 flex-shrink-0 bg-white product-card" data-name="Tokio Naha Japan Airlines">
                         <div class="flex items-center space-x-1 mb-1">
                             <img alt="Logo Japan Airlines red circle with white crane" class="w-4 h-4" height="16" src="https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg" width="16"/>
@@ -480,9 +501,6 @@
                             <span class="text-xs text-gray-400">•</span>
                             <span class="text-xs text-gray-500">Sin escalas</span>
                         </div>
-                        <p class="text-xs font-semibold text-gray-900 mb-0.5">
-                            Naha (OKA)<span class="text-gray-500"> → </span>Tokio (HND)
-                        </p>
                         <p class="text-xs text-gray-600">13:45 - 16:10</p>
                         <p class="text-sm font-semibold text-gray-900 mt-3">323 €</p>
                         <p class="text-xs text-gray-600">Ida y vuelta por persona</p>
@@ -533,7 +551,7 @@
                 Descubre tu nuevo alojamiento favorito
             </h2>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="accommodation-carousel" class="flex space-x-4 overflow-x-hidden scrollbar-hide pb-2 justify-center">
+                <div id="accommodation-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card" data-name="Apartotel">
                         <img alt="Habitación de Apartotel con cama doble, planta y decoración moderna" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/ebef129d-66a1-4cb9-bf8f-08fcfe8f5d35.jpg" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
@@ -610,7 +628,7 @@
                     </button>
                 </div>
                 <div class="relative">
-                    <div id="offers-carousel" class="flex space-x-4 overflow-x-hidden scrollbar-hide pb-2">
+                    <div id="offers-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
                         <div class="flex-shrink-0 w-64 bg-white bg-opacity-10 rounded-lg p-3 cursor-pointer product-card" data-name="Naha Tomarin House">
                             <div class="relative rounded-lg overflow-hidden mb-2">
                                 <img alt="Interior de Naha Tomarin House con cama de madera y ventana" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/0efc6bce-b1a0-447f-6d42-5e0f092022d0.jpg" width="224"/>
@@ -733,7 +751,7 @@
                 <button class="pb-1 opacity-70 hover:opacity-100">Bienestar y relajación</button>
             </nav>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="popular-accommodations-carousel" class="flex space-x-4 overflow-x-hidden scrollbar-hide pb-2 justify-center">
+                <div id="popular-accommodations-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card" data-name="Honolulu">
                         <img alt="Playa de Honolulu con canoa en el agua y montaña al fondo al atardecer" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/1654483c-a154-43d3-a153-e0b776fb1a54.jpg" width="192"/>
                         <div class="p-2">
@@ -941,7 +959,7 @@
                 <span class="font-semibold">20 jun - 22 jun</span>
             </p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="special-accommodations-carousel" class="flex space-x-3 overflow-x-hidden scrollbar-hide pb-2 justify-center">
+                <div id="special-accommodations-carousel" class="flex space-x-3 overflow-x-auto scrollbar-hide pb-2 justify-center">
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 product-card" data-name="Kutsurogian">
                         <img alt="Piscina natural de aguas termales con rocas y vegetación" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/bb36a323-a947-46d8-fe7a-052d160a3ec5.jpg" width="200"/>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">10</div>
@@ -1032,23 +1050,13 @@
             </button>
         </section>
 
-        <section aria-label="Recent searches" class="mb-6 text-center">
-            <h2 class="text-lg font-semibold mb-3">Tus búsquedas recientes</h2>
-            <div class="flex items-center bg-gray-100 rounded-lg p-3 max-w-xs mx-auto text-xs text-gray-700 font-semibold product-card" data-name="Paquetes Tokio Naha">
-                <i class="fas fa-suitcase-rolling mr-3 text-gray-600 text-lg"></i>
-                <div>
-                    <p class="font-bold leading-tight">Paquetes de Tokio, Japón (HND-Haneda) a Naha</p>
-                    <p class="leading-tight font-normal text-[11px] mt-0.5">Del lun, 18 ago al jue, 21 ago</p>
-                    <p class="leading-tight font-normal text-[11px] mt-0.5">Hotel + vuelo</p>
-                </div>
-            </div>
-        </section>
+       
 
         <section aria-label="Recommended accommodations" class="mb-6 text-center">
             <h2 class="text-lg font-semibold mb-1">Alojamientos recomendados para ti</h2>
             <p class="text-xs text-gray-600 mb-3">Según el último alojamiento que has visto</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="recommended-accommodations-carousel" class="flex space-x-4 overflow-x-hidden scrollbar-hide pb-2 justify-center">
+                <div id="recommended-accommodations-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card" data-name="Roco Inn Okinawa">
                         <img alt="Interior del hotel Roco Inn Okinawa con luz diurna, madera y plantas" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/34c742f8-ba16-44c6-3b15-f5028ee587d2.jpg" width="192"/>
                         <button aria-label="Favorite Roco Inn Okinawa" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
@@ -1157,7 +1165,7 @@
             <h2 class="text-sm font-semibold text-gray-900 mb-0.5">Igual te interesan estos puntos de interés</h2>
             <p class="text-xs text-gray-500 mb-4">Más sitios donde alojarse en Kovalam</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="points-of-interest-carousel" class="flex space-x-4 overflow-x-hidden scrollbar-hide pb-2 justify-center">
+                <div id="points-of-interest-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card" data-name="The Leela Kovalam">
                         <div class="relative">
                             <img alt="Isla con hotel rojo en la orilla del mar con olas" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/1e57a6ed-fcf0-46e8-4d29-b24bdf7d3db5.jpg" width="192"/>
@@ -1282,7 +1290,7 @@
             <h3 class="text-sm font-semibold text-gray-900 mb-0.5">Las mejores experiencias en Guacamayafly</h3>
             <p class="text-xs text-gray-500 mb-4">Los mejores tours, actividades y entradas</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="experiences-carousel" class="flex space-x-4 overflow-x-hidden scrollbar-hide pb-2 justify-center">
+                <div id="experiences-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card" data-name="Torre Eiffel">
                         <div class="relative">
                             <img alt="Mujer sonriente con sombrero frente a la torre Eiffel" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/19ec5e29-fbee-4962-ff5d-7a42211f7405.jpg" width="192"/>
@@ -1516,35 +1524,62 @@
             const carousel = document.getElementById(carouselId);
             if (!carousel) return;
 
-            // Solo aplicar el desplazamiento con botones en desktop
-            if (window.innerWidth >= 768) { // md breakpoint de Tailwind
-                const firstCard = carousel.querySelector('.product-card, li'); // Busca la primera tarjeta o elemento de lista
-                if (!firstCard) return;
+            // Obtener todas las tarjetas dentro del carrusel
+            const cards = Array.from(carousel.children).filter(child => child.classList.contains('product-card') || child.tagName === 'LI');
 
-                const cardWidth = firstCard.offsetWidth; // Ancho de una tarjeta
-                const gap = parseFloat(window.getComputedStyle(carousel).gap || 0); // Espacio entre tarjetas
-                const scrollAmount = (cardWidth + gap) * direction;
+            // Si no hay tarjetas, no hacer nada
+            if (cards.length === 0) return;
 
-                carousel.scrollBy({
-                    left: scrollAmount,
-                    behavior: 'smooth'
-                });
+            // Calcular el ancho de una tarjeta incluyendo el margen/gap
+            // Tomamos la primera tarjeta para calcular el ancho
+            const firstCard = cards[0];
+            const cardStyle = window.getComputedStyle(firstCard);
+            const cardWidth = firstCard.offsetWidth;
+            const cardMarginRight = parseFloat(cardStyle.marginRight); // Si hay margin-right
+            const gap = parseFloat(window.getComputedStyle(carousel).gap || 0); // O el gap de flex/grid
+
+            // El desplazamiento total por tarjeta es el ancho de la tarjeta + el espacio entre ellas
+            const scrollAmountPerCard = cardWidth + Math.max(cardMarginRight, gap);
+
+            // Calcular la posición de desplazamiento actual
+            const currentScrollLeft = carousel.scrollLeft;
+            const totalScrollWidth = carousel.scrollWidth - carousel.clientWidth;
+
+            let targetScrollLeft;
+
+            if (direction === 1) { // Desplazar a la derecha
+                targetScrollLeft = currentScrollLeft + scrollAmountPerCard;
+                // Asegurarse de no exceder el final
+                if (targetScrollLeft > totalScrollWidth) {
+                    targetScrollLeft = 0; // Volver al inicio si se llega al final
+                }
+            } else { // Desplazar a la izquierda
+                targetScrollLeft = currentScrollLeft - scrollAmountPerCard;
+                // Asegurarse de no ir por debajo de cero
+                if (targetScrollLeft < 0) {
+                    targetScrollLeft = totalScrollWidth; // Ir al final si se llega al inicio
+                }
             }
+
+            carousel.scrollTo({
+                left: targetScrollLeft,
+                behavior: 'smooth' // Desplazamiento suave
+            });
         }
 
         // Funcionalidad de búsqueda
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('search-input');
-            const productCards = document.querySelectorAll('.product-card'); // Seleccionar todas las tarjetas de productos
+            const allProductCards = document.querySelectorAll('.product-card'); // Seleccionar todas las tarjetas de productos
 
             searchInput.addEventListener('keyup', function(event) {
-                const searchTerm = event.target.value.toLowerCase();
+                const searchTerm = event.target.value.toLowerCase().trim();
 
-                productCards.forEach(card => {
+                allProductCards.forEach(card => {
                     const productName = card.dataset.name ? card.dataset.name.toLowerCase() : '';
                     const cardText = card.innerText.toLowerCase(); // También buscar en el texto visible de la tarjeta
 
-                    if (productName.includes(searchTerm) || cardText.includes(searchTerm)) {
+                    if (searchTerm === '' || productName.includes(searchTerm) || cardText.includes(searchTerm)) {
                         card.style.display = ''; // Mostrar la tarjeta
                     } else {
                         card.style.display = 'none'; // Ocultar la tarjeta
@@ -1557,8 +1592,6 @@
             if (searchForm) {
                 searchForm.addEventListener('submit', function(event) {
                     event.preventDefault(); // Evitar el envío del formulario
-                    // Aquí podrías añadir lógica adicional si el usuario presiona Enter
-                    // Por ahora, el keyup ya maneja el filtrado.
                 });
             }
         });
