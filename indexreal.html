@@ -15,6 +15,7 @@
                         'guacamayafly-green': '#00c897',
                         'guacamayafly-dark-green': '#00b386',
                         'guacamayafly-orange': '#FF7F00',
+                        'guacamayafly-dark-orange': '#E67300', /* Un tono más oscuro para el hover */
                     }
                 }
             }
@@ -27,14 +28,411 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
     
-    <link rel="stylesheet" href="./assets/css/bootstrap-5.0.0-alpha-2.min.css" />
-    <link rel="stylesheet" href="./assets/css/animate.css" />
-    <link rel="stylesheet" href="./assets/css/partial.css">
-    <link rel="stylesheet" href="./assets/css/style2.css">
+    <style>
+        /* ------------------------------------ */
+        /* 1. Estilos Globales                  */
+        /* ------------------------------------ */
+        /* Regla global para box-sizing para un modelo de caja consistente */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
-   
+        /* Estilos del cuerpo, corregidos y centralizados */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: white; /* Asegurado como blanco */
+            color: #1a202c; /* Color de texto predeterminado (similar a gray-900 de Tailwind) */
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden; /* CRÍTICO: Previene el scroll horizontal */
+            z-index: 0;
+        }
+
+        /* Ocultar barra de desplazamiento para elementos con overflow-x-auto */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* ------------------------------------ */
+        /* 2. Estilos del Loader de Avión       */
+        /* ------------------------------------ */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1.5s ease-out; /* Aumentado para mayor visibilidad */
+        }
+
+        .loader-overlay.hidden {
+            opacity: 0;
+            pointer-events: none; /* Permite clics a través una vez oculto */
+        }
+
+        .loader-plane {
+            font-size: 4rem; /* Tamaño del icono del avión */
+            color: #FF7F00; /* Color naranja de Guacamayafly */
+            animation: fly-across 3s infinite ease-in-out; /* Aumentado para mayor visibilidad */
+        }
+
+        @keyframes fly-across {
+            0% {
+                transform: translateX(-100vw) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translateX(0) rotate(-10deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) rotate(0deg);
+                opacity: 0;
+            }
+        }
+
+        /* ------------------------------------ */
+        /* 3. Estilos de la Barra de Búsqueda (Nueva) */
+        /* ------------------------------------ */
+        .search-form-container {
+            display: flex;
+            flex-direction: column; /* Apila los inputs en mobile */
+            gap: 0.75rem; /* Espacio entre los inputs */
+            max-width: 700px; /* Ancho máximo del formulario */
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .search-form-container {
+                flex-direction: row; /* En fila en desktop */
+                flex-wrap: nowrap; /* Evita que los elementos se envuelvan */
+                justify-content: center;
+                align-items: stretch; /* Estira los elementos para que tengan la misma altura */
+                gap: 0; /* Elimina el gap entre los elementos para que se vean como una sola barra */
+                border: 1px solid #4A5568; /* Borde más oscuro para el contenedor principal */
+                border-radius: 9999px; /* Bordes redondeados para el contenedor */
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Sombra sutil */
+                padding: 0; /* Elimina el padding del contenedor, los hijos tendrán su propio padding */
+            }
+        }
+
+        .search-input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #a0aec0; /* gray-400 para un borde más oscuro en mobile */
+            border-radius: 9999px; /* rounded-full en mobile */
+            padding: 0.5rem 1rem; /* py-2 px-4 en mobile */
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-sm en mobile */
+            flex-grow: 1; /* Permite que los inputs crezcan */
+            min-width: 150px; /* Ancho mínimo para inputs en desktop */
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .search-input-group {
+                border: none; /* Elimina el borde individual de los inputs en desktop */
+                border-radius: 0; /* Elimina el redondeo individual en desktop */
+                box-shadow: none; /* Elimina la sombra individual en desktop */
+                padding: 0.75rem 1.25rem; /* Ajusta el padding para un look más compacto */
+                flex: 1 1 auto; /* Permite que crezcan pero de forma más flexible */
+                position: relative; /* Para el pseudo-elemento del separador */
+            }
+
+            /* Añade un separador vertical entre los campos */
+            .search-input-group:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 25%;
+                height: 50%;
+                width: 1px;
+                background-color: #e2e8f0; /* gray-300 */
+            }
+
+            /* Primer input con borde redondeado a la izquierda */
+            .search-input-group:first-child {
+                border-top-left-radius: 9999px;
+                border-bottom-left-radius: 9999px;
+            }
+
+            /* Último input (antes del botón) sin borde redondeado a la derecha */
+            .search-input-group:nth-last-child(2) { /* Selecciona el penúltimo elemento, que es el último input */
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+        }
+
+        .search-input-group i {
+            color: #4A5568; /* gray-700 para mejor visibilidad */
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .search-input-group input,
+        .search-input-group span { /* Para el texto de fechas/viajeros */
+            flex-grow: 1;
+            outline: none;
+            border: none;
+            background-color: transparent;
+            font-size: 0.875rem; /* text-sm */
+            color: #1a202c; /* gray-900 */
+            cursor: pointer; /* Indica que es interactivo */
+        }
+
+        .search-input-group input::placeholder {
+            color: #a0aec0; /* gray-400 */
+        }
+
+        .search-main-button {
+            background-color: #FF7F00; /* guacamayafly-orange */
+            color: white;
+            font-weight: 600; /* font-semibold */
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            font-size: 1rem; /* text-base */
+            width: 100%; /* Ocupa todo el ancho en mobile */
+            transition: background-color 0.2s ease-in-out;
+            border: none; /* Asegura que no tenga borde */
+        }
+
+        .search-main-button:hover {
+            background-color: #E67300; /* guacamayafly-dark-orange */
+        }
+
+        @media (min-width: 768px) { /* md breakpoint */
+            .search-main-button {
+                width: auto; /* Ancho automático en desktop */
+                flex-shrink: 0; /* Evita que se encoja */
+                padding: 0.75rem 1.5rem; /* Ajusta el padding para que sea más compacto */
+                margin-left: 0.5rem; /* Espacio a la izquierda del botón para separarlo del último input */
+            }
+            .search-form-container {
+                gap: 0; /* Asegura que no haya gap entre los inputs en desktop */
+            }
+        }
+
+        /* Estilo para el botón "Buscar todo" en la barra de navegación de búsqueda */
+        .search-nav-button.active {
+            border: 1px solid #4A5568; /* Borde más oscuro */
+            font-weight: 600; /* font-semibold */
+        }
+
+        /* ------------------------------------ */
+        /* 4. Estilos de la Sección Hero        */
+        /* ------------------------------------ */
+        .section-hero-image img {
+            width: 100%;
+            max-height: 400px; /* Limita la altura en pantallas grandes */
+            height: 288px; /* Altura predeterminada para pantallas pequeñas (h-72) */
+            object-fit: cover;
+        }
+
+        /* Ajusta la altura de la imagen hero para pantallas medianas y superiores */
+        @media (min-width: 640px) { /* sm breakpoint */
+            .section-hero-image img {
+                height: 400px; /* sm:h-[400px] */
+            }
+        }
+
+        .hero-text-overlay {
+            background-color: rgba(0, 0, 0, 0.5); /* Negro semi-transparente */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.375rem; /* rounded-md */
+        }
+
+        /* ------------------------------------ */
+        /* 5. Estilos de Navegación de Carrusel */
+        /* ------------------------------------ */
+        .carousel-nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 9999px; /* Completamente redondo */
+            width: 44px; /* Tamaño más grande */
+            height: 44px; /* Tamaño más grande */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568; /* gray-700 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra suave */
+            transition: all 0.2s ease-in-out;
+            z-index: 10; /* Asegura que estén por encima de las tarjetas */
+            cursor: pointer;
+        }
+
+        .carousel-nav-button:hover {
+            background-color: rgba(255, 255, 255, 1);
+            color: #2d3748; /* gray-800 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-nav-button.left {
+            left: -22px; /* Sobresale un poco del contenedor */
+        }
+
+        .carousel-nav-button.right {
+            right: -22px; /* Sobresale un poco del contenedor */
+        }
+
+        /* Ocultar botones de navegación en pantallas pequeñas (mobile) */
+        @media (max-width: 767px) { /* md breakpoint */
+            .carousel-nav-button {
+                display: none !important;
+            }
+        }
+
+        /* Contenedor del carrusel para manejar el padding en mobile y snap */
+        .carousel-content-wrapper {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory; /* Habilita el snap en mobile */
+            -webkit-overflow-scrolling: touch; /* Desplazamiento suave en iOS */
+            padding-left: 1rem; /* Padding para que el primer elemento no se pegue */
+            padding-right: 1rem; /* Padding para que el último elemento no se pegue */
+            margin-left: -1rem; /* Compensa el padding para que el carrusel se alinee con el contenido principal */
+            margin-right: -1rem; /* Compensa el padding */
+        }
+
+        .carousel-content-wrapper > * {
+            scroll-snap-align: start; /* Cada elemento se alinea al inicio del snap */
+            flex-shrink: 0; /* Evita que los elementos se encojan */
+        }
+        
+        /* Ajuste para que el padding no afecte el ancho total del carrusel en desktop */
+        @media (min-width: 768px) {
+            .carousel-content-wrapper {
+                padding-left: 0;
+                padding-right: 0;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
 
 
+        /* ------------------------------------ */
+        /* 6. Estilos de Tarjetas de Producto   */
+        /* ------------------------------------ */
+        /* Estilos generales para las tarjetas de producto */
+        .product-card {
+            /* Asegura que el texto dentro de las tarjetas se alinee a la izquierda por defecto */
+            text-align: left; 
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de vuelos */
+        .flight-card .text-xs {
+            font-size: 0.75rem; /* 12px */
+        }
+        .flight-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .flight-card .text-[10px] {
+            font-size: 0.625rem; /* 10px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de ofertas */
+        .offer-card {
+            background-color: white; /* Tarjetas de oferta blancas, sin opacidad */
+            border-radius: 0.5rem; /* Añadir redondeo a las tarjetas de oferta */
+        }
+        .offer-card .text-[9px],
+        .offer-card .text-[10px],
+        .offer-card .text-xs,
+        .offer-card .text-gray-400, /* Color de texto para el precio tachado y comentarios */
+        .offer-card .text-gray-900 { /* Color de texto para el título y precio final */
+            color: #1a202c; /* Asegura que el texto sea oscuro en fondo blanco */
+        }
+        .offer-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .offer-card .text-[10px] {
+            font-size: 0.625rem; /* 10px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de alojamientos populares */
+        .popular-accommodation-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .popular-accommodation-card .text-[8px] {
+            font-size: 0.5rem; /* 8px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de paquetes de vacaciones */
+        .package-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .package-card .text-[10px] {
+            font-size: 0.625rem; /* 10px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de alojamientos especiales */
+        .special-accommodation-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+        .special-accommodation-card .text-[8px] {
+            font-size: 0.5rem; /* 8px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de búsquedas recientes */
+        .recent-search-card .text-[11px] {
+            font-size: 0.6875rem; /* 11px */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de alojamientos recomendados */
+        .recommended-accommodation-card .text-[10px] {
+            font-size: 0.625rem; /* 10px */
+        }
+
+        /* Icono de corazón en tarjetas recomendadas */
+        .recommended-accommodation-card .fa-heart {
+            color: #718096; /* gray-600 para mejor visibilidad */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de puntos de interés */
+        .point-of-interest-card .text-[6px] {
+            font-size: 0.375rem; /* 6px */
+        }
+        .point-of-interest-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+
+        /* Icono de corazón en puntos de interés */
+        .point-of-interest-card .fa-heart {
+            color: #718096; /* gray-600 para mejor visibilidad */
+        }
+
+        /* Ajustes específicos para el tamaño de fuente en las tarjetas de experiencias */
+        .experience-card .text-[9px] {
+            font-size: 0.5625rem; /* 9px */
+        }
+
+        /* Icono de corazón en experiencias */
+        .experience-card .fa-heart {
+            color: #718096; /* gray-600 para mejor visibilidad */
+        }
+
+        /* ------------------------------------ */
+        /* 7. Estilos del Botón de Ayuda Fijo   */
+        /* ------------------------------------ */
+        /* No hay CSS personalizado significativo aquí, se usan mayormente clases de Tailwind */
+
+        /* ------------------------------------ */
+        /* 8. Estilos del Footer                */
+        /* ------------------------------------ */
+        /* No hay CSS personalizado significativo aquí, se usan mayormente clases de Tailwind */
+
+    </style>
 </head>
 <body class="bg-white text-gray-900">
 
@@ -74,8 +472,8 @@
                 Encuentra el mejor vuelo
             </h1>
             <nav class="flex flex-wrap justify-center gap-4 text-xs sm:text-sm font-normal text-gray-700 mb-4">
-                <button aria-current="page" class="flex items-center gap-1 border border-black rounded px-2 py-1 font-semibold">
-                    <i class="far fa-home"></i>
+                <button aria-current="page" class="flex items-center gap-1 border border-gray-700 rounded px-2 py-1 font-semibold search-nav-button active">
+                    <i class="fas fa-home"></i>
                     Buscar todo
                 </button>
                 <button class="flex items-center gap-1">
@@ -83,7 +481,7 @@
                     Hoteles
                 </button>
                 <button class="flex items-center gap-1">
-                    <i class="fas fa-map-marker-alt"></i>
+                    <i class="fas fa-camera"></i>
                     Cosas que hacer
                 </button>
                 <button class="flex items-center gap-1">
@@ -180,7 +578,7 @@
                 </ul>
             </nav>
             <div class="max-w-4xl relative mx-auto">
-                <div id="flight-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
+                <div id="flight-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
                     <li class="border border-gray-300 rounded-lg p-3 w-56 flex-shrink-0 bg-white product-card flight-card" data-name="Tokio Naha Japan Airlines">
                         <div class="flex items-center space-x-1 mb-1">
                             <img alt="Logo Japan Airlines red circle with white crane" class="w-4 h-4" height="16" src="https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg" width="16"/>
@@ -343,51 +741,51 @@
                 Descubre tu nuevo alojamiento favorito
             </h2>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="accommodation-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
+                <div id="accommodation-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Apartotel">
-                        <img alt="Habitación de Apartotel con cama doble, planta y decoración moderna" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/ebef129d-66a1-4cb9-bf8f-08fcfe8f5d35.jpg" width="160"/>
+                        <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/ebef129d-66a1-4cb9-bf8f-08fcfe8f5d35.jpg" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
                             Apartotel
                         </p>
                     </div>
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Casa barco">
-                        <img alt="Casa barco flotando en el agua al atardecer con muelle" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/92c39d06-7b9c-42e1-b5f3-c4201e0e7fa1.jpg" width="160"/>
+                        <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/92c39d06-7b9c-42e1-b5f3-c4201e0e7fa1.jpg" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
                             Casa barco
                         </p>
                     </div>
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Spa">
-                        <img alt="Piscina interior de spa con techo abovedado de piedra y persona nadando" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/7092769f-236f-4184-c12f-e6d375ab28db.jpg" width="160"/>
+                        <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/7092769f-236f-4184-c12f-e6d375ab28db.jpg" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
                             Spa
                         </p>
                     </div>
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Granja">
-                        <img alt="Vista aérea de granja con casas y colinas verdes" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/d60c37e5-496b-40bb-b9c6-564c6117ebd3.jpg" width="160"/>
+                        <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/d60c37e5-496b-40bb-b9c6-564c6117ebd3.jpg" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
                             Granja
                         </p>
                     </div>
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Cabaña">
-                        <img alt="Cabaña de madera rodeada de árboles y césped verde" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/5c43cd5d-21f1-411e-cc4c-d45547ac826f.jpg" width="160"/>
+                        <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/5c43cd5d-21f1-411e-cc4c-d45547ac826f.jpg" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
                             Cabaña
                         </p>
                     </div>
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Castillo">
-                        <img alt="Castillo histórico en la cima de una colina, con cielo azul" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/d0a0b0c0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/160x160/FF7F00/FFFFFF?text=Castillo';" width="160"/>
+                        <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/d0a0b0c0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/160x160/FF7F00/FFFFFF?text=Castillo';" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
                             Castillo
                         </p>
                     </div>
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Igloo">
-                        <img alt="Igloo de hielo en un paisaje nevado, con auroras boreales" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/e0f0g0h0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/160x160/00C897/FFFFFF?text=Igloo';" width="160"/>
+                        <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/e0f0g0h0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/160x160/00C897/FFFFFF?text=Igloo';" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
                             Igloo
                         </p>
                     </div>
                     <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer product-card accommodation-card" data-name="Villa">
-                        <img alt="Villa de lujo con piscina infinita y vista al mar" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/f0g0h0i0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/160x160/FF0000/FFFFFF?text=Villa';" width="160"/>
+                        <img alt="" class="w-full h-40 object-cover rounded-lg" height="160" src="https://storage.googleapis.com/a1aa/image/f0g0h0i0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/160x160/FF0000/FFFFFF?text=Villa';" width="160"/>
                         <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">
                             Villa
                         </p>
@@ -403,14 +801,14 @@
         </section>
 
         <section class="relative mt-8 rounded-2xl overflow-hidden" style="background-color: #FF7F00;">
-            <img alt="Sala de estar moderna con plantas y luz natural, fondo de sección de ofertas" class="absolute inset-0 w-full h-full object-cover opacity-30" height="400" src="https://storage.googleapis.com/a1aa/image/1ab494ab-7725-4800-b387-862b1cf98652.jpg" width="1200"/>
+            <img alt="" class="absolute inset-0 w-full h-full object-cover opacity-30" height="400" src="https://storage.googleapis.com/a1aa/image/1ab494ab-7725-4800-b387-862b1cf98652.jpg" width="1200"/>
             <div class="relative p-6 sm:p-8 lg:p-10 text-white">
                 <div class="flex justify-between items-start mb-4">
                     <div>
                         <h3 class="text-lg font-semibold leading-tight max-w-xl">
                             Las principales ofertas para ti a partir de tu búsqueda reciente
                         </h3>
-                        <p class="text-xs font-normal opacity-80 mt-1">
+                        <p class="text-xs font-normal mt-1">
                             Se muestran ofertas para estas fechas:
                             <span class="font-semibold">18 ago - 21 ago</span>
                         </p>
@@ -420,101 +818,101 @@
                     </button>
                 </div>
                 <div class="relative">
-                    <div id="offers-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
-                        <div class="flex-shrink-0 w-64 bg-white bg-opacity-10 rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Naha Tomarin House">
+                    <div id="offers-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Naha Tomarin House">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="Interior de Naha Tomarin House con cama de madera y ventana" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/0efc6bce-b1a0-447f-6d42-5e0f092022d0.jpg" width="224"/>
+                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/0efc6bce-b1a0-447f-6d42-5e0f092022d0.jpg" width="224"/>
                             </div>
-                            <p class="text-[9px] font-semibold text-gray-400 opacity-80 mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold text-gray-400 leading-tight mb-1">Naha Tomarin House</h4>
+                            <p class="text-[9px] font-semibold mb-0.5">Naha</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">Naha Tomarin House</h4>
                             <div class="flex items-center space-x-1 mb-1">
                                 <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">10</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-80">Excepcional</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-50">(0 comentarios)</span>
+                                <span class="text-[9px] font-normal">Excepcional</span>
+                                <span class="text-[9px] font-normal opacity-50">(0 comentarios)</span>
                             </div>
-                            <div class="text-[10px] font-semibold text-gray-400 line-through opacity-50 mb-0.5">4.482 €</div>
-                            <div class="text-xs font-bold text-gray-400 mb-0.5">4032 €</div>
-                            <div class="text-[9px] font-normal text-gray-400 opacity-80 mb-1">13.444 € por noche</div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">4.482 €</div>
+                            <div class="text-xs font-bold mb-0.5">4032 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">13.444 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">10 % de descuento</div>
                         </div>
-                        <div class="flex-shrink-0 w-64 bg-white bg-opacity-10 rounded-lg p-3 cursor-pointer product-card offer-card" data-name="LACER OKINAWA NAHA MIEBASHI">
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="LACER OKINAWA NAHA MIEBASHI">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="Exterior de LACER OKINAWA NAHA MIEBASHI con sauna barril de madera" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg" width="224"/>
+                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg" width="224"/>
                             </div>
-                            <p class="text-[9px] font-semibold text-gray-400 opacity-80 mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold text-gray-400 leading-tight mb-1">LACER OKINAWA NAHA MIEBASHI</h4>
+                            <p class="text-[9px] font-semibold mb-0.5">Naha</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">LACER OKINAWA NAHA MIEBASHI</h4>
                             <div class="flex items-center space-x-1 mb-1">
                                 <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">8.8</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-80">Excelente</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-50">(5 comentarios)</span>
+                                <span class="text-[9px] font-normal">Excelente</span>
+                                <span class="text-[9px] font-normal opacity-50">(5 comentarios)</span>
                             </div>
-                            <div class="text-[10px] font-semibold text-gray-400 line-through opacity-50 mb-0.5">530 €</div>
-                            <div class="text-xs font-bold text-gray-400 mb-0.5">424 €</div>
-                            <div class="text-[9px] font-normal text-gray-400 opacity-80 mb-1">341 € por noche</div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">530 €</div>
+                            <div class="text-xs font-bold mb-0.5">424 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">341 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">20 % de descuento</div>
                         </div>
-                        <div class="flex-shrink-0 w-64 bg-white bg-opacity-10 rounded-lg p-3 cursor-pointer product-card offer-card" data-name="The Naha Terrace">
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="The Naha Terrace">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="Exterior de The Naha Terrace con porche de madera y plantas verdes" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg" width="224"/>
-                                <span class="absolute top-2 left-2 bg-green-700 text-gray-400 text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>
+                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg" width="224"/>
+                                <span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>
                             </div>
-                            <p class="text-[9px] font-semibold text-gray-400 opacity-80 mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold text-gray-400 leading-tight mb-1">The Naha Terrace</h4>
+                            <p class="text-[9px] font-semibold mb-0.5">Naha</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">The Naha Terrace</h4>
                             <div class="flex items-center space-x-1 mb-1">
                                 <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">9.2</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-80">Increíble</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-50">(1000 comentarios)</span>
+                                <span class="text-[9px] font-normal">Increíble</span>
+                                <span class="text-[9px] font-normal opacity-50">(1000 comentarios)</span>
                             </div>
-                            <div class="text-[10px] font-semibold text-gray-400 line-through opacity-50 mb-0.5">690 €</div>
-                            <div class="text-xs font-bold text-gray-400 mb-0.5">587 €</div>
-                            <div class="text-[9px] font-normal text-gray-400 opacity-80 mb-1">190 € por noche</div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">690 €</div>
+                            <div class="text-xs font-bold mb-0.5">587 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">190 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">15 % de descuento</div>
                         </div>
-                        <div class="flex-shrink-0 w-64 bg-white bg-opacity-10 rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Branchera naha akebono premist R65">
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Branchera naha akebono premist R65">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="Balcon con vista al mar en Branchera naha akebono premist R65" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/9e1e2fae-bae8-477b-6e3f-54ae910fa3a3.jpg" width="224"/>
+                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/9e1e2fae-bae8-477b-6e3f-54ae910fa3a3.jpg" width="224"/>
                             </div>
-                            <p class="text-[9px] font-semibold text-gray-400 opacity-80 mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold text-gray-400 leading-tight mb-1">Branchera naha akebono premist R65</h4>
+                            <p class="text-[9px] font-semibold mb-0.5">Naha</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">Branchera naha akebono premist R65</h4>
                             <div class="flex items-center space-x-1 mb-1">
                                 <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">0</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-80">0 comentarios</span>
+                                <span class="text-[9px] font-normal">0 comentarios</span>
                             </div>
-                            <div class="text-[10px] font-semibold text-gray-400 line-through opacity-50 mb-0.5">999 €</div>
-                            <div class="text-xs font-bold text-gray-400 mb-0.5">903 €</div>
-                            <div class="text-[9px] font-normal text-gray-400 opacity-80 mb-1">301 € por noche</div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">999 €</div>
+                            <div class="text-xs font-bold mb-0.5">903 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">301 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">9 % de descuento</div>
                         </div>
-                        <div class="flex-shrink-0 w-64 bg-white bg-opacity-10 rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Daikichi Okinawa">
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Daikichi Okinawa">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="Interior moderno de Daikichi Okinawa con ventana grande" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg" width="224"/>
+                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg" width="224"/>
                             </div>
-                            <p class="text-[9px] font-semibold text-gray-400 opacity-80 mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold text-gray-400 leading-tight mb-1">Daikichi Okinawa</h4>
+                            <p class="text-[9px] font-semibold mb-0.5">Naha</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">Daikichi Okinawa</h4>
                             <div class="flex items-center space-x-1 mb-1">
                                 <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">8.8</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-80">Excelente</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-50">(5 comentarios)</span>
+                                <span class="text-[9px] font-normal">Excelente</span>
+                                <span class="text-[9px] font-normal opacity-50">(5 comentarios)</span>
                             </div>
-                            <div class="text-[10px] font-semibold text-gray-400 line-through opacity-50 mb-0.5">372 €</div>
-                            <div class="text-xs font-bold text-gray-400 mb-0.5">312 €</div>
-                            <div class="text-[9px] font-normal text-gray-400 opacity-80 mb-1">104 € por noche</div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">372 €</div>
+                            <div class="text-xs font-bold mb-0.5">312 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">104 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">16 % de descuento</div>
                         </div>
-                        <div class="flex-shrink-0 w-64 bg-white bg-opacity-10 rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Hotel Playa Sol">
+                        <div class="flex-shrink-0 w-64 bg-white rounded-lg p-3 cursor-pointer product-card offer-card" data-name="Hotel Playa Sol">
                             <div class="relative rounded-lg overflow-hidden mb-2">
-                                <img alt="Hotel con piscina y vista al mar al atardecer" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/k0l0m0n0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/224x112/00C897/FFFFFF?text=Oferta+Extra';" width="224"/>
+                                <img alt="" class="w-full h-32 object-cover rounded-lg" height="112" src="https://storage.googleapis.com/a1aa/image/k0l0m0n0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/224x112/00C897/FFFFFF?text=Oferta+Extra';" width="224"/>
                             </div>
-                            <p class="text-[9px] font-semibold text-gray-400 opacity-80 mb-0.5">Naha</p>
-                            <h4 class="text-xs font-semibold text-gray-400 leading-tight mb-1">Hotel Playa Sol</h4>
+                            <p class="text-[9px] font-semibold mb-0.5">Naha</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">Hotel Playa Sol</h4>
                             <div class="flex items-center space-x-1 mb-1">
                                 <span class="text-[10px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none">9.0</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-80">Increíble</span>
-                                <span class="text-[9px] font-normal text-gray-400 opacity-50">(50 comentarios)</span>
+                                <span class="text-[9px] font-normal">Increíble</span>
+                                <span class="text-[9px] font-normal opacity-50">(50 comentarios)</span>
                             </div>
-                            <div class="text-[10px] font-semibold text-gray-400 line-through opacity-50 mb-0.5">250 €</div>
-                            <div class="text-xs font-bold text-gray-400 mb-0.5">200 €</div>
-                            <div class="text-[9px] font-normal text-gray-400 opacity-80 mb-1">100 € por noche</div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">250 €</div>
+                            <div class="text-xs font-bold mb-0.5">200 €</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">100 € por noche</div>
                             <div class="text-[9px] font-semibold bg-green-500 rounded px-1.5 py-0.5 leading-none w-max">20 % de descuento</div>
                         </div>
                     </div>
@@ -543,9 +941,9 @@
                 <button class="pb-1 opacity-70 hover:opacity-100">Bienestar y relajación</button>
             </nav>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="popular-accommodations-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
+                <div id="popular-accommodations-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Honolulu">
-                        <img alt="Playa de Honolulu con canoa en el agua y montaña al fondo al atardecer" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/1654483c-a154-43d3-a153-e0b776fb1a54.jpg" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/1654483c-a154-43d3-a153-e0b776fb1a54.jpg" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Honolulu</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Hawái, Estados Unidos</p>
@@ -554,7 +952,7 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Bangkok">
-                        <img alt="Skyline de la ciudad de Bangkok con luces nocturnas" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/2a8543fe-318e-48fa-2bbe-797a2713a043.jpg" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/2a8543fe-318e-48fa-2bbe-797a2713a043.jpg" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Bangkok</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Bangkok (provincia), Tailandia</p>
@@ -563,7 +961,7 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Isla Miyako">
-                        <img alt="Playa de Isla Miyako con agua turquesa y cielo azul" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/8cdec684-21e3-4971-6e27-636ec6508214.jpg" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/8cdec684-21e3-4971-6e27-636ec6508214.jpg" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Isla Miyako</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Okinawa (prefectura), Japón</p>
@@ -572,7 +970,7 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Isla Ishigaki">
-                        <img alt="Playa de Isla Ishigaki con montañas verdes y agua clara" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/dde3cf65-ea4d-4f60-ac69-575fe9145901.jpg" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/dde3cf65-ea4d-4f60-ac69-575fe9145901.jpg" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Isla Ishigaki</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Okinawa (prefectura), Japón</p>
@@ -581,7 +979,7 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Busan">
-                        <img alt="Costa de la ciudad de Busan con edificios y mar" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/e93f4a61-3d11-4933-e53c-01eeaf166b5d.jpg" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/e93f4a61-3d11-4933-e53c-01eeaf166b5d.jpg" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Busan</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Busan, Corea del Sur</p>
@@ -590,7 +988,7 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Venecia">
-                        <img alt="Góndolas en un canal de Venecia con edificios históricos" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/l0m0n0o0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x120/FF7F00/FFFFFF?text=Venecia';" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/l0m0n0o0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x120/FF7F00/FFFFFF?text=Venecia';" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Venecia</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Véneto, Italia</p>
@@ -599,7 +997,7 @@
                         </div>
                     </div>
                     <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer product-card popular-accommodation-card" data-name="Alpes Suizos">
-                        <img alt="Montañas nevadas de los Alpes Suizos con un pueblo en el valle" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/m0n0o0p0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x120/00C897/FFFFFF?text=Alpes';" width="192"/>
+                        <img alt="" class="w-full h-32 object-cover rounded-t-lg" height="120" src="https://storage.googleapis.com/a1aa/image/m0n0o0p0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x120/00C897/FFFFFF?text=Alpes';" width="192"/>
                         <div class="p-2">
                             <h4 class="text-xs font-semibold text-gray-900 mb-0.5">Alpes Suizos</h4>
                             <p class="text-[9px] text-gray-600 mb-0.5">Suiza</p>
@@ -634,7 +1032,7 @@
             </nav>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                 <article class="border border-gray-300 rounded-lg overflow-hidden shadow-sm product-card package-card" data-name="Prince Smart Inn Naha">
-                    <img alt="Hotel exterior con palmeras y un edificio con el cartel de Naha" class="w-full h-44 object-cover" height="200" loading="lazy" src="https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg" width="400"/>
+                    <img alt="" class="w-full h-44 object-cover" height="200" loading="lazy" src="https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg" width="400"/>
                     <div class="p-3 text-xs sm:text-sm">
                         <h2 class="font-semibold mb-1 leading-tight">Prince Smart Inn Naha + vuelo Naha</h2>
                         <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">
@@ -659,7 +1057,7 @@
                     </div>
                 </article>
                 <article class="border border-gray-300 rounded-lg overflow-hidden shadow-sm product-card package-card" data-name="HOTEL ANTEROOM Naha">
-                    <img alt="Piscina de hotel y vista al balcón con cielo azul y árboles" class="w-full h-44 object-cover" height="200" loading="lazy" src="https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg" width="400"/>
+                    <img alt="" class="w-full h-44 object-cover" height="200" loading="lazy" src="https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg" width="400"/>
                     <div class="p-3 text-xs sm:text-sm">
                         <h2 class="font-semibold mb-1 leading-tight">HOTEL ANTEROOM Naha + vuelo Naha</h2>
                         <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">
@@ -685,7 +1083,7 @@
                     </div>
                 </article>
                 <article class="border border-gray-300 rounded-lg overflow-hidden shadow-sm product-card package-card" data-name="Rembrandt Style Naha">
-                    <img alt="Lobby de hotel con flores y techo blanco" class="w-full h-44 object-cover" height="200" loading="lazy" src="https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg" width="400"/>
+                    <img alt="" class="w-full h-44 object-cover" height="200" loading="lazy" src="https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg" width="400"/>
                     <div class="p-3 text-xs sm:text-sm">
                         <h2 class="font-semibold mb-1 leading-tight">Rembrandt Style Naha + vuelo Naha</h2>
                         <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">
@@ -710,7 +1108,7 @@
                     </div>
                 </article>
                 <article class="border border-gray-300 rounded-lg overflow-hidden shadow-sm product-card package-card" data-name="Hotel Gracery Naha">
-                    <img alt="Habitación de hotel con iluminación azul y cama grande" class="w-full h-44 object-cover" height="200" loading="lazy" src="https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg" width="400"/>
+                    <img alt="" class="w-full h-44 object-cover" height="200" loading="lazy" src="https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg" width="400"/>
                     <div class="p-3 text-xs sm:text-sm">
                         <h2 class="font-semibold mb-1 leading-tight">Hotel Gracery Naha + vuelo Naha</h2>
                         <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">
@@ -751,9 +1149,9 @@
                 <span class="font-semibold">20 jun - 22 jun</span>
             </p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="special-accommodations-carousel" class="flex space-x-3 overflow-x-auto scrollbar-hide pb-2 justify-center">
+                <div id="special-accommodations-carousel" class="flex space-x-3 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 product-card special-accommodation-card" data-name="Kutsurogian">
-                        <img alt="Piscina natural de aguas termales con rocas y vegetación" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/bb36a323-a947-46d8-fe7a-052d160a3ec5.jpg" width="200"/>
+                        <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/bb36a323-a947-46d8-fe7a-052d160a3ec5.jpg" width="200"/>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">10</div>
                         <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
                         <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(10 comentarios)</p>
@@ -763,7 +1161,7 @@
                         <p class="text-[8px] sm:text-[9px] text-gray-500">405 € por noche</p>
                     </article>
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 product-card special-accommodation-card" data-name="HOSHINOYA Tokyo">
-                        <img alt="Lobby de hotel interior con iluminación cálida y asientos" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/da99bd57-ecee-4e85-7a42-c95373932380.jpg" width="200"/>
+                        <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/da99bd57-ecee-4e85-7a42-c95373932380.jpg" width="200"/>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">9.6</div>
                         <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
                         <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(801 comentarios)</p>
@@ -776,7 +1174,7 @@
                         <p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">25 % de descuento</p>
                     </article>
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 relative product-card special-accommodation-card" data-name="Fukiya Ryokan">
-                        <img alt="Fuente termal al aire libre con árboles y farol, insignia de acceso VIP en la parte superior izquierda" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/f0d14b10-7690-44b1-d031-b8cc4319174a.jpg" width="200"/>
+                        <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/f0d14b10-7690-44b1-d031-b8cc4319174a.jpg" width="200"/>
                         <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">10</div>
                         <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
@@ -790,7 +1188,7 @@
                         <p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">20 % de descuento</p>
                     </article>
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 product-card special-accommodation-card" data-name="Ryokan Tori">
-                        <img alt="Exterior de posada tradicional japonesa por la noche con farol rojo" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/576cbe16-7570-464b-9393-c69f36ab6f9a.jpg" width="200"/>
+                        <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/576cbe16-7570-464b-9393-c69f36ab6f9a.jpg" width="200"/>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">10</div>
                         <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
                         <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(10 comentarios)</p>
@@ -800,7 +1198,7 @@
                         <p class="text-[8px] sm:text-[9px] text-gray-500">269 € por noche</p>
                     </article>
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 product-card special-accommodation-card" data-name="Yamashiro">
-                        <img alt="Exterior de hotel moderno con árboles y cielo azul" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/5704f031-6381-4154-06b6-9301a9c11f2a.jpg" width="200"/>
+                        <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://storage.googleapis.com/a1aa/image/5704f031-6381-4154-06b6-9301a9c11f2a.jpg" width="200"/>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">9.6</div>
                         <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
                         <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(10 comentarios)</p>
@@ -813,7 +1211,7 @@
                         <p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">20 % de descuento</p>
                     </article>
                     <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 product-card special-accommodation-card" data-name="Grand Mountain Resort">
-                        <img alt="Hotel de lujo con piscina infinita y vista a la montaña al atardecer" class="rounded-lg w-full h-32 object-cover mb-1" height="120" src="https://storage.googleapis.com/a1aa/image/p0q0r0s0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/200x120/FF7F00/FFFFFF?text=Lujo+Montaña';" width="200"/>
+                        <img alt="" class="rounded-lg w-full h-32 object-cover mb-1" height="120" src="https://storage.googleapis.com/a1aa/image/p0q0r0s0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/200x120/FF7F00/FFFFFF?text=Lujo+Montaña';" width="200"/>
                         <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">9.8</div>
                         <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Magnífico</p>
                         <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(150 comentarios)</p>
@@ -833,7 +1231,7 @@
         </section>
 
         <section aria-label="Members discount banner" class="flex items-center space-x-4 bg-guacamayafly-orange text-white rounded-lg px-4 py-3 mb-6 max-w-full">
-            <img alt="Icono de búho negro" class="w-8 h-8 flex-shrink-0" height="32" src="./assets/img/logo-7.svg" width="32"/>
+            <img alt="" class="w-8 h-8 flex-shrink-0" height="32" src="./assets/img/logo-7.svg" width="32"/>
             <p class="text-sm font-semibold flex-1 leading-tight">
                 Los miembros ahorran al menos un 10 % en más de 100 000 hoteles de todo el mundo tras iniciar sesión.
             </p>
@@ -858,9 +1256,9 @@
             <h2 class="text-lg font-semibold mb-1">Alojamientos recomendados para ti</h2>
             <p class="text-xs text-gray-600 mb-3">Según el último alojamiento que has visto</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="recommended-accommodations-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
+                <div id="recommended-accommodations-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Roco Inn Okinawa">
-                        <img alt="Interior del hotel Roco Inn Okinawa con luz diurna, madera y plantas" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/34c742f8-ba16-44c6-3b15-f5028ee587d2.jpg" width="192"/>
+                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/34c742f8-ba16-44c6-3b15-f5028ee587d2.jpg" width="192"/>
                         <button aria-label="Favorite Roco Inn Okinawa" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
                             <i class="far fa-heart fa-lg"></i>
                         </button>
@@ -875,7 +1273,7 @@
                         </div>
                     </article>
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Okinawa NaHaNa Hotel &amp; Spa">
-                        <img alt="Sala de estar moderna en Okinawa NaHaNa Hotel &amp; Spa por la noche" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/6006d9ea-79d0-49b5-7c17-7f0e4d3a344f.jpg" width="192"/>
+                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/6006d9ea-79d0-49b5-7c17-7f0e4d3a344f.jpg" width="192"/>
                         <button aria-label="Favorite Okinawa NaHaNa Hotel &amp; Spa" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
                             <i class="far fa-heart fa-lg"></i>
                         </button>
@@ -890,7 +1288,7 @@
                         </div>
                     </article>
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Naha-West Inn">
-                        <img alt="Exterior del hotel Naha-West Inn con luz diurna, árboles y terraza" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/8ef4584b-02ba-484e-5572-363789a655de.jpg" width="192"/>
+                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/8ef4584b-02ba-484e-5572-363789a655de.jpg" width="192"/>
                         <button aria-label="Favorite Naha-West Inn" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
                             <i class="far fa-heart fa-lg"></i>
                         </button>
@@ -905,7 +1303,7 @@
                         </div>
                     </article>
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Hotel AQUA CITTA Naha">
-                        <img alt="Piscina en la azotea con vista a la ciudad en el Hotel AQUA CITTA Naha durante el atardecer" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/7a053137-adc7-4798-0c93-5bcbb8c96348.jpg" width="192"/>
+                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/7a053137-adc7-4798-0c93-5bcbb8c96348.jpg" width="192"/>
                         <button aria-label="Favorite Hotel AQUA CITTA Naha" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
                             <i class="far fa-heart fa-lg"></i>
                         </button>
@@ -920,7 +1318,7 @@
                         </div>
                     </article>
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Hotel">
-                        <img alt="Exterior de hotel moderno con balcón y vista a la ciudad a la luz del día" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/q0r0s0t0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x128/eabeec47-134c-4470-ab9d-1567c5782d04/FFFFFF?text=Hotel';" width="192"/>
+                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/q0r0s0t0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x128/eabeec47-134c-4470-ab9d-1567c5782d04/FFFFFF?text=Hotel';" width="192"/>
                         <button aria-label="Favorite Hotel" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
                             <i class="far fa-heart fa-lg"></i>
                         </button>
@@ -935,7 +1333,7 @@
                         </div>
                     </article>
                     <article class="flex-shrink-0 w-56 rounded-lg border border-gray-200 overflow-hidden relative product-card recommended-accommodation-card" data-name="Urban Oasis Hotel">
-                        <img alt="Hotel moderno con piscina en la azotea y vista a la ciudad" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/s0t0u0v0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x128/FF7F00/FFFFFF?text=Hotel+Urbano';" width="192"/>
+                        <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/s0t0u0v0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x128/FF7F00/FFFFFF?text=Hotel+Urbano';" width="192"/>
                         <button aria-label="Favorite Hotel Urbano" class="absolute top-2 right-2 text-gray-400 hover:text-red-600" type="button">
                             <i class="far fa-heart fa-lg"></i>
                         </button>
@@ -967,10 +1365,10 @@
             <h2 class="text-sm font-semibold text-gray-900 mb-0.5">Igual te interesan estos puntos de interés</h2>
             <p class="text-xs text-gray-500 mb-4">Más sitios donde alojarse en Kovalam</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="points-of-interest-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
+                <div id="points-of-interest-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card point-of-interest-card" data-name="The Leela Kovalam">
                         <div class="relative">
-                            <img alt="Isla con hotel rojo en la orilla del mar con olas" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/1e57a6ed-fcf0-46e8-4d29-b24bdf7d3db5.jpg" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/1e57a6ed-fcf0-46e8-4d29-b24bdf7d3db5.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -992,7 +1390,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card point-of-interest-card" data-name="Taj Green Cove Resort">
                         <div class="relative">
-                            <img alt="Resort en medio de la selva con palmeras" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/80a40bca-3644-4bcc-45b4-e50ce5be934e.jpg" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/80a40bca-3644-4bcc-45b4-e50ce5be934e.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1014,7 +1412,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card point-of-interest-card" data-name="Niraamaya Retreats Surya Samudra">
                         <div class="relative">
-                            <img alt="Interior de una habitación de hotel con sofá y piscina" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/9487208e-2d33-45b3-d5ac-190e7c95f68a.jpg" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/9487208e-2d33-45b3-d5ac-190e7c95f68a.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1036,7 +1434,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card point-of-interest-card" data-name="Hotel Samudra KTDC">
                         <div class="relative">
-                            <img alt="Hotel blanco con palmeras y césped" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/aa1773c6-9935-4905-47aa-18d90e01bc82.jpg" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/aa1773c6-9935-4905-47aa-18d90e01bc82.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1058,7 +1456,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card point-of-interest-card" data-name="Templo de Angkor Wat">
                         <div class="relative">
-                            <img alt="Templo antiguo de Angkor Wat en la selva al amanecer" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/u0v0w0x0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x128/00C897/FFFFFF?text=Templo+Antiguo';" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/u0v0w0x0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x128/00C897/FFFFFF?text=Templo+Antiguo';" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1092,10 +1490,10 @@
             <h3 class="text-sm font-semibold text-gray-900 mb-0.5">Las mejores experiencias en Guacamayafly</h3>
             <p class="text-xs text-gray-500 mb-4">Los mejores tours, actividades y entradas</p>
             <div class="relative max-w-[1200px] mx-auto">
-                <div id="experiences-carousel" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2 justify-center">
+                <div id="experiences-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper justify-center">
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card experience-card" data-name="Torre Eiffel">
                         <div class="relative">
-                            <img alt="Mujer sonriente con sombrero frente a la torre Eiffel" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/19ec5e29-fbee-4962-ff5d-7a42211f7405.jpg" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/19ec5e29-fbee-4962-ff5d-7a42211f7405.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1117,7 +1515,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card experience-card" data-name="Museo Leonardo da Vinci">
                         <div class="relative">
-                            <img alt="Museo con barco de madera en exhibición" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/b62daa48-69b3-47ef-2330-e180fe9709a4.jpg" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/b62daa48-69b3-47ef-2330-e180fe9709a4.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1141,7 +1539,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card experience-card" data-name="Crucero Amsterdam">
                         <div class="relative">
-                            <img alt="Crucero en barco con mesas al aire libre" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/c3b2b7a9-4780-4e87-c4e4-8ed9d082f396.jpg" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/c3b2b7a9-4780-4e87-c4e4-8ed9d082f396.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1165,7 +1563,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card experience-card" data-name="Avistamiento delfines Benagil">
                         <div class="relative">
-                            <img alt="Ballenas en el mar con persona en lancha" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/7005bd4f-c4ef-4e6b-a72e-451a0a5724ae.jpg" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/7005bd4f-c4ef-4e6b-a72e-451a0a5724ae.jpg" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1190,7 +1588,7 @@
                     </article>
                     <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 product-card experience-card" data-name="Globo aerostático Capadocia">
                         <div class="relative">
-                            <img alt="Paseo en globo aerostático al amanecer sobre Capadocia" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/v0w0x0y0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x128/FF7F00/FFFFFF?text=Globo+Aerostático';" width="192"/>
+                            <img alt="" class="w-full h-36 object-cover" height="128" src="https://storage.googleapis.com/a1aa/image/v0w0x0y0-1234-5678-90ab-cdef12345678.jpg" onerror="this.onerror=null;this.src='https://placehold.co/192x128/FF7F00/FFFFFF?text=Globo+Aerostático';" width="192"/>
                             <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
                                 <i class="far fa-heart fa-sm"></i>
                             </button>
@@ -1222,7 +1620,7 @@
         </section>
 
         <section class="max-w-5xl mx-auto mt-6 border border-gray-300 rounded-md flex flex-col sm:flex-row overflow-hidden">
-            <img alt="Foto de paisaje de palmeras y cielo azul" class="w-full sm:w-80 object-cover" height="140" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/e0/e7/df/caption.jpg?w=900&h=500&s=1" width="320"/>
+            <img alt="" class="w-full sm:w-80 object-cover" height="140" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/e0/e7/df/caption.jpg?w=900&h=500&s=1" width="320"/>
             <div class="p-4 flex flex-col justify-between flex-1">
                 <div>
                     <h3 class="text-base font-bold text-gray-900 mb-1">
@@ -1236,7 +1634,7 @@
                     </p>
                 </div>
                 <div class="mt-4 sm:mt-0 flex justify-end">
-                    <img alt="Código QR para escanear con la cámara de tu dispositivo para descargar la aplicación Guacamayafly" class="w-20 h-20" height="80" src="./assets/img/QRCode.svg" width="80"/>
+                    <img alt="" class="w-20 h-20" height="80" src="./assets/img/QRCode.svg" width="80"/>
                 </div>
             </div>
         </section>
@@ -1288,7 +1686,7 @@
                         <li><a class="hover:underline" href="https://wa.me/5804243156057">Cancelar una reserva de hotel o de un alquiler vacacional</a></li>
                         <li><a class="hover:underline" href="https://wa.me/5804243156057">Plazos de reembolso</a></li>
                         <li><a class="hover:underline" href="https://wa.me/5804243156057">Utilizar un cupón de Guacamayafly</a></li>
-                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Documentos para viajes internacionales</a></li>
+                        <li><a class="hover://wa.me/5804243156057">Documentos para viajes internacionales</a></li>
                     </ul>
                 </div>
             </div>
@@ -1318,7 +1716,7 @@
 
         /**
          * Desplaza un carrusel horizontalmente por la cantidad de una tarjeta.
-         * En desktop, se desplaza por una tarjeta. En mobile, se mantiene el scroll natural.
+         * Permite un desplazamiento continuo (loop) en ambas direcciones.
          * @param {string} carouselId - El ID del elemento del carrusel (el contenedor con overflow-x-auto).
          * @param {number} direction - La dirección del desplazamiento (-1 para izquierda, 1 para derecha).
          */
@@ -1326,71 +1724,59 @@
             const carousel = document.getElementById(carouselId);
             if (!carousel) return;
 
-            // Obtener todas las tarjetas visibles dentro del carrusel
-            // Filtramos por elementos que son visibles y tienen un ancho significativo
+            // Filtra solo los elementos que son tarjetas de producto y son visibles
             const cards = Array.from(carousel.children).filter(child =>
                 (child.classList.contains('product-card') || child.tagName === 'LI' || child.tagName === 'ARTICLE' || child.tagName === 'DIV') &&
-                child.offsetWidth > 0 // Asegura que el elemento sea visible y tenga un ancho
+                child.offsetWidth > 0 // Asegura que el elemento sea visible y tenga ancho
             );
 
-            // Si no hay tarjetas visibles, no hacer nada
             if (cards.length === 0) return;
 
-            // Calcular el ancho de una tarjeta incluyendo el margen/gap
-            // Tomamos la primera tarjeta para calcular el ancho
             const firstCard = cards[0];
-            const cardStyle = window.getComputedStyle(firstCard);
             const cardWidth = firstCard.offsetWidth;
-            // Intentar obtener el gap de flexbox o grid, si no, buscar margin-right
             const carouselStyle = window.getComputedStyle(carousel);
             let gap = parseFloat(carouselStyle.gap || 0);
 
-            // Si no hay gap definido, intentamos con margin-right de la tarjeta
-            if (gap === 0) {
-                gap = parseFloat(cardStyle.marginRight) || 0;
+            // Si no hay gap definido por flexbox, intenta inferir del margin-right de la primera tarjeta
+            if (gap === 0 || isNaN(gap)) {
+                const computedMarginRight = parseFloat(window.getComputedStyle(firstCard).marginRight);
+                if (!isNaN(computedMarginRight)) {
+                    gap = computedMarginRight;
+                }
             }
             
-            const scrollAmountPerCard = cardWidth + gap;
-
-            // Calcular la posición de desplazamiento actual
-            const currentScrollLeft = carousel.scrollLeft;
-            const totalScrollWidth = carousel.scrollWidth - carousel.clientWidth;
+            const scrollAmount = cardWidth + gap;
+            let currentScrollLeft = carousel.scrollLeft;
+            const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
 
             let targetScrollLeft;
 
-            if (direction === 1) { // Desplazar a la derecha
-                targetScrollLeft = currentScrollLeft + scrollAmountPerCard;
-                // Si el desplazamiento excede el final, volver al inicio
-                if (targetScrollLeft >= totalScrollWidth - 5) { // Pequeño margen para evitar problemas de flotantes
+            if (direction === 1) { // Mover a la derecha (siguiente)
+                targetScrollLeft = currentScrollLeft + scrollAmount;
+                // Si el objetivo está cerca o más allá del final, vuelve al principio
+                if (targetScrollLeft >= maxScrollLeft - 5) { // Tolerancia de 5px
                     targetScrollLeft = 0;
                 }
-            } else { // Desplazar a la izquierda
-                targetScrollLeft = currentScrollLeft - scrollAmountPerCard;
-                // Si el desplazamiento es menor que cero, ir al final
-                if (targetScrollLeft <= 5) { // Pequeño margen para evitar problemas de flotantes
-                    targetScrollLeft = totalScrollWidth;
+            } else { // Mover a la izquierda (anterior)
+                targetScrollLeft = currentScrollLeft - scrollAmount;
+                // Si el objetivo está cerca o antes del principio, ve al final
+                if (targetScrollLeft <= 5) { // Tolerancia de 5px
+                    targetScrollLeft = maxScrollLeft;
                 }
             }
 
             carousel.scrollTo({
                 left: targetScrollLeft,
-                behavior: 'smooth' // Desplazamiento suave
+                behavior: 'smooth'
             });
         }
 
         // Funcionalidad de búsqueda (adaptada para la nueva barra)
         document.addEventListener('DOMContentLoaded', function() {
-            // No se necesita el listener de keyup para la barra de búsqueda de vuelos,
-            // ya que el comportamiento es diferente (selección de origen/destino/fechas)
-            // y no un filtrado de tarjetas en tiempo real.
-
-            // Prevenir el envío del formulario de búsqueda para manejarlo con JS
             const searchForm = document.querySelector('.search-form-container');
             if (searchForm) {
                 searchForm.addEventListener('submit', function(event) {
                     event.preventDefault(); // Evitar el envío del formulario
-                    // Aquí podrías añadir lógica para manejar la búsqueda de vuelos,
-                    // por ejemplo, redireccionar a una página de resultados con los parámetros.
                     console.log('Búsqueda de vuelos iniciada!');
                     console.log('Origen:', document.getElementById('origin-input').value);
                     console.log('Destino:', document.getElementById('destination-input').value);
