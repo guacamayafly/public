@@ -161,7 +161,7 @@ body {
 }
 
 .search-main-button {
-    background-color: #FF7F00; /* guacamayafly-green, similar al de Tripadvisor */
+    background-color: #00c897; /* guacamayafly-green, similar al de Tripadvisor */
     color: white;
     font-weight: 600; /* font-semibold */
     border-radius: 9999px; /* rounded-full */
@@ -355,25 +355,80 @@ body {
 }
 
 /* Ajustes específicos para el tamaño de fuente en las tarjetas de paquetes de vacaciones */
-.package-card .text-[9px] {
-    font-size: 0.5625rem; /* 9px */
-}
-.package-card .text-[10px] {
-    font-size: 0.625rem; /* 10px */
-}
-
-/* Ajustes específicos para el tamaño de fuente en las tarjetas de alojamientos especiales */
-.special-accommodation-card .text-[9px] {
-    font-size: 0.5625rem; /* 9px */
-}
-.special-accommodation-card .text-[8px] {
-    font-size: 0.5rem; /* 8px */
+.package-card {
+    background-color: white; /* White background for the card */
+    border-radius: 0.5rem; /* Rounded corners */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Subtle shadow */
+    text-align: left; /* Align text to the left */
 }
 
-/* Ajustes específicos para el tamaño de fuente en las tarjetas de búsquedas recientes */
-.recent-search-card .text-[11px] {
-    font-size: 0.6875rem; /* 11px */
+.package-card img {
+    border-radius: 0.5rem 0.5rem 0 0; /* Rounded top corners for the image */
 }
+
+.package-card .vip-access-tag {
+    background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+    color: white;
+    font-size: 0.5rem; /* text-[8px] */
+    font-weight: 600; /* font-semibold */
+    padding: 0.125rem 0.375rem; /* px-1.5 py-0.5 */
+    border-radius: 0.25rem; /* rounded */
+}
+
+.package-card .rating-score {
+    background-color: #00c897; /* guacamayafly-green */
+    color: white;
+    font-size: 0.625rem; /* text-[10px] */
+    font-weight: 600;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    line-height: 1;
+}
+
+.package-card .rating-text {
+    font-size: 0.5625rem; /* text-[9px] */
+    font-weight: 400; /* font-normal */
+}
+
+.package-card .comments-count {
+    font-size: 0.5625rem; /* text-[9px] */
+    opacity: 0.5; /* opacity-50 */
+}
+
+.package-card .original-price {
+    font-size: 0.625rem; /* text-[10px] */
+    font-weight: 600;
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+.package-card .final-price {
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 700; /* font-bold */
+}
+
+.package-card .price-per-night {
+    font-size: 0.5625rem; /* text-[9px] */
+    opacity: 0.8;
+}
+
+.package-card .discount-tag {
+    background-color: #00c897; /* guacamayafly-green */
+    color: white;
+    font-size: 0.5625rem; /* text-[9px] */
+    font-weight: 600;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    line-height: 1;
+    width: max-content;
+}
+
+.package-card .date-info,
+.package-card .updated-info {
+    font-size: 0.5rem; /* text-[8px] */
+    color: #a0aec0; /* gray-400 */
+}
+
 
 /* Ajustes específicos para el tamaño de fuente en las tarjetas de alojamientos recomendados */
 .recommended-accommodation-card .text-[10px] {
