@@ -161,7 +161,7 @@ body {
 }
 
 .search-main-button {
-    background-color: #00c897; /* guacamayafly-green, similar al de Tripadvisor */
+    background-color: #FF7F00; /* guacamayafly-green, similar al de Tripadvisor */
     color: white;
     font-weight: 600; /* font-semibold */
     border-radius: 9999px; /* rounded-full */
@@ -222,6 +222,45 @@ body {
     border-radius: 0.5rem; /* Bordes redondeados */
     color: white; /* Asegura que el texto sea blanco */
 }
+
+/* Estilos específicos para el texto de la sección de ofertas */
+.offers-header-content .offers-title {
+    color: white; /* Asegura que el título sea blanco */
+    font-weight: 700; /* font-bold */
+    font-size: 1.125rem; /* text-lg */
+}
+
+.offers-header-content .offers-date-info {
+    color: white; /* Asegura que la fecha sea blanca */
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 400; /* font-normal */
+}
+
+.offers-header-content .offers-date-info .font-semibold {
+    color: white; /* Asegura que la fecha en negrita sea blanca */
+}
+
+.offers-header-content .offers-description {
+    color: white; /* Asegura que la descripción sea blanca */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 400; /* font-normal */
+}
+
+.offers-button {
+    background-color: white; /* Fondo blanco para el botón */
+    color: #2563eb; /* text-blue-600 */
+    font-weight: 600; /* font-semibold */
+    border-radius: 0.375rem; /* rounded-md */
+    padding: 0.25rem 0.75rem; /* px-3 py-1 */
+    font-size: 0.75rem; /* text-xs */
+    white-space: nowrap;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.offers-button:hover {
+    background-color: #eff6ff; /* hover:bg-blue-50 */
+}
+
 
 /* ------------------------------------ */
 /* 5. Estilos de Navegación de Carrusel */
@@ -319,6 +358,7 @@ body {
 .offer-card {
     background-color: white; /* Tarjetas de oferta blancas, sin opacidad */
     border-radius: 0.5rem; /* Añadir redondeo a las tarjetas de oferta */
+       color: #1a202c; /* Añadir redondeo a las tarjetas de oferta */
 }
 .offer-card .text-[9px],
 .offer-card .text-[10px],
