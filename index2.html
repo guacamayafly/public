@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Viajes baratos: Ofertas Viajes, vuelos, hoteles | Guacamayafly</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'guacamayafly-green': '#00c897',
+                        'guacamayafly-dark-green': '#00b386',
+                        'guacamayafly-orange': '#FF7F00',
+                        'guacamayafly-dark-orange': '#E67300',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://storage.googleapis.com/a1aa/image/upload/v1719868571/logo-6.svg" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    
+    <style>
+        /* Estilos Globales y de Componentes */
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: white; color: #1a202c; margin: 0; min-height: 100vh; position: relative; overflow-x: hidden; z-index: 0; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Loader */
+        .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 1s ease-out; }
+        .loader-overlay.hidden { opacity: 0; pointer-events: none; }
+        .loader-plane { font-size: 4rem; color: #FF7F00; animation: fly-across 3s infinite ease-in-out; }
+        @keyframes fly-across { 0% { transform: translateX(-100vw); } 50% { transform: translateX(0); } 100% { transform: translateX(100vw); } }
+        
+        /* Barra de Búsqueda */
+        .search-form-container { display: flex; flex-direction: column; gap: 0.75rem; max-width: 900px; margin: 0 auto; }
+        @media (min-width: 1024px) { .search-form-container { flex-direction: row; align-items: center; background-color: white; border-radius: 9999px; padding: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); } }
+        .search-input-group { position: relative; flex: 1; display: flex; align-items: center; padding: 0.75rem 1rem; background-color: white; border-radius: 9999px; border: 1px solid #d1d5db; }
+        @media (min-width: 1024px) { .search-input-group { border: none; } .search-input-group:not(:last-of-type) { border-right: 1px solid #e5e7eb; } }
+        .search-input-group i { color: #6b7280; margin-right: 0.75rem; }
+        .search-input-group input, .search-input-group span { border: none; outline: none; background: transparent; width: 100%; }
+        .search-main-button { background-color: #FF7F00; color: white; border-radius: 9999px; padding: 0.8rem; display: flex; align-items: center; justify-content: center; font-weight: 600; transition: background-color 0.2s; }
+        .search-main-button:hover { background-color: #E67300; }
+
+        /* Carrusel UI/UX Mejorado */
+        .carousel-container { position: relative; }
+        .carousel-nav-button { 
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background-color: rgba(255, 255, 255, 0.9); 
+            border-radius: 9999px; 
+            width: 44px; 
+            height: 44px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #1a202c; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+            transition: all 0.2s ease-in-out; 
+            z-index: 10; 
+            cursor: pointer; 
+        }
+        .carousel-nav-button:hover { 
+            background-color: white; 
+            transform: translateY(-50%) scale(1.1); 
+        }
+        .carousel-nav-button.left { left: -22px; }
+        .carousel-nav-button.right { right: -22px; }
+        @media (max-width: 767px) { .carousel-nav-button { display: none; } }
+        .carousel-content-wrapper { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .carousel-content-wrapper::-webkit-scrollbar { display: none; }
+        .carousel-content-wrapper > * { scroll-snap-align: start; flex-shrink: 0; }
+
+        /* Tarjeta Interactiva UI/UX */
+        .interactive-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        /* Notificaciones y Modales */
+        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
+        .notification-popup { background-color: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.5s ease-in-out; margin-top: 10px; }
+        .notification-popup.show { transform: translateX(0); }
+        #calendar-modal, #booking-modal { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        #calendar-modal.visible, #booking-modal.visible { opacity: 1; pointer-events: auto; }
+        .modal-container { background-color: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 700px; transform: scale(0.95); transition: transform 0.3s ease; }
+        #calendar-modal.visible .modal-container, #booking-modal.visible .modal-container { transform: scale(1); }
+        
+        /* Modal de Viajeros */
+        #travelers-modal {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 6000;
+            padding: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #travelers-modal.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+        .traveler-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .counter-btn {
+            width: 32px; height: 32px; border-radius: 50%; border: 1px solid #d1d5db;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; background-color: white; color: #4b5563;
+        }
+        .counter-btn:disabled { cursor: not-allowed; background-color: #f3f4f6; color: #9ca3af; }
+
+        /* Calendario (Estilo Restaurado) */
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .calendar-months { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        @media (min-width: 640px) { .calendar-months { grid-template-columns: 1fr 1fr; } }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; place-items: center; }
+        .calendar-day { width: 38px; height: 38px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; transition: all 0.2s; }
+        .calendar-day.weekday { font-weight: 600; font-size: 0.8rem; color: #4a5568; cursor: default; }
+        .calendar-day.disabled { color: #cbd5e0; cursor: not-allowed; text-decoration: line-through; }
+        .calendar-day:not(.disabled):not(.weekday):hover { background-color: #f0f0f0; }
+        .calendar-day.price-cheap { background-color: #d1fae5; color: #065f46; } /* Verde */
+        .calendar-day.price-medium { background-color: #fef3c7; color: #92400e; } /* Amarillo */
+        .calendar-day.price-expensive { background-color: #fee2e2; color: #991b1b; } /* Rojo */
+        .calendar-day.selected { background-color: #2563eb !important; color: white !important; font-weight: bold; }
+        .calendar-day.in-range { background-color: #dbeafe; border-radius: 0; }
+        .calendar-day.range-start { border-top-left-radius: 50%; border-bottom-left-radius: 50%; }
+        .calendar-day.range-end { border-top-right-radius: 50%; border-bottom-right-radius: 50%; }
+        
+        /* Loader de Búsqueda de Vuelos */
+        .flight-search-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; color: #FF7F00; font-size: 1.25rem; font-weight: 600; width: 100%; }
+        .flight-search-loader i { font-size: 3rem; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* Estilos de Secciones y Tarjetas */
+        .section-hero-image img { width: 100%; max-height: 400px; height: 288px; object-fit: cover; }
+        @media (min-width: 640px) { .section-hero-image img { height: 400px; } }
+        .hero-text-overlay { background-color: rgba(0, 0, 0, 0.5); padding: 1rem; border-radius: 0.375rem; }
+        .offers-text-overlay { background-color: rgba(255, 127, 0, 0.7); padding: 1.5rem; color: white; }
+        .member-price-tag { background-color: #FACC15; color: #1a202c; font-size: 0.625rem; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: 0.25rem; display: inline-block; }
+        .text-\\[6px\\] { font-size: 6px; }
+        .text-\\[8px\\] { font-size: 8px; }
+        .text-\\[9px\\] { font-size: 9px; }
+        .text-\\[10px\\] { font-size: 10px; }
+        .text-\\[11px\\] { font-size: 11px; }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Elementos de UI: Notificaciones, Loader, Modales -->
+    <div id="notification-container"></div>
+    <div id="loader" class="loader-overlay"><i class="fas fa-plane loader-plane"></i></div>
+    
+    <!-- Modal del Calendario -->
+    <div id="calendar-modal" class="hidden"><div class="modal-container"><div class="calendar-header"><button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button><h3 class="font-semibold text-lg">Selecciona tus fechas</h3><button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button></div><div class="calendar-months" id="calendar-months-container"></div><div class="flex justify-end mt-4 gap-4"><button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button><button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button></div></div></div>
+    
+    <!-- Modal de Reserva -->
+    <div id="booking-modal" class="hidden">
+        <div class="modal-container max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-lg">Completa los datos para tu reserva</h3>
+                <button id="close-booking-modal" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div id="booking-flight-summary" class="mb-4 p-3 bg-gray-100 rounded-lg text-sm"></div>
+            <form id="booking-form">
+                <div id="passengers-container"></div>
+                <button type="button" id="add-passenger-btn" class="w-full text-sm text-blue-600 hover:text-blue-800 font-semibold py-2 mb-4">+ Añadir otro viajero</button>
+                <button type="submit" class="w-full bg-guacamayafly-orange text-white font-bold py-3 px-4 rounded-lg hover:bg-guacamayafly-dark-orange transition-colors">
+                    <i class="fab fa-whatsapp mr-2"></i>Completar reserva por WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 max-w-[1200px] mx-auto">
+        <div class="flex items-center space-x-2">
+            <img alt="Logo UACAMAYAFLY" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
+            <span class="font-extrabold text-lg select-none text-guacamayafly-orange">UACAMAYAFLY</span>
+        </div>
+        <nav class="hidden sm:flex space-x-6 text-sm font-normal text-black">
+            <a class="hover:underline" href="https://wa.me/5804243156057">Descubrir</a>
+            <a class="hover:underline" href="https://wa.me/5804243156057">Viajes</a>
+            <a class="hover:underline" href="https://wa.me/5804243156057">Opinión</a>
+            <a class="hover:underline" href="https://wa.me/5804243156057">Más</a>
+            <a class="hover:underline" href="pagos2.html">Pagos</a> 
+        </nav>
+        <div class="flex items-center space-x-4 text-sm">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-1 text-sm font-semibold" type="button">Iniciar sesión</button>
+        </div>
+    </header>
+
+    <main class="max-w-[1200px] mx-auto px-6">
+        <!-- Sección de Búsqueda -->
+        <section class="text-center my-12">
+            <h1 class="font-extrabold text-2xl sm:text-3xl md:text-4xl mt-6 mb-6">Encuentra el mejor vuelo</h1>
+            <nav class="flex flex-wrap justify-center gap-4 text-xs sm:text-sm font-normal text-gray-700 mb-4">
+                 <button aria-current="page" class="flex items-center gap-1 border border-gray-700 rounded px-2 py-1 font-semibold"> <i class="fas fa-home"></i> Buscar todo </button>
+                 <button class="flex items-center gap-1"> <i class="fas fa-bed"></i> Hoteles </button>
+                 <button class="flex items-center gap-1"> <i class="fas fa-camera"></i> Cosas que hacer </button>
+                 <button class="flex items-center gap-1"> <i class="fas fa-utensils"></i> Restaurantes </button>
+                 <button class="flex items-center gap-1 border border-black rounded px-2 py-1 font-semibold"> <i class="fas fa-plane"></i> Vuelos </button>
+                 <button class="flex items-center gap-1"> <i class="fas fa-key"></i> Alquileres vacacionales </button>
+            </nav>
+            <form id="search-form" aria-label="Buscar vuelos" class="search-form-container mb-12" role="search" novalidate>
+                <div class="search-input-group"><i class="fas fa-plane-departure"></i><input id="origin-input" placeholder="Origen: Origen" type="text" required/></div>
+                <div class="search-input-group"><i class="fas fa-plane-arrival"></i><input id="destination-input" placeholder="Destino: Destino" type="text" required/></div>
+                <div id="date-picker-trigger" class="search-input-group cursor-pointer"><i class="fas fa-calendar-alt"></i><span id="date-range-display" class="text-gray-500">11 jun → 18 jun</span></div>
+                <div id="travelers-picker-trigger" class="search-input-group cursor-pointer">
+                    <i class="fas fa-user"></i>
+                    <span id="travelers-display">1 viajero</span>
+                    <!-- Modal de Viajeros -->
+                    <div id="travelers-modal" class="hidden">
+                        <div class="traveler-row">
+                            <div>
+                                <p class="font-semibold">Adultos</p>
+                                <p class="text-xs text-gray-500">18 años o más</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button type="button" class="counter-btn" data-type="adults" data-action="decrement">-</button>
+                                <span id="adults-count" class="font-semibold text-lg">1</span>
+                                <button type="button" class="counter-btn" data-type="adults" data-action="increment">+</button>
+                            </div>
+                        </div>
+                        <div class="traveler-row">
+                             <div>
+                                <p class="font-semibold">Niños</p>
+                                <p class="text-xs text-gray-500">0 a 17 años</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button type="button" class="counter-btn" data-type="children" data-action="decrement">-</button>
+                                <span id="children-count" class="font-semibold text-lg">0</span>
+                                <button type="button" class="counter-btn" data-type="children" data-action="increment">+</button>
+                            </div>
+                        </div>
+                        <button type="button" id="close-travelers-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
+                    </div>
+                </div>
+                <input type="hidden" id="departure-date"><input type="hidden" id="return-date">
+                <button class="search-main-button" type="submit">Buscar</button>
+            </form>
+        </section>
+
+        <!-- Contenedor de Resultados de Vuelos (inicialmente oculto) -->
+        <div id="flight-results-container" class="max-w-6xl mx-auto mt-8 hidden">
+            <h2 id="results-title" class="text-2xl font-bold mb-4"></h2>
+            <div id="flight-search-loader" class="flight-search-loader hidden"><i class="fas fa-plane"></i><p>Buscando las mejores ofertas...</p></div>
+            <div id="flight-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+        
+        <!-- Contenido Principal (se oculta al buscar) -->
+        <div id="main-content">
+            <section aria-label="Los mejores hoteles del mundo, elegidos por ti" class="relative rounded-lg overflow-hidden mb-12 max-w-[1200px] mx-auto section-hero-image">
+                <img alt="Hotel moderno con piscina y parasol blanco en terraza con montañas al fondo" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1" width="1200" height="400"/>
+                <div class="absolute inset-0 flex items-end p-6 hero-text-overlay">
+                    <div class="max-w-lg text-white drop-shadow-lg">
+                        <h2 class="font-extrabold text-xl sm:text-2xl mb-1"> Los mejores hoteles del mundo, elegidos por ti </h2>
+                        <p class="text-xs sm:text-sm max-w-md mb-3 leading-tight"> Desde complejos turísticos junto a la playa hasta los alojamientos más únicos. Consulta el mejor 1 % de hoteles, ganadores del premio Lo mejor de lo mejor de Travellers’ Choice, y guarda tus favoritos. </p>
+                        <button class="bg-white text-black rounded-full px-4 py-1 text-xs font-semibold hover:bg-gray-200 transition-colors" type="button"> Revelar ganadores </button>
+                    </div>
+                </div>
+            </section>
+            
+            <section aria-label="Recent searches" class="mb-12">
+                <h2 class="text-lg font-semibold mb-3"> Tus búsquedas recientes </h2>
+                <div class="flex items-center bg-gray-100 rounded-lg p-3 max-w-xs text-xs text-gray-700 font-semibold cursor-pointer interactive-card">
+                    <i class="fas fa-suitcase-rolling mr-3 text-gray-600 text-lg"> </i>
+                    <div>
+                        <p class="font-bold leading-tight"> Paquetes de Tokio, Japón (HND-Haneda) a Naha </p>
+                        <p class="leading-tight font-normal text-[11px] mt-0.5"> Del lun, 18 ago al jue, 21 ago </p>
+                        <p class="leading-tight font-normal text-[11px] mt-0.5"> Hotel + vuelo </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INICIO DE SECCIONES INTEGRADAS -->
+            <section aria-label="Guía para visitar Roma por segunda vez" class="bg-[#f3eaff] rounded-lg p-6 max-w-[1200px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12 interactive-card">
+                <img alt="Ruinas romanas con cielo azul y árboles verdes" class="rounded-lg w-full sm:w-[120px] h-auto object-cover flex-shrink-0" height="80" src="https://storage.googleapis.com/a1aa/image/bb820f8e-70a1-43a4-4538-bd88d493f019.jpg" width="120"/>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="font-semibold text-sm mb-1">Guía para visitar Roma por segunda vez</h3>
+                    <p class="text-xs text-gray-700 mb-2 max-w-lg">Descubre otra perspectiva de la historia, el arte y la gastronomía de la ciudad.</p>
+                </div>
+                <button class="border border-black rounded-full px-4 py-1 text-xs font-semibold whitespace-nowrap hover:bg-gray-100" type="button">Leer ahora</button>
+            </section>
+    
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                    <p class="text-sm font-semibold text-gray-900 leading-tight max-w-4xl">Es posible que los residentes en las islas Canarias, Ceuta, Melilla y las islas Baleares, así como los miembros de familias numerosas, puedan obtener un descuento en las tarifas aéreas.</p>
+                    <a class="text-sm font-semibold text-blue-900 underline mt-1 inline-block" href="https://wa.me/5804243156057">Información sobre el descuento en tarifas aéreas</a>
+                </div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-1 max-w-4xl">Descubre vuelos a destinos populares</h2>
+                <p class="text-xs text-gray-700 mb-4 max-w-4xl">Se muestran vuelos de ida y vuelta para estas fechas: <span class="font-semibold">16 jun - 18 jun</span></p>
+                <nav class="border-b border-gray-200 max-w-4xl mb-4">
+                    <ul class="flex space-x-6 text-sm font-semibold text-blue-700"><li class="border-b-2 border-blue-600 pb-2 cursor-pointer">Naha</li></ul>
+                </nav>
+                 <div class="carousel-container max-w-4xl mx-auto">
+                    <div id="flight-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        <!-- Contenido del carrusel de vuelos se llenará aquí -->
+                    </div>
+                    <button aria-label="Desplazar vuelos a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('flight-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                    <button aria-label="Desplazar vuelos a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('flight-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="text-center mb-12">
+                <h2 class="text-xl font-semibold text-gray-900 mb-3">Descubre tu nuevo alojamiento favorito</h2>
+                <div class="carousel-container max-w-[1200px] mx-auto">
+                    <div id="accommodation-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        <!-- Tarjetas de alojamiento -->
+                    </div>
+                    <button aria-label="Desplazar alojamientos a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('accommodation-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                    <button aria-label="Desplazar alojamientos a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('accommodation-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="text-center mb-12">
+                <h3 class="text-xl font-semibold text-gray-900 mb-1">Echa un vistazo a alojamientos en destinos populares</h3>
+                <p class="text-sm text-gray-500 mb-3">La media de precios corresponde al mes natural actual.</p>
+                <nav class="flex space-x-4 border-b border-gray-200 mb-4 text-sm font-semibold text-blue-700 justify-center">
+                    <button class="border-b-2 border-blue-700 pb-1">Playa</button>
+                    <button class="pb-1 opacity-70 hover:opacity-100">Cultura</button>
+                    <button class="pb-1 opacity-70 hover:opacity-100">Esquí</button>
+                    <button class="pb-1 opacity-70 hover:opacity-100">Familia</button>
+                    <button class="pb-1 opacity-70 hover:opacity-100">Bienestar y relajación</button>
+                </nav>
+                <div class="carousel-container max-w-[1200px] mx-auto">
+                    <div id="popular-accommodations-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        <!-- Tarjetas de alojamientos populares -->
+                    </div>
+                    <button aria-label="Desplazar destinos a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('popular-accommodations-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                    <button aria-label="Desplazar destinos a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('popular-accommodations-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="relative mt-8 rounded-2xl overflow-hidden mb-12">
+                <img alt="Fondo de oferta con paisaje playero" class="absolute inset-0 w-full h-full object-cover" src="https://storage.googleapis.com/a1aa/image/1ab494ab-7725-4800-b387-862b1cf98652.jpg"/>
+                <div class="relative p-6 sm:p-8 lg:p-10 offers-text-overlay">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold leading-tight max-w-xl">Las principales ofertas para ti a partir de tu búsqueda reciente</h3>
+                            <p class="text-xs font-normal mt-1">Se muestran ofertas para estas fechas: <span class="font-semibold">18 ago - 21 ago</span></p>
+                        </div>
+                        <button class="bg-white text-blue-600 text-xs font-semibold rounded-md px-3 py-1 whitespace-nowrap hover:bg-blue-50 transition" onclick="window.location.href='https://wa.me/5804243156057'">Abrir todas las ofertas</button>
+                    </div>
+                    <div class="carousel-container">
+                        <div id="offers-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                           <!-- Tarjetas de ofertas -->
+                        </div>
+                        <button aria-label="Desplazar ofertas a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('offers-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                        <button aria-label="Desplazar ofertas a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('offers-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="max-w-[1200px] mx-auto my-12">
+               <h1 class="text-xl font-semibold leading-tight mb-1">Echa un vistazo a paquetes de vacaciones en destinos populares</h1>
+                <p class="text-sm text-gray-600 mb-3 max-w-[700px]">Precios encontrados en las últimas 48 horas para dos adultos. Los precios y la disponibilidad están sujetos a cambios. <span class="font-semibold cursor-pointer hover:underline">Haz clic para actualizar los precios.</span></p>
+               <div id="vacation-packages-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <!-- Tarjetas de paquetes -->
+               </div>
+               <button class="bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded shadow hover:bg-blue-800 transition" type="button" onclick="window.location.href='https://wa.me/5804243156057'">Ver paquetes</button>
+            </section>
+
+            <!-- SECCIÓN CORREGIDA -->
+            <section class="max-w-[1200px] mx-auto my-12 text-center">
+                <h2 class="text-lg sm:text-xl md:text-2xl font-semibold leading-tight mb-1">
+                    Echa un vistazo a estos alojamientos muy especiales
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-600 mb-3 max-w-[700px] mx-auto">
+                    Se muestran ofertas para estas fechas:
+                    <span class="font-semibold">20 jun - 22 jun</span>
+                </p>
+                <div class="carousel-container">
+                    <div id="special-accommodations-carousel" class="flex space-x-3 scrollbar-hide pb-2 carousel-content-wrapper">
+                        <!-- CORRECCIÓN: Se eliminó el fondo, borde y padding de las tarjetas para que coincida con el original -->
+                        <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card cursor-pointer">
+                            <img alt="Kutsurogian" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/1b/65/30/power-up-band-key-challenge.jpg?w=1000&h=-1&s=1" width="200"/>
+                            <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">10</div>
+                            <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(10 comentarios)</p>
+                            <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">Kutsurogian</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">Minamiuonuma</p>
+                            <p class="text-sm sm:text-base font-semibold mb-0.5">811 €</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500">405 € por noche</p>
+                        </article>
+                        <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card cursor-pointer">
+                            <img alt="HOSHINOYA Tokyo" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/6c/92/dc/dotonbori.jpg?w=1000&h=-1&s=1" width="200"/>
+                            <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">9.6</div>
+                            <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(801 comentarios)</p>
+                            <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">HOSHINOYA Tokyo</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">Tokio</p>
+                            <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1">
+                                <span>1829 €</span>
+                                <span class="text-gray-500 line-through text-sm sm:text-base">2400 €</span>
+                            </p>
+                            <p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">25 % de descuento</p>
+                        </article>
+                        <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 relative text-left interactive-card cursor-pointer">
+                            <img alt="Fukiya Ryokan" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/f9/cf/75/caption.jpg?w=1000&h=-1&s=1" width="200"/>
+                            <div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>
+                            <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">10</div>
+                            <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(25 comentarios)</p>
+                            <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">Fukiya Ryokan</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">Yugawara</p>
+                            <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1">
+                                <span>2023 €</span>
+                                <span class="text-gray-500 line-through text-sm sm:text-base">2527 €</span>
+                            </p>
+                            <p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">20 % de descuento</p>
+                        </article>
+                        <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card cursor-pointer">
+                            <img alt="Ryokan Tori" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ba/0c/1b/caption.jpg?w=1000&h=-1&s=1" width="200"/>
+                            <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">10</div>
+                            <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(10 comentarios)</p>
+                            <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">Ryokan Tori</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">Kioto</p>
+                            <p class="text-sm sm:text-base font-semibold mb-0.5">538 €</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500">269 € por noche</p>
+                        </article>
+                        <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card cursor-pointer">
+                            <img alt="Yamashiro" class="rounded-lg w-full h-32 object-cover mb-1" height="120" loading="lazy" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/e2/23/e4/caption.jpg?w=1000&h=-1&s=1" width="200"/>
+                            <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">9.6</div>
+                            <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">Excepcional</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(10 comentarios)</p>
+                            <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">Yamashiro</p>
+                            <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">Nishi</p>
+                            <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1">
+                                <span>136 €</span>
+                                <span class="text-gray-500 line-through text-sm sm:text-base">182 €</span>
+                            </p>
+                            <p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">20 % de descuento</p>
+                        </article>
+                    </div>
+                    <button aria-label="Desplazar alojamientos especiales a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('special-accommodations-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                    <button aria-label="Desplazar alojamientos especiales a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('special-accommodations-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+             <section aria-label="Members discount banner" class="flex items-center space-x-4 bg-guacamayafly-orange text-white rounded-lg px-4 py-3 my-12 max-w-full">
+                <i class="fas fa-gift fa-2x flex-shrink-0"></i>
+                <p class="text-sm font-semibold flex-1 leading-tight">Los miembros ahorran al menos un 10 % en más de 100 000 hoteles de todo el mundo tras iniciar sesión.</p>
+                <button class="bg-blue-600 hover:bg-blue-700 text-xs font-semibold rounded-full px-4 py-1 whitespace-nowrap" type="button" onclick="window.location.href='https://wa.me/5804243156057'">Iniciar sesión</button>
+            </section>
+
+            <!-- CORRECCIÓN: Se ajustaron las clases del título y subtítulo para que coincidan con el original -->
+            <section class="my-12 text-center">
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Ofertas de hoteles</h3>
+                 <p class="text-xs text-gray-500 mb-3">Precios por noche, impuestos y tasas incluidos.</p>
+                <div class="carousel-container max-w-[1200px] mx-auto">
+                    <div id="hotel-deals-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        <!-- Tarjetas de ofertas de hotel -->
+                    </div>
+                     <button aria-label="Siguiente" class="carousel-nav-button right" onclick="scrollCarousel('hotel-deals-carousel', 1)"><i class="fas fa-chevron-right fa-lg"></i></button>
+                    <button aria-label="Anterior" class="carousel-nav-button left" onclick="scrollCarousel('hotel-deals-carousel', -1)"><i class="fas fa-chevron-left fa-lg"></i></button>
+                </div>
+            </section>
+            
+            <!-- CORRECCIÓN: Se ajustaron las clases del título y subtítulo para que coincidan con el original -->
+            <section class="my-12 text-center">
+                <h3 class="text-sm font-semibold text-gray-900 mb-0.5">Las mejores experiencias en Guacamayafly</h3>
+                <p class="text-xs text-gray-500 mb-4">Los mejores tours, actividades y entradas</p>
+                <div class="carousel-container max-w-[1200px] mx-auto">
+                    <div id="experiences-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        <!-- Tarjetas de experiencias -->
+                    </div>
+                    <button aria-label="Siguiente" class="carousel-nav-button right" onclick="scrollCarousel('experiences-carousel', 1)"><i class="fas fa-chevron-right fa-lg"></i></button>
+                    <button aria-label="Anterior" class="carousel-nav-button left" onclick="scrollCarousel('experiences-carousel', -1)"><i class="fas fa-chevron-left fa-lg"></i></button>
+                </div>
+            </section>
+
+            <section class="max-w-5xl mx-auto my-12 border border-gray-300 rounded-md flex flex-col sm:flex-row overflow-hidden interactive-card">
+                <img alt="Mujer usando la app de Guacamayafly en su teléfono" class="w-full sm:w-80 object-cover" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/e0/e7/df/caption.jpg?w=900&h=500&s=1" width="320"/>
+                <div class="p-4 flex flex-col justify-center flex-1">
+                    <div>
+                        <h3 class="text-base font-bold text-gray-900 mb-1">Con la app de Guacamayafly llegarás aún más lejos</h3>
+                        <p class="text-xs text-gray-700 mb-2 leading-tight">Ahorra en una selección de hoteles y llévate el doble de puntos por reservar en la app. Con las ofertas de la app, podrás ahorrar y viajar más mientras gestionas todo tu itinerario estés donde estés.</p>
+                        <p class="text-xs font-bold text-gray-900">Escanea el código QR con la cámara de tu dispositivo y descarga nuestra app.</p>
+                    </div>
+                    <div class="mt-4 sm:mt-0 flex justify-end">
+                        <img alt="Código QR para descargar la app" class="w-20 h-20" src="https://storage.googleapis.com/a1aa/image/upload/v1719868571/QRCode.svg" width="80"/>
+                    </div>
+                </div>
+            </section>
+             <!-- FIN DE SECCIONES INTEGRADAS -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 mt-12 py-10 text-xs text-blue-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-y-6 gap-x-8">
+                <div>
+                    <div class="mb-3 font-semibold">Empresa</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Quiénes somos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Empleo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Anuncia tu alojamiento</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Publicidad</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Prensa</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Búsquedas</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Viajes a España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Hoteles en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Alquileres vacacionales España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Paquetes de vacaciones baratos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Vuelos baratos en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Alquiler de coches en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Todos los alojamientos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Guacamayafly Explore</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Políticas</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Términos y condiciones generales (excepto para reservas de Vrbo)</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Términos y condiciones de Vrbo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Privacidad</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cookies</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Condiciones de uso</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Información legal/contacto</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Pautas sobre el contenido y cómo denunciar contenido</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Ayuda</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Ayuda</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cancelar un vuelo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cancelar una reserva de hotel o de un alquiler vacacional</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Plazos de reembolso</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Utilizar un cupón de Guacamayafly</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Documentos para viajes internacionales</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-[9px] text-gray-600">
+                El sitio web de Guacamayafly.es permite pagar con American Express, Diner's Club International, MasterCard, Visa, Visa Electron, CartSsi, Carte Bleue y PayPal.
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Botón de Ayuda -->
+    <button aria-label="Ayuda" class="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-full px-3 py-1 text-xs text-gray-700 shadow-md hover:bg-gray-50 flex items-center space-x-1" onclick="window.location.href='https://wa.me/5804243156057'">
+        <span>Ayuda</span>
+        <i class="fas fa-question-circle"></i>
+    </button>
+
+    <script>
+    // --- Función para controlar los carruseles ---
+    function scrollCarousel(carouselId, direction) {
+        const carousel = document.getElementById(carouselId);
+        if (!carousel) return;
+        // Scroll by the container's width for a "page-like" effect
+        const scrollAmount = carousel.clientWidth * direction;
+        carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- CONSTANTES Y VARIABLES ---
+        const loader = document.getElementById('loader');
+        const searchForm = document.getElementById('search-form');
+        const originInput = document.getElementById('origin-input');
+        const destinationInput = document.getElementById('destination-input');
+        const datePickerTrigger = document.getElementById('date-picker-trigger');
+        const dateRangeDisplay = document.getElementById('date-range-display');
+        const departureDateInput = document.getElementById('departure-date');
+        const returnDateInput = document.getElementById('return-date');
+        const mainContent = document.getElementById('main-content');
+        const flightResultsContainer = document.getElementById('flight-results-container');
+        const flightCardsContainer = document.getElementById('flight-cards-container');
+        const flightSearchLoader = document.getElementById('flight-search-loader');
+        const resultsTitle = document.getElementById('results-title');
+        
+        const calendarModal = document.getElementById('calendar-modal');
+        const calendarMonthsContainer = document.getElementById('calendar-months-container');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+        const closeCalendarBtn = document.getElementById('close-calendar-btn');
+        const clearDatesBtn = document.getElementById('clear-dates-btn');
+        
+        // --- NUEVO: Selectores para el modal de viajeros ---
+        const travelersPickerTrigger = document.getElementById('travelers-picker-trigger');
+        const travelersModal = document.getElementById('travelers-modal');
+        const closeTravelersBtn = document.getElementById('close-travelers-btn');
+        const adultsCountSpan = document.getElementById('adults-count');
+        const childrenCountSpan = document.getElementById('children-count');
+        const travelersDisplay = document.getElementById('travelers-display');
+
+        const bookingModal = document.getElementById('booking-modal');
+        const closeBookingModalBtn = document.getElementById('close-booking-modal');
+        const bookingForm = document.getElementById('booking-form');
+        const passengersContainer = document.getElementById('passengers-container');
+        const addPassengerBtn = document.getElementById('add-passenger-btn');
+        const bookingFlightSummary = document.getElementById('booking-flight-summary');
+
+        const AMADEUS_API_KEY = "RR8nKQAhAjGmKY1KHLeYpzodpPZM7z0U";
+        const AMADEUS_API_SECRET = "6UwcFznbkfFC06Ct";
+        let amadeusToken = null;
+        let tokenExpiry = null;
+        let currentFlightData = null;
+
+        let currentMonthDate = new Date();
+        let selectedDeparture = null;
+        let selectedReturn = null;
+        
+        // --- NUEVO: Variables para el contador de viajeros ---
+        let adultsCount = 1;
+        let childrenCount = 0;
+        let passengerCount = 0;
+        
+        // --- FUNCIONES ---
+
+        // Muestra una notificación emergente
+        function showNotification(message, type = 'error') {
+            const container = document.getElementById('notification-container');
+            const popup = document.createElement('div');
+            popup.className = `notification-popup ${type}`;
+            popup.textContent = message;
+            container.appendChild(popup);
+            requestAnimationFrame(() => popup.classList.add('show'));
+            setTimeout(() => {
+                popup.classList.remove('show');
+                popup.addEventListener('transitionend', () => popup.remove());
+            }, 5000);
+        }
+
+        // Obtiene el token de Amadeus
+        async function getAmadeusToken() {
+            if (amadeusToken && tokenExpiry && new Date() < tokenExpiry) return amadeusToken;
+            const url = 'https://test.api.amadeus.com/v1/security/oauth2/token';
+            const body = `grant_type=client_credentials&client_id=${AMADEUS_API_KEY}&client_secret=${AMADEUS_API_SECRET}`;
+            try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body });
+                if (!response.ok) throw new Error('No se pudo obtener el token de Amadeus.');
+                const data = await response.json();
+                amadeusToken = data.access_token;
+                tokenExpiry = new Date(new Date().getTime() + (data.expires_in * 1000));
+                return amadeusToken;
+            } catch (error) {
+                console.error("Error obteniendo token:", error);
+                showNotification("Error de autenticación con el proveedor de vuelos.");
+                return null;
+            }
+        }
+
+        // Busca vuelos usando la API de Amadeus
+        async function searchFlights(origin, destination, departureDate, returnDate, adults, children) {
+            mainContent.classList.add('hidden');
+            flightResultsContainer.classList.remove('hidden');
+            flightSearchLoader.classList.remove('hidden');
+            flightCardsContainer.innerHTML = '';
+            resultsTitle.textContent = `Vuelos de ${origin} a ${destination}`;
+
+            const token = await getAmadeusToken();
+            if (!token) {
+                flightSearchLoader.classList.add('hidden');
+                return;
+            }
+
+            let url = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${departureDate}&adults=${adults}&nonStop=false&max=10`;
+            if (returnDate) {
+                url += `&returnDate=${returnDate}`;
+            }
+            if (children > 0) {
+                url += `&children=${children}`;
+            }
+
+
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!response.ok) throw new Error(`Error en la búsqueda de vuelos: ${response.statusText}`);
+                const data = await response.json();
+                renderFlightResults(data.data, data.dictionaries);
+            } catch (error) {
+                console.error("Error en la búsqueda de vuelos:", error);
+                showNotification("No se encontraron vuelos para esta ruta o hubo un error.");
+                flightCardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron vuelos. Intenta con otra búsqueda.</p>`;
+            } finally {
+                flightSearchLoader.classList.add('hidden');
+            }
+        }
+
+        // Muestra los resultados de los vuelos
+        function renderFlightResults(flights, dictionaries) {
+            flightCardsContainer.innerHTML = '';
+            if (!flights || flights.length === 0) {
+                flightCardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron vuelos para las fechas seleccionadas.</p>`;
+                return;
+            }
+
+            flights.forEach(flight => {
+                const basePrice = parseFloat(flight.price.total);
+                const priceWithMarkup = basePrice * 1.11;
+                const finalPrice = priceWithMarkup + 85.00;
+
+                const itinerary = flight.itineraries[0];
+                const outbound = itinerary.segments[0];
+                const carrier = dictionaries.carriers[outbound.carrierCode];
+
+                const card = document.createElement('article');
+                card.className = 'border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-2">
+                            <img alt="Logo ${carrier}" class="w-6 h-6" src="https://images.kiwi.com/airlines/64/${outbound.carrierCode}.png" onerror="this.style.display='none'">
+                            <span class="text-sm font-semibold">${carrier}</span>
+                        </div>
+                        <span class="font-bold text-lg text-guacamayafly-orange">${finalPrice.toFixed(2)} €</span>
+                    </div>
+                    <div class="flex-grow my-3">
+                        <div class="flex items-center justify-between text-gray-800">
+                            <div><p class="font-bold">${new Date(outbound.departure.at).toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</p><p class="text-xs">${outbound.departure.iataCode}</p></div>
+                            <div class="text-center text-xs text-gray-500 flex-grow px-2">
+                                <p>${itinerary.duration.replace('PT','').replace('H','h ').replace('M','m')}</p>
+                                <div class="w-full h-px bg-gray-300 my-1"></div>
+                                <p>${itinerary.segments.length - 1} escala(s)</p>
+                            </div>
+                            <div><p class="font-bold text-right">${new Date(itinerary.segments[itinerary.segments.length - 1].arrival.at).toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</p><p class="text-xs text-right">${itinerary.segments[itinerary.segments.length - 1].arrival.iataCode}</p></div>
+                        </div>
+                    </div>
+                    <button class="select-flight-btn w-full mt-4 bg-guacamayafly-green text-white font-semibold py-2 rounded-full hover:bg-guacamayafly-dark-green transition">Seleccionar</button>
+                `;
+                card.querySelector('.select-flight-btn').addEventListener('click', () => {
+                    openBookingModal({ flight, finalPrice, carrier });
+                });
+                flightCardsContainer.appendChild(card);
+            });
+        }
+        
+        // Añade un formulario de pasajero
+        function addPassengerForm() {
+            passengerCount++;
+            const passengerDiv = document.createElement('div');
+            passengerDiv.className = 'passenger-form-group border-t pt-4 mt-4';
+            passengerDiv.innerHTML = `
+                <h4 class="font-semibold mb-2">Pasajero ${passengerCount}</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" placeholder="Nombre completo" class="p-2 border rounded w-full" required>
+                    <input type="number" placeholder="Edad" class="p-2 border rounded w-full" required>
+                    <input type="text" placeholder="Nº de Pasaporte" class="p-2 border rounded w-full">
+                    <input type="text" placeholder="Nº de Cédula/ID" class="p-2 border rounded w-full">
+                    <input type="tel" placeholder="Teléfono" class="p-2 border rounded w-full md:col-span-2" required>
+                </div>
+            `;
+            passengersContainer.appendChild(passengerDiv);
+        }
+
+        // Abre el modal de reserva
+        function openBookingModal(flightData) {
+            currentFlightData = flightData;
+            passengersContainer.innerHTML = ''; 
+            passengerCount = 0;
+            const totalTravelers = adultsCount + childrenCount;
+            for(let i = 0; i < totalTravelers; i++) {
+                addPassengerForm();
+            }
+            
+            const itinerary = flightData.flight.itineraries[0];
+            const departureCode = itinerary.segments[0].departure.iataCode;
+            const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
+
+            bookingFlightSummary.innerHTML = `
+                <strong>Vuelo:</strong> ${flightData.carrier} (${departureCode} → ${arrivalCode})<br>
+                <strong>Precio Final:</strong> ${flightData.finalPrice.toFixed(2)} €
+            `;
+            bookingModal.classList.remove('hidden');
+            bookingModal.classList.add('visible');
+        }
+
+        // Dibuja el calendario
+        function renderCalendar() {
+            calendarMonthsContainer.innerHTML = '';
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            for (let i = 0; i < 2; i++) {
+                const monthDate = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() + i, 1);
+                const monthEl = document.createElement('div');
+                monthEl.innerHTML = `<h4 class="font-semibold text-center mb-2">${monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4>`;
+                const gridEl = document.createElement('div');
+                gridEl.className = 'calendar-grid';
+                ['D', 'L', 'M', 'X', 'J', 'V', 'S'].forEach(day => gridEl.innerHTML += `<div class="calendar-day weekday">${day}</div>`);
+                
+                let firstDayOfMonth = monthDate.getDay();
+                for (let j = 0; j < firstDayOfMonth; j++) gridEl.appendChild(document.createElement('div'));
+
+                const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayEl = document.createElement('div');
+                    const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
+                    dayEl.className = 'calendar-day';
+                    dayEl.textContent = day;
+                    dayEl.dataset.date = dayDate.toISOString().split('T')[0];
+                    
+                    const rand = Math.random();
+                    if (rand < 0.3) dayEl.classList.add('price-cheap'); else if (rand < 0.7) dayEl.classList.add('price-medium'); else dayEl.classList.add('price-expensive');
+                    
+                    if (dayDate < today) {
+                        dayEl.classList.add('disabled');
+                    } else {
+                        dayEl.addEventListener('click', () => handleDateClick(dayDate));
+                    }
+                    gridEl.appendChild(dayEl);
+                }
+                monthEl.appendChild(gridEl);
+                calendarMonthsContainer.appendChild(monthEl);
+            }
+            updateCalendarSelection();
+        }
+
+        // Maneja el clic en una fecha
+        function handleDateClick(date) {
+            if (!selectedDeparture || (selectedDeparture && selectedReturn)) {
+                selectedDeparture = date; 
+                selectedReturn = null;
+            } else if (date < selectedDeparture) {
+                selectedDeparture = date;
+            } else {
+                selectedReturn = date;
+            }
+            updateCalendarSelection();
+        }
+
+        // Actualiza la selección visual en el calendario
+        function updateCalendarSelection() {
+            document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
+                day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
+                const dayDate = new Date(day.dataset.date + 'T00:00:00');
+                if (selectedDeparture && day.dataset.date === selectedDeparture.toISOString().split('T')[0]) day.classList.add('selected', 'range-start');
+                if (selectedReturn && day.dataset.date === selectedReturn.toISOString().split('T')[0]) day.classList.add('selected', 'range-end');
+                if (selectedDeparture && selectedReturn && dayDate > selectedDeparture && dayDate < selectedReturn) day.classList.add('in-range');
+            });
+        }
+
+        // Actualiza el texto de las fechas en la barra de búsqueda
+        function updateDateDisplay() {
+            if (selectedDeparture && selectedReturn) {
+                const depStr = selectedDeparture.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                const retStr = selectedReturn.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                dateRangeDisplay.textContent = `${depStr} → ${retStr}`;
+                dateRangeDisplay.classList.remove('text-gray-500');
+                departureDateInput.value = selectedDeparture.toISOString().split('T')[0];
+                returnDateInput.value = selectedReturn.toISOString().split('T')[0];
+            } else if (selectedDeparture) {
+                dateRangeDisplay.textContent = `Ida: ${selectedDeparture.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`;
+                departureDateInput.value = selectedDeparture.toISOString().split('T')[0]; 
+                returnDateInput.value = '';
+            } else {
+                dateRangeDisplay.textContent = 'Fechas'; 
+                dateRangeDisplay.classList.add('text-gray-500');
+                departureDateInput.value = ''; 
+                returnDateInput.value = '';
+            }
+        }
+        
+        // --- NUEVO: Funciones para el modal de viajeros ---
+        function updateTravelersDisplay() {
+            const total = adultsCount + childrenCount;
+            let text = `${total} viajero`;
+            if (total > 1) text += 's';
+            
+            let details = `${adultsCount} adulto${adultsCount > 1 ? 's' : ''}`;
+            if (childrenCount > 0) {
+                details += `, ${childrenCount} niño${childrenCount > 1 ? 's' : ''}`;
+            }
+            travelersDisplay.textContent = details;
+        }
+
+        function handleCounterClick(e) {
+            const button = e.target.closest('.counter-btn');
+            if (!button) return;
+
+            const type = button.dataset.type;
+            const action = button.dataset.action;
+
+            if (type === 'adults') {
+                if (action === 'increment') {
+                    adultsCount++;
+                } else if (action === 'decrement' && adultsCount > 1) {
+                    adultsCount--;
+                }
+            } else if (type === 'children') {
+                if (action === 'increment') {
+                    childrenCount++;
+                } else if (action === 'decrement' && childrenCount > 0) {
+                    childrenCount--;
+                }
+            }
+            adultsCountSpan.textContent = adultsCount;
+            childrenCountSpan.textContent = childrenCount;
+            
+            // Disable/Enable buttons
+            document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = adultsCount <= 1;
+            document.querySelector('[data-type="children"][data-action="decrement"]').disabled = childrenCount <= 0;
+
+            updateTravelersDisplay();
+        }
+
+
+        // --- INICIALIZACIÓN Y DATOS ESTÁTICOS ---
+        function populateCarousels() {
+            const flightCarousel = document.getElementById('flight-carousel');
+            const accommodationCarousel = document.getElementById('accommodation-carousel');
+            const popularAccommodationsCarousel = document.getElementById('popular-accommodations-carousel');
+            const offersCarousel = document.getElementById('offers-carousel');
+            const vacationPackagesGrid = document.getElementById('vacation-packages-grid');
+            const specialAccommodationsCarousel = document.getElementById('special-accommodations-carousel');
+            const hotelDealsCarousel = document.getElementById('hotel-deals-carousel');
+            const experiencesCarousel = document.getElementById('experiences-carousel');
+
+            // Datos para los carruseles (extraídos de guacamayareparador.html)
+            const flights = [
+                { airline: 'Japan Airlines', stops: 'Sin escalas', from: 'Tokio (HND)', to: 'Naha (OKA)', time1: '06:30 - 09:10', time2: '07:20 - 09:45', price: '323 €' },
+                { airline: 'Japan Airlines', stops: 'Sin escalas', from: 'Tokio (HND)', to: 'Naha (OKA)', time1: '06:30 - 09:10', time2: '10:05 - 12:30', price: '323 €' },
+                { airline: 'Japan Airlines', stops: 'Sin escalas', from: 'Tokio (HND)', to: 'Naha (OKA)', time1: '06:30 - 09:10', time2: '12:10 - 14:35', price: '323 €' },
+                { airline: 'Japan Airlines', stops: 'Sin escalas', from: 'Tokio (HND)', to: 'Naha (OKA)', time1: '06:30 - 09:10', time2: '12:35 - 15:00', price: '323 €' },
+                { airline: 'Japan Airlines', stops: 'Sin escalas', from: 'Tokio (HND)', to: 'Naha (OKA)', time1: '06:30 - 09:10', time2: '13:45 - 16:10', price: '323 €' },
+                { airline: 'ANA', stops: '1 escala', from: 'Osaka (KIX)', to: 'Naha (OKA)', time1: '08:00 - 11:30', time2: '14:00 - 17:30', price: '280 €' },
+                { airline: 'Japan Airlines', stops: '1 escala', from: 'Sapporo (CTS)', to: 'Naha (OKA)', time1: '09:00 - 13:00', time2: '15:00 - 19:00', price: '450 €' },
+            ];
+
+            const accommodations = [
+                { name: 'Spa', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/34/b0/15/masaje-sultan-el-mitico.jpg?w=1000&h=-1&s=1' },
+                { name: 'Igloo', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1' },
+                { name: 'Bungalow', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/11/8c/6f/caption.jpg?w=900&h=-1&s=1' },
+                { name: 'Chalet', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' },
+                { name: 'Apartotel', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' },
+                { name: 'Casa barco', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/22/03/4d/09/exterior-at-dusk.jpg?w=1000&h=-1&s=1' },
+                { name: 'Granja', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/c9/9c/ce/caption.jpg?w=1000&h=-1&s=1' },
+                { name: 'Cabaña', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/25/04/82/a7/hotel-huinid-bustillo.jpg?w=1000&h=-1&s=1' },
+                { name: 'Castillo', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/12/74/70/c6.jpg' },
+                { name: 'Villa', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/52/5d/8b/villa-lucia-principal.jpg?w=1000&h=-1&s=1' },
+                { name: 'Hostal', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/62/39/1c/hostal-providencia.jpg?w=1000&h=-1&s=1' },
+            ];
+            
+            const popularAccommodations = [
+                { name: 'Honolulu', location: 'Hawái, Estados Unidos', price: '335 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/0e/0a/6c/caption.jpg?w=1400&h=500&s=1' },
+                { name: 'Venecia', location: 'Véneto, Italia', price: '180 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=700&h=400&s=1' },
+                { name: 'Alpes Suizos', location: 'Suiza', price: '300 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1' },
+                { name: 'Bangkok', location: 'Bangkok (provincia), Tailandia', price: '69 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1' },
+                { name: 'Isla Miyako', location: 'Okinawa (prefectura), Japón', price: '250 €', img: 'https://storage.googleapis.com/a1aa/image/8cdec684-21e3-4971-6e27-636ec6508214.jpg' },
+                { name: 'Maldivas', location: 'Maldivas', price: '500 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=700&h=400&s=1' },
+                { name: 'Busan', location: 'Busan, Corea del Sur', price: '67 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/88/a2/4a/caption.jpg?w=1400&h=500&s=1' },
+                { name: 'Isla Ishigaki', location: 'Okinawa (prefectura), Japón', price: '127 €', img: 'https://storage.googleapis.com/a1aa/image/dde3cf65-ea4d-4f60-ac69-575fe9145901.jpg' },
+            ];
+
+            const offers = [
+                { name: 'Ocean Palace Beach Resort & Bungalows', location: 'Italia', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/f2/69/4b/ocean-palace-beach-resort.jpg?w=1000&h=-1&s=1' },
+                { name: 'LACER OKINAWA NAHA MIEBASHI', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '530 €', priceNew: '424 €', perNight: '341 € por noche', discount: '20 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/91/a8/cc/hurawalhi-58-undersea.jpg?w=900&h=500&s=1' },
+                { name: 'Daikichi Okinawa', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '372 €', priceNew: '312 €', perNight: '104 € por noche', discount: '16 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/06/5e/16/romantic-getaway-to-vista.jpg?w=1000&h=-1&s=1' },
+                { name: 'Hotel Playa Sol', location: 'Naha', rating: '9.0', reviewText: 'Increíble', reviews: '50', priceOld: '250 €', priceNew: '200 €', perNight: '100 € por noche', discount: '20 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/e1/66/64/looking-out-over-the.jpg?w=900&h=500&s=1' },
+            ];
+
+            const packages = [
+                { name: 'Prince Smart Inn Naha', stars: '3', rating: '9.2/10 Increíble (752)', flight: 'Tokio (HND) - Naha (OKA)', save: '79 €', priceNew: '311', priceOld: '390', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg' },
+                { name: 'HOTEL ANTEROOM Naha', stars: '4', rating: '9.2/10 Increíble (497)', flight: 'Tokio (HND) - Naha (OKA)', save: '89 €', priceNew: '360', priceOld: '449', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg' },
+                { name: 'Rembrandt Style Naha', stars: '3', rating: '8.8/10 Excelente (46)', flight: 'Tokio (HND) - Naha (OKA)', save: '75 €', priceNew: '323', priceOld: '398', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg' },
+                { name: 'Hotel Gracery Naha', stars: '4', rating: '9/10 Increíble (1.000)', flight: 'Tokio (HND) - Naha (OKA)', save: '194 €', priceNew: '500', priceOld: '694', dates: 'De mar., 17 jun al dom., 18 jun (1 noche)', updated: 'hace 47 horas', img: 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg' },
+            ];
+
+            const specialAccommodations = [
+                { name: 'Kutsurogian', location: 'Minamiuonuma', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '811 €', perNight: '405 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/1b/65/30/power-up-band-key-challenge.jpg?w=1000&h=-1&s=1' },
+                { name: 'HOSHINOYA Tokyo', location: 'Tokio', rating: '9.6', reviewText: 'Excepcional', reviews: '801', price: '1829 €', priceOld: '2400 €', discount: '25 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/6c/92/dc/dotonbori.jpg?w=1000&h=-1&s=1' },
+                { name: 'Fukiya Ryokan', location: 'Yugawara', rating: '10', reviewText: 'Excepcional', reviews: '25', price: '2023 €', priceOld: '2527 €', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/f9/cf/75/caption.jpg?w=1000&h=-1&s=1' },
+                { name: 'Ryokan Tori', location: 'Kioto', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '538 €', perNight: '269 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ba/0c/1b/caption.jpg?w=1000&h=-1&s=1' },
+            ];
+            
+            const experiences = [
+                { name: 'Visita guiada a la Torre Eiffel en ascensor con cumbre opcional', rating: '4,4', reviews: '4554', price: '35 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/15/1b/d2/8d.jpg', tag: null },
+                { name: 'Entrada al museo Leonardo da Vinci', rating: '4,4', reviews: '116', price: '10 €', img: 'https://storage.googleapis.com/a1aa/image/b62daa48-69b3-47ef-2330-e180fe9709a4.jpg', tag: 'LO MÁS RESERVADO' },
+                { name: 'Crucero en barco clásico por Amsterdam con guía en directo, bebidas y queso', rating: '4,9', reviews: '26.903', price: '22 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/15/70/fa/81.jpg', tag: 'LO MÁS RESERVADO' },
+                { name: 'Avistamiento de delfines y cuevas de Benagil desde Albufeira', rating: '4,9', reviews: '3167', price: '28 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/a6/b0/d9.jpg', tag: 'SE AGOTA RÁPIDO' },
+            ];
+
+            const hotelDeals = [
+                { name: 'The Naha Terrace', location: 'Naha', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' },
+                { name: 'LACER OKINAWA NAHA MIEBASHI', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '530 €', priceNew: '424 €', perNight: '341 € por noche', discount: '20 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg' },
+                { name: 'Daikichi Okinawa', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '372 €', priceNew: '312 €', perNight: '104 € por noche', discount: '16 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg' },
+                { name: 'Hotel Playa Sol', location: 'Naha', rating: '9.0', reviewText: 'Increíble', reviews: '50', priceOld: '250 €', priceNew: '200 €', perNight: '100 € por noche', discount: '20 % de descuento', vip: false, img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/06/70/25/b4.jpg' },
+            ];
+
+            // Llenar carruseles
+            if (flightCarousel) flightCarousel.innerHTML = flights.map(f => `
+                <li class="border border-gray-200 rounded-lg p-3 w-56 flex-shrink-0 bg-white interactive-card cursor-pointer">
+                    <div class="flex items-center space-x-1 mb-1">
+                        <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg"/>
+                        <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span>
+                    </div>
+                    <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.from}<span class="text-gray-500"> → </span>${f.to}</p>
+                    <p class="text-xs text-gray-600 mb-3">${f.time1}</p>
+                    <hr class="border-gray-200 mb-3"/>
+                    <div class="flex items-center space-x-1 mb-1">
+                        <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg"/>
+                        <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span>
+                    </div>
+                    <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.to}<span class="text-gray-500"> → </span>${f.from}</p>
+                    <p class="text-xs text-gray-600">${f.time2}</p>
+                    <p class="text-sm font-semibold text-gray-900 mt-3">${f.price}</p>
+                    <p class="text-xs text-gray-600">Ida y vuelta por persona</p>
+                </li>`).join('');
+
+            if (accommodationCarousel) accommodationCarousel.innerHTML = accommodations.map(item => `
+                <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card">
+                    <img alt="${item.name}" class="w-full h-40 object-cover rounded-lg" src="${item.img}" width="160" height="160"/>
+                    <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p>
+                </div>`).join('');
+
+            if (popularAccommodationsCarousel) popularAccommodationsCarousel.innerHTML = popularAccommodations.map(item => `
+                <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card">
+                    <img alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" src="${item.img}" width="192" height="120"/>
+                    <div class="p-2 text-left">
+                        <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4>
+                        <p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p>
+                        <p class="text-[9px] text-gray-600 font-semibold">${item.price}</p>
+                        <p class="text-[8px] text-gray-400">precio medio por noche</p>
+                    </div>
+                </div>`).join('');
+
+            if (offersCarousel) offersCarousel.innerHTML = offers.map(o => `
+                <div class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 cursor-pointer interactive-card">
+                    <div class="relative rounded-lg overflow-hidden mb-2">
+                        <img alt="${o.name}" class="w-full h-32 object-cover rounded-lg" src="${o.img}"/>
+                        ${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
+                    </div>
+                    <p class="text-[9px] font-semibold mb-0.5">${o.location}</p>
+                    <h4 class="text-xs font-semibold leading-tight mb-1">${o.name}</h4>
+                    <div class="flex items-center space-x-1 mb-1">
+                        <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${o.rating}</span>
+                        <span class="text-[9px] font-normal">${o.reviewText}</span>
+                        <span class="text-[9px] font-normal opacity-50">(${o.reviews} comentarios)</span>
+                    </div>
+                    <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${o.priceOld}</div>
+                    <div class="text-xs font-bold mb-0.5">${o.priceNew}</div>
+                    <div class="text-[9px] font-normal opacity-80 mb-1">${o.perNight}</div>
+                    <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div>
+                    <div class="member-price-tag mt-2">Precio para miembros disponible</div>
+                </div>`).join('');
+
+            if (vacationPackagesGrid) vacationPackagesGrid.innerHTML = packages.map(p => `
+                 <article class="border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card cursor-pointer">
+                     <img alt="${p.name}" class="w-full h-44 object-cover" src="${p.img}" height="200" width="400"/>
+                     <div class="p-3 text-xs sm:text-sm text-left">
+                      <h2 class="font-semibold mb-1 leading-tight">${p.name} + vuelo Naha</h2>
+                      <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">${'<i class="fas fa-star text-yellow-400"></i>'.repeat(parseInt(p.stars))}<span> ${p.stars} estrellas · ${p.rating}</span></div>
+                      <div class="text-gray-600 text-[9px] sm:text-xs mb-2"><i class="fas fa-plane-departure"></i> ${p.flight}</div>
+                      <div class="bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded mb-1 inline-block"><i class="fas fa-tag mr-1"></i>Ahorra ${p.save} con un paquete</div>
+                      <div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div>
+                      <div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div>
+                     </div>
+                </article>`).join('');
+            
+            // CORRECCIÓN: Se eliminaron las clases de fondo, borde y padding para que coincida con el diseño original.
+            if (specialAccommodationsCarousel) specialAccommodationsCarousel.innerHTML = specialAccommodations.map(s => `
+                <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card cursor-pointer">
+                    <img alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1" src="${s.img}"/>
+                    ${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''}
+                    <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div>
+                    <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">${s.reviewText}</p>
+                    <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(${s.reviews} comentarios)</p>
+                    <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">${s.name}</p>
+                    <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">${s.location}</p>
+                    <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1">
+                        <span>${s.price}</span>
+                        ${s.priceOld ? `<span class="text-gray-500 line-through text-sm sm:text-base">${s.priceOld}</span>` : ''}
+                    </p>
+                    ${s.perNight ? `<p class="text-[8px] sm:text-[9px] text-gray-500">${s.perNight}</p>` : ''}
+                    ${s.discount ? `<p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">${s.discount}</p>` : ''}
+                </article>`).join('');
+
+            if (experiencesCarousel) experiencesCarousel.innerHTML = experiences.map(item => `
+                <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card cursor-pointer">
+                    <div class="relative">
+                        <img alt="${item.name}" class="w-full h-36 object-cover" src="${item.img}" height="128" width="192">
+                        <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button>
+                    </div>
+                    <div class="p-2 text-xs leading-tight">
+                        ${item.tag ? `<div class="inline-block bg-gray-200 text-gray-700 text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase mb-1">${item.tag}</div>` : ''}
+                        <p class="font-semibold text-gray-900 truncate">${item.name}</p>
+                        <div class="flex items-center space-x-1 mt-1">
+                            <span class="text-green-600 font-semibold text-xs">${item.rating}</span>
+                            <div class="flex space-x-0.5"><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-gray-300 text-[6px]"></i></div>
+                            <span class="text-gray-500">(${item.reviews})</span>
+                        </div>
+                        <p class="text-gray-400 text-[9px] mt-0.5">a partir de ${item.price} por adulto</p>
+                    </div>
+                </article>`).join('');
+
+            // CORRECCIÓN: Se eliminaron las clases de sombra adicionales para que coincida con el original.
+            if (hotelDealsCarousel) hotelDealsCarousel.innerHTML = hotelDeals.map(h => `
+                 <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card cursor-pointer">
+                    <div class="relative">
+                        <img alt="${h.name}" class="w-full h-36 object-cover" src="${h.img}">
+                         ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
+                        <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button>
+                    </div>
+                    <div class="p-2 text-xs leading-tight">
+                        <p class="text-[9px] font-semibold mb-0.5">${h.location}</p>
+                        <h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4>
+                        <div class="flex items-center space-x-1 mb-1">
+                            <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span>
+                            <span class="text-[9px] font-normal">${h.reviewText}</span>
+                            <span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span>
+                        </div>
+                        <p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p>
+                        <p class="text-xs font-bold mb-0.5">${h.priceNew}</p>
+                        <p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p>
+                        <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div>
+                        <div class="member-price-tag mt-2">Precio para miembros disponible</div>
+                    </div>
+                </article>`).join('');
+        }
+
+
+        // --- INICIALIZACIÓN Y EVENT LISTENERS ---
+
+        // Ocultar loader al cargar la página
+        if (loader) {
+            loader.classList.add('hidden');
+            loader.addEventListener('transitionend', () => loader.remove());
+        }
+
+        // Llenar carruseles con datos
+        populateCarousels();
+
+        // Búsqueda de vuelos
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const origin = originInput.value.trim().toUpperCase();
+            const destination = destinationInput.value.trim().toUpperCase();
+            const departure = departureDateInput.value;
+            const returnD = returnDateInput.value;
+
+            if (!origin || !destination || !departure) {
+                showNotification('Por favor, completa origen, destino y fecha de ida.');
+                return;
+            }
+            searchFlights(origin, destination, departure, returnD, adultsCount, childrenCount);
+        });
+
+        // Modal de Calendario
+        datePickerTrigger.addEventListener('click', () => { calendarModal.classList.remove('hidden'); calendarModal.classList.add('visible'); renderCalendar(); });
+        closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); updateDateDisplay(); });
+        clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendar(); updateDateDisplay(); });
+        prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
+        nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
+        
+        // --- NUEVO: Listeners para el modal de viajeros ---
+        travelersPickerTrigger.addEventListener('click', (e) => {
+            // Evita que el clic en el modal lo cierre inmediatamente
+            if (!travelersModal.contains(e.target)) {
+                travelersModal.classList.toggle('hidden');
+                travelersModal.classList.toggle('visible');
+            }
+        });
+
+        closeTravelersBtn.addEventListener('click', () => {
+            travelersModal.classList.add('hidden');
+            travelersModal.classList.remove('visible');
+        });
+        
+        travelersModal.addEventListener('click', handleCounterClick);
+
+
+        // Modal de Reserva
+        addPassengerBtn.addEventListener('click', addPassengerForm);
+        closeBookingModalBtn.addEventListener('click', () => { bookingModal.classList.remove('visible'); bookingModal.classList.add('hidden'); });
+
+        bookingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let message = `¡Hola! Quisiera concretar la reserva para el siguiente vuelo:\n\n`;
+            message += `*Vuelo:* ${currentFlightData.carrier} (${currentFlightData.flight.itineraries[0].segments[0].departure.iataCode} → ${currentFlightData.flight.itineraries[0].segments[currentFlightData.flight.itineraries[0].segments.length - 1].arrival.iataCode})\n`;
+            message += `*Precio Total:* ${currentFlightData.finalPrice.toFixed(2)} €\n\n`;
+            message += `*Datos de los Pasajeros:*\n`;
+
+            const passengerForms = document.querySelectorAll('.passenger-form-group');
+            let formIsValid = true;
+            passengerForms.forEach((form, index) => {
+                const inputs = form.querySelectorAll('input');
+                if (!inputs[0].value || !inputs[1].value || !inputs[4].value) {
+                    formIsValid = false;
+                }
+                message += `\n*Pasajero ${index + 1}:*\n`;
+                message += `- Nombre: ${inputs[0].value}\n`;
+                message += `- Edad: ${inputs[1].value}\n`;
+                message += `- Pasaporte: ${inputs[2].value || 'N/A'}\n`;
+                message += `- Cédula/ID: ${inputs[3].value || 'N/A'}\n`;
+                message += `- Teléfono: ${inputs[4].value}\n`;
+            });
+
+            if (!formIsValid) {
+                showNotification('Por favor, completa nombre, edad y teléfono para todos los pasajeros.');
+                return;
+            }
+
+            const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+        
+        // Cierra el modal de viajeros si se hace clic fuera
+        document.addEventListener('click', function(event) {
+            if (!travelersPickerTrigger.contains(event.target) && !travelersModal.contains(event.target)) {
+                travelersModal.classList.add('hidden');
+                travelersModal.classList.remove('visible');
+            }
+        });
+
+        // Inicializar el display de viajeros
+        updateTravelersDisplay();
+        document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = true;
+        document.querySelector('[data-type="children"][data-action="decrement"]').disabled = true;
+
+    });
+    </script>
+</body>
+</html>
