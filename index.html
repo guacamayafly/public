@@ -128,10 +128,10 @@
         #notification-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
         .notification-popup { background-color: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.5s ease-in-out; margin-top: 10px; }
         .notification-popup.show { transform: translateX(0); }
-        #calendar-modal, #booking-modal { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        #calendar-modal.visible, #booking-modal.visible { opacity: 1; pointer-events: auto; }
+        #calendar-modal, #booking-modal, #hotel-card-booking-modal { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        #calendar-modal.visible, #booking-modal.visible, #hotel-card-booking-modal.visible { opacity: 1; pointer-events: auto; }
         .modal-container { background-color: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 700px; transform: scale(0.95); transition: transform 0.3s ease; }
-        #calendar-modal.visible .modal-container, #booking-modal.visible .modal-container { transform: scale(1); }
+        #calendar-modal.visible .modal-container, #booking-modal.visible .modal-container, #hotel-card-booking-modal.visible .modal-container { transform: scale(1); }
         
         /* Modal de Viajeros y Equipaje */
         .popover-modal {
@@ -263,7 +263,7 @@
     <!-- Modal del Calendario -->
     <div id="calendar-modal" class="hidden"><div class="modal-container"><div class="calendar-header"><button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button><h3 class="font-semibold text-lg">Selecciona tus fechas</h3><button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button></div><div class="calendar-months" id="calendar-months-container"></div><div class="flex justify-end mt-4 gap-4"><button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button><button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button></div></div></div>
     
-    <!-- Modal de Reserva -->
+    <!-- Modal de Reserva de Vuelo -->
     <div id="booking-modal" class="hidden">
         <div class="modal-container max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
@@ -280,6 +280,65 @@
             </form>
         </div>
     </div>
+
+    <!-- NUEVO: Modal de Reserva de Hotel desde Tarjeta -->
+    <div id="hotel-card-booking-modal" class="hidden">
+        <div class="modal-container max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="hotel-modal-title" class="font-semibold text-lg">Reservar Hotel</h3>
+                <button id="close-hotel-modal-btn" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+            </div>
+            <img id="hotel-modal-img" src="" alt="Imagen del hotel" class="w-full h-48 object-cover rounded-lg mb-4">
+            <form id="hotel-modal-form">
+                <!-- Fechas -->
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="hotel-modal-checkin" class="block text-sm font-medium text-gray-700">Check-in</label>
+                        <input type="date" id="hotel-modal-checkin" class="mt-1 p-2 border rounded w-full">
+                    </div>
+                    <div>
+                        <label for="hotel-modal-checkout" class="block text-sm font-medium text-gray-700">Check-out</label>
+                        <input type="date" id="hotel-modal-checkout" class="mt-1 p-2 border rounded w-full">
+                    </div>
+                </div>
+
+                <!-- Pasajeros -->
+                <div class="mb-4">
+                     <label class="block text-sm font-medium text-gray-700">Pasajeros</label>
+                     <div class="flex items-center justify-between p-2 border rounded mt-1">
+                         <span>Adultos</span>
+                         <div class="flex items-center gap-4">
+                            <button type="button" class="counter-btn" data-type="hotel-adults" data-action="decrement">-</button>
+                            <span id="hotel-modal-adults-count" class="font-semibold text-lg">1</span>
+                            <button type="button" class="counter-btn" data-type="hotel-adults" data-action="increment">+</button>
+                        </div>
+                     </div>
+                </div>
+
+                <!-- Tipo de Cama -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Tipo de Cama</label>
+                    <div class="flex gap-4 mt-1">
+                        <label class="flex items-center">
+                            <input type="radio" name="bed-type" value="Individual" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
+                            <span class="ml-2 text-sm text-gray-700">Individual</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="bed-type" value="Matrimonial" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="ml-2 text-sm text-gray-700">Matrimonial</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="hotel-modal-name">
+
+                <button type="submit" class="w-full bg-guacamayafly-orange text-white font-bold py-3 px-4 rounded-lg hover:bg-guacamayafly-dark-orange transition-colors">
+                    <i class="fab fa-whatsapp mr-2"></i>Reservar por WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Header -->
     <header class="flex items-center justify-between px-6 py-4 max-w-[1200px] mx-auto">
@@ -1382,13 +1441,13 @@
                 </li>`).join('');
 
             if (accommodationCarousel) accommodationCarousel.innerHTML = baseAccommodations.map(item => `
-                <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card" onclick="handleCardBooking('Alojamiento', '${item.name}', 'Consultar disponibilidad')">
+                <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card" onclick="openHotelBookingModal('${item.name.replace(/'/g, '\\\'')}', '${item.img}')">
                     <img alt="${item.name}" class="w-full h-40 object-cover rounded-lg" src="${item.img}" width="160" height="160"/>
                     <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p>
                 </div>`).join('');
 
             if (popularAccommodationsCarousel) popularAccommodationsCarousel.innerHTML = basePopularAccommodations.map(item => `
-                <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card" onclick="handleCardBooking('Alojamiento Popular', '${item.name}', 'Precio medio ${item.price}')">
+                <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card" onclick="openHotelBookingModal('${item.name.replace(/'/g, '\\\'')}', '${item.img}')">
                     <img alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" src="${item.img}" width="192" height="120"/>
                     <div class="p-2 text-left">
                         <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4>
@@ -1399,7 +1458,7 @@
                 </div>`).join('');
 
             if (offersCarousel) offersCarousel.innerHTML = baseOffers.map(o => `
-                <div class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 interactive-card flex flex-col">
+                <div class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${o.name.replace(/'/g, '\\\'')}', '${o.img}')">
                     <div class="relative rounded-lg overflow-hidden mb-2">
                         <img alt="${o.name}" class="w-full h-32 object-cover rounded-lg" src="${o.img}"/>
                         ${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
@@ -1418,11 +1477,10 @@
                         <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div>
                         <div class="member-price-tag mt-2">Precio para miembros disponible</div>
                     </div>
-                    <button class="w-full mt-3 bg-guacamayafly-green text-white font-semibold py-1.5 rounded-full hover:bg-guacamayafly-dark-green transition text-xs" onclick="handleCardBooking('Oferta de Hotel', '${o.name.replace(/'/g, '\\\'')}', 'Precio ${o.priceNew}')">Ver oferta</button>
                 </div>`).join('');
 
             if (vacationPackagesCarousel) vacationPackagesCarousel.innerHTML = basePackages.map(p => `
-                 <article class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card flex flex-col">
+                 <article class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${p.name.replace(/'/g, '\\\'')}', '${p.img}')">
                      <img alt="${p.name}" class="w-full h-44 object-cover" src="${p.img}" height="200" width="400"/>
                      <div class="p-3 text-xs sm:text-sm text-left flex-grow flex flex-col">
                         <div class="flex-grow">
@@ -1433,12 +1491,11 @@
                             <div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div>
                             <div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div>
                         </div>
-                        <button class="w-full mt-3 bg-guacamayafly-green text-white font-semibold py-1.5 rounded-full hover:bg-guacamayafly-dark-green transition text-xs" onclick="handleCardBooking('Paquete Vacacional', '${p.name.replace(/'/g, '\\\'')}', 'Precio ${p.priceNew}€, Vuelo: ${p.flight}')">Reservar Paquete</button>
                      </div>
                 </article>`).join('');
             
             if (specialAccommodationsCarousel) specialAccommodationsCarousel.innerHTML = baseSpecialAccommodations.map(s => `
-                <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card" onclick="handleCardBooking('Alojamiento Especial', '${s.name.replace(/'/g, '\\\'')}', 'Precio ${s.price}')">
+                <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card" onclick="openHotelBookingModal('${s.name.replace(/'/g, '\\\'')}', '${s.img}')">
                     <img alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1" src="${s.img}"/>
                     ${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''}
                     <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div>
@@ -1476,7 +1533,7 @@
                 </article>`).join('');
 
             if (hotelDealsCarousel) hotelDealsCarousel.innerHTML = baseHotelDeals.map(h => `
-                 <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col">
+                 <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${h.name.replace(/'/g, '\\\'')}', '${h.img}')">
                     <div class="relative">
                         <img alt="${h.name}" class="w-full h-36 object-cover" src="${h.img}">
                          ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
@@ -1497,7 +1554,6 @@
                             <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div>
                             <div class="member-price-tag mt-2">Precio para miembros disponible</div>
                         </div>
-                        <button class="w-full mt-2 bg-guacamayafly-green text-white font-semibold py-1.5 rounded-full hover:bg-guacamayafly-dark-green transition text-xs" onclick="handleCardBooking('Oferta de Hotel', '${h.name.replace(/'/g, '\\\'')}', 'Precio ${h.priceNew}')">Ver oferta</button>
                     </div>
                 </article>`).join('');
         }
@@ -1701,8 +1757,103 @@
             goToSlide(0);
             startSlider();
         }
+        
+        // --- Hotel Card Booking Modal Logic ---
+        const hotelCardBookingModal = document.getElementById('hotel-card-booking-modal');
+        const closeHotelModalBtn = document.getElementById('close-hotel-modal-btn');
+        const hotelModalForm = document.getElementById('hotel-modal-form');
+        const hotelModalTitle = document.getElementById('hotel-modal-title');
+        const hotelModalImg = document.getElementById('hotel-modal-img');
+        const hotelModalNameInput = document.getElementById('hotel-modal-name');
+        const hotelModalAdultsCountSpan = document.getElementById('hotel-modal-adults-count');
+        let hotelModalAdults = 1;
+
+        window.openHotelBookingModal = (name, image) => {
+            hotelModalTitle.textContent = `Reservar: ${name}`;
+            hotelModalImg.src = image;
+            hotelModalNameInput.value = name;
+            
+            // Reset form
+            hotelModalForm.reset();
+            hotelModalAdults = 1;
+            hotelModalAdultsCountSpan.textContent = hotelModalAdults;
+            const decrementBtn = hotelModalForm.querySelector('[data-type="hotel-adults"][data-action="decrement"]');
+            if(decrementBtn) decrementBtn.disabled = true;
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('hotel-modal-checkin').setAttribute('min', today);
+            document.getElementById('hotel-modal-checkout').setAttribute('min', today);
+            
+            hotelCardBookingModal.classList.remove('hidden');
+            hotelCardBookingModal.classList.add('visible');
+        };
+
+        if(closeHotelModalBtn) {
+            closeHotelModalBtn.addEventListener('click', () => {
+                hotelCardBookingModal.classList.add('hidden');
+                hotelCardBookingModal.classList.remove('visible');
+            });
+        }
+
+        if(hotelModalForm) {
+            hotelModalForm.addEventListener('click', (e) => {
+                const button = e.target.closest('.counter-btn');
+                if (!button) return;
+                
+                const type = button.dataset.type;
+                const action = button.dataset.action;
+
+                if(type === 'hotel-adults') {
+                    if (action === 'increment') {
+                        hotelModalAdults++;
+                    } else if (action === 'decrement' && hotelModalAdults > 1) {
+                        hotelModalAdults--;
+                    }
+                    hotelModalAdultsCountSpan.textContent = hotelModalAdults;
+                    button.parentElement.querySelector('[data-action="decrement"]').disabled = hotelModalAdults <= 1;
+                }
+            });
+
+            hotelModalForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const hotelName = hotelModalNameInput.value;
+                const checkin = document.getElementById('hotel-modal-checkin').value;
+                const checkout = document.getElementById('hotel-modal-checkout').value;
+                const adults = hotelModalAdults;
+                const bedType = hotelModalForm.querySelector('input[name="bed-type"]:checked').value;
+
+                if (!checkin || !checkout) {
+                    showNotification('Por favor, selecciona las fechas de check-in y check-out.');
+                    return;
+                }
+
+                let message = `¡Hola! Quisiera solicitar una reserva para el siguiente hotel:\n\n`;
+                message += `*Hotel:* ${hotelName}\n`;
+                message += `*Check-in:* ${checkin}\n`;
+                message += `*Check-out:* ${checkout}\n`;
+                message += `*Pasajeros:* ${adults} adulto(s)\n`;
+                message += `*Tipo de Cama:* ${bedType}\n\n`;
+                message += `Por favor, confírmenme la disponibilidad y el precio final. ¡Gracias!`;
+                
+                const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+                
+                hotelCardBookingModal.classList.add('hidden');
+                hotelCardBookingModal.classList.remove('visible');
+            });
+        }
+        
+        const checkinInput = document.getElementById('hotel-modal-checkin');
+        if(checkinInput) {
+            checkinInput.addEventListener('change', (e) => {
+                const checkinDate = e.target.value;
+                document.getElementById('hotel-modal-checkout').setAttribute('min', checkinDate);
+            });
+        }
+
 
     });
     </script>
 </body>
 </html>
+" selected, I'd like you to please change the background color of the search bar to a light gray, specifically #f2f2
