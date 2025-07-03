@@ -285,7 +285,7 @@
     <header class="flex items-center justify-between px-6 py-4 max-w-[1200px] mx-auto">
         <div class="flex items-center space-x-2">
             <img alt="Logo UACAMAYAFLY" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
-            <span class="font-extrabold text-lg select-none text-guacamayafly-orange">UACAMAYAFLY</span>
+            <span class="font-extrabold text-lg select-none text-guacamayafly-orange">UACAMAYA</span>
         </div>
         <nav class="hidden sm:flex space-x-6 text-sm font-normal text-black">
             <a class="hover:underline" href="https://wa.me/5804243156057">Descubrir</a>
@@ -366,7 +366,10 @@
 
         <!-- Contenedor de Resultados -->
         <div id="results-container" class="max-w-6xl mx-auto mt-8 hidden">
-            <h2 id="results-title" class="text-2xl font-bold mb-4"></h2>
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="results-title" class="text-2xl font-bold"></h2>
+                <button id="clear-search-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar Búsqueda</button>
+            </div>
             <div id="search-loader" class="flight-search-loader hidden"><i class="fas fa-spinner fa-spin"></i><p>Buscando las mejores ofertas...</p></div>
             <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
@@ -647,6 +650,7 @@
         const cardsContainer = document.getElementById('cards-container');
         const searchLoader = document.getElementById('search-loader');
         const resultsTitle = document.getElementById('results-title');
+        const clearSearchBtn = document.getElementById('clear-search-btn');
         
         const calendarModal = document.getElementById('calendar-modal');
         const calendarMonthsContainer = document.getElementById('calendar-months-container');
@@ -1401,6 +1405,15 @@
                 }
                 searchHotels(cityCode, checkIn, checkOut, adultsCount);
             }
+        });
+        
+        clearSearchBtn.addEventListener('click', () => {
+            resultsContainer.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+            originInput.value = '';
+            destinationInput.value = '';
+            originIataInput.value = '';
+            destinationIataInput.value = '';
         });
 
         document.querySelectorAll('.search-nav-button').forEach(button => {
