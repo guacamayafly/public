@@ -47,13 +47,9 @@
         @media (min-width: 1024px) { .search-input-group { border: none; background-color: transparent; } .search-input-group:not(:last-of-type) { border-right: 1px solid #e5e7eb; } }
         .search-input-group i { color: #6b7280; margin-right: 0.75rem; }
         .search-input-group input, .search-input-group span { border: none; outline: none; background: transparent; width: 100%; }
-        .search-main-button { background-color: #FF7F00; color: white; border-radius: 9999px; padding: 0.8rem; display: flex; align-items: center; justify-content: center; font-weight: 600; transition: background-color 0.2s; }
+        .search-main-button { background-color: #FF7F00; color: white; border-radius: 9999px; padding: 0.8rem; display: flex; align-items: center; justify-content: center; font-weight: 600; transition: background-color 0.2s, transform 0.1s ease; }
         .search-main-button:hover { background-color: #E67300; }
-        .search-nav-button.active {
-            border-color: #2563eb;
-            background-color: #dbeafe;
-            color: #1d4ed8;
-        }
+        .search-main-button:active { transform: scale(0.95); }
 
         /* Autocomplete Suggestions */
         .autocomplete-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; max-height: 250px; overflow-y: auto; }
@@ -128,15 +124,28 @@
         .payment-logo { height: 24px; }
         .payment-info-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2d3748; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 11000; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
         .payment-info-popup.show { opacity: 1; transform: translateX(-50%) translateY(-10px); pointer-events: auto; }
+
+        /* Animación de Tarjetas */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .flight-card-article {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
     </style>
 </head>
 <body class="bg-white text-gray-900">
 
+    <!-- Elementos de UI: Notificaciones, Loader, Modales -->
     <div id="notification-container"></div>
     <div id="loader" class="loader-overlay"><i class="fas fa-plane loader-plane"></i></div>
     
+    <!-- Modal del Calendario Principal -->
     <div id="calendar-modal" class="modal-overlay hidden"><div class="modal-container"><div class="calendar-header"><button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button><h3 class="font-semibold text-lg">Selecciona tus fechas</h3><button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button></div><div class="calendar-months" id="calendar-months-container"></div><div class="flex justify-end mt-4 gap-4"><button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button><button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button></div></div></div>
     
+    <!-- Modal de Reserva de Vuelo (Rediseñado) -->
     <div id="booking-modal" class="modal-overlay hidden">
         <div class="modal-container max-w-3xl">
              <div class="flex justify-between items-center mb-4">
@@ -148,7 +157,8 @@
                     <h4 class="font-bold text-gray-700 mb-2">Pasajeros</h4>
                     <form id="booking-form">
                         <div id="passengers-container" class="space-y-4 max-h-60 overflow-y-auto pr-2">
-                            </div>
+                            <!-- Passenger forms will be injected here -->
+                        </div>
                         <button type="button" id="add-passenger-btn" class="w-full text-sm text-blue-600 hover:text-blue-800 font-semibold py-2 mt-2">+ Añadir otro viajero</button>
                     </form>
                 </div>
@@ -168,16 +178,14 @@
                                 <div class="flex items-center justify-between">
                                     <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
                                     <div class="flex items-center gap-2">
-                                        <img src="https://storage.googleapis.com/a1aa/image/upload/v1720017185/visa.svg" alt="Visa" class="payment-logo">
-                                        <img src="https://storage.googleapis.com/a1aa/image/upload/v1720017185/mastercard.svg" alt="Mastercard" class="payment-logo">
-                                        <img src="https://storage.googleapis.com/a1aa/image/upload/v1720017185/amex.svg" alt="American Express" class="payment-logo">
+                                        <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
                                     </div>
                                 </div>
                             </div>
                             <div class="payment-option" data-payment="crypto">
                                  <div class="flex items-center justify-between">
                                     <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
-                                    <img src="https://storage.googleapis.com/a1aa/image/upload/v1720017185/bitcoin.svg" alt="Bitcoin" class="payment-logo">
+                                    <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
                                 </div>
                             </div>
                          </div>
@@ -187,6 +195,7 @@
         </div>
     </div>
 
+    <!-- Modal de Reserva de Hotel desde Tarjeta -->
     <div id="hotel-card-booking-modal" class="modal-overlay hidden">
         <div class="modal-container max-h-[90vh] overflow-y-auto">
              <div class="flex justify-between items-center mb-4">
@@ -197,7 +206,8 @@
                 <div class="md:w-1/2">
                     <img id="hotel-modal-img" src="" alt="Imagen del hotel" class="w-full h-48 object-cover rounded-lg mb-4">
                     <div id="hotel-modal-calendar-container">
-                        </div>
+                        <!-- El calendario del modal se renderizará aquí -->
+                    </div>
                 </div>
                 <div class="md:w-1/2">
                     <form id="hotel-modal-form">
@@ -244,16 +254,14 @@
                                     <div class="flex items-center justify-between">
                                         <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
                                         <div class="flex items-center gap-2">
-                                            <img src="https://storage.googleapis.com/a1aa/image/upload/v1720017185/visa.svg" alt="Visa" class="payment-logo">
-                                            <img src="https://storage.googleapis.com/a1aa/image/upload/v1720017185/mastercard.svg" alt="Mastercard" class="payment-logo">
-                                            <img src="https://storage.googleapis.com/a1aa/image/upload/v1720017185/amex.svg" alt="American Express" class="payment-logo">
+                                            <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="payment-option" data-payment="crypto">
                                      <div class="flex items-center justify-between">
                                         <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
-                                        <img src="https://storage.googleapis.com/a1aa/image/upload/v1720017185/bitcoin.svg" alt="Bitcoin" class="payment-logo">
+                                        <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
                                     </div>
                                 </div>
                              </div>
@@ -263,38 +271,10 @@
             </div>
         </div>
     </div>
-
-    <div id="crypto-checkout-modal" class="modal-overlay hidden">
-        <div class="modal-container max-w-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-semibold text-lg text-gray-800">Finalizar Pago con Criptomonedas</h3>
-                <button id="close-crypto-modal-btn" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <div class="flex flex-col md:flex-row gap-6">
-                    <div class="md:w-2/3">
-                        <h4 class="font-bold text-gray-700 mb-2">Resumen de la Reserva</h4>
-                        <div id="crypto-summary" class="text-sm space-y-1 text-gray-600">
-                            </div>
-                        <div class="mt-4 pt-4 border-t">
-                             <p class="text-xs text-gray-500">Por favor, envía la cantidad exacta a una de las siguientes direcciones. Tu reserva se confirmará una vez que la transacción sea verificada en la blockchain.</p>
-                        </div>
-                    </div>
-                    <div class="md:w-1/3 flex flex-col items-center justify-center">
-                        <p class="font-semibold text-sm mb-2">Escanear para Pagar</p>
-                        <div class="p-2 border rounded-lg bg-white">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" alt="Código QR de pago" id="crypto-qr-code" class="w-32 h-32">
-                        </div>
-                    </div>
-                </div>
-                <div id="crypto-wallets" class="mt-4 space-y-3">
-                    </div>
-            </div>
-        </div>
-    </div>
     
     <div id="payment-info-popup" class="payment-info-popup"></div>
 
+    <!-- Header -->
     <header class="flex items-center justify-between px-6 py-4 max-w-[1200px] mx-auto">
         <div class="flex items-center space-x-2">
             <img alt="Logo UACAMAYAFLY" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
@@ -312,113 +292,106 @@
         </div>
     </header>
 
-    <main class="max-w-[1200px] mx-auto px-6">
-        <section class="text-center my-12">
-            <h1 id="search-title" class="font-extrabold text-2xl sm:text-3xl md:text-4xl mt-6 mb-6">Encuentra el mejor vuelo</h1>
-            <nav id="search-nav" class="flex flex-wrap justify-center gap-4 text-xs sm:text-sm font-normal text-gray-700 mb-4">
-                 <button data-mode="all" class="search-nav-button flex items-center gap-1 border border-gray-700 rounded px-2 py-1 font-semibold"> <i class="fas fa-home"></i> Buscar todo </button>
-                 <button data-mode="hotels" class="search-nav-button flex items-center gap-1"> <i class="fas fa-bed"></i> Hoteles </button>
-                 <button data-mode="flights" class="search-nav-button flex items-center gap-1 border border-black rounded px-2 py-1 font-semibold active"> <i class="fas fa-plane"></i> Vuelos </button>
-                 <button data-mode="tours" class="search-nav-button flex items-center gap-1"> <i class="fas fa-camera"></i> Cosas que hacer </button>
-                 <button data-mode="restaurants" class="search-nav-button flex items-center gap-1"> <i class="fas fa-utensils"></i> Restaurantes </button>
-                 <button data-mode="rentals" class="search-nav-button flex items-center gap-1"> <i class="fas fa-key"></i> Alquileres vacacionales </button>
-            </nav>
-            <form id="search-form" aria-label="Buscar vuelos" class="search-form-container mb-12" role="search" novalidate>
-                <div id="origin-container" class="search-input-group">
-                    <i id="origin-icon" class="fas fa-plane-departure"></i>
-                    <input id="origin-input" placeholder="Origen" type="text" required autocomplete="off"/>
-                    <div id="origin-suggestions" class="autocomplete-suggestions hidden"></div>
-                </div>
-                <div id="destination-container" class="search-input-group">
-                    <i id="destination-icon" class="fas fa-plane-arrival"></i>
-                    <input id="destination-input" placeholder="Destino" type="text" required autocomplete="off"/>
-                     <div id="destination-suggestions" class="autocomplete-suggestions hidden"></div>
-                </div>
-                <div id="date-picker-trigger" class="search-input-group cursor-pointer">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span id="date-range-display" class="text-gray-500">Fechas</span>
-                </div>
-                <div id="travelers-picker-trigger" class="search-input-group cursor-pointer">
-                    <i class="fas fa-user"></i>
-                    <span id="travelers-display">1 viajero</span>
-                    <div id="travelers-modal" class="popover-modal hidden">
-                        <div class="popover-row">
-                            <div>
-                                <p class="font-semibold">Adultos</p>
-                                <p class="text-xs text-gray-500">18 años o más</p>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <button type="button" class="counter-btn" data-type="adults" data-action="decrement">-</button>
-                                <span id="adults-count" class="font-semibold text-lg">1</span>
-                                <button type="button" class="counter-btn" data-type="adults" data-action="increment">+</button>
-                            </div>
-                        </div>
-                        <div class="popover-row">
-                             <div>
-                                <p class="font-semibold">Niños</p>
-                                <p class="text-xs text-gray-500">0 a 17 años</p>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <button type="button" class="counter-btn" data-type="children" data-action="decrement">-</button>
-                                <span id="children-count" class="font-semibold text-lg">0</span>
-                                <button type="button" class="counter-btn" data-type="children" data-action="increment">+</button>
-                            </div>
-                        </div>
-                        <button type="button" id="close-travelers-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
-                    </div>
-                </div>
-                 <div id="baggage-picker-trigger" class="search-input-group cursor-pointer">
-                    <i class="fas fa-suitcase-rolling"></i>
-                    <span id="baggage-display">Equipaje</span>
-                    <div id="baggage-modal" class="popover-modal hidden">
-                        <div class="popover-row">
-                            <div>
-                                <p class="font-semibold">Equipaje de mano (10kg)</p>
-                                <p class="text-xs text-gray-500">Costo: 45.00 € por pieza</p>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <button type="button" class="counter-btn" data-type="baggage-10kg" data-action="decrement">-</button>
-                                <span id="baggage-10kg-count" class="font-semibold text-lg">0</span>
-                                <button type="button" class="counter-btn" data-type="baggage-10kg" data-action="increment">+</button>
-                            </div>
-                        </div>
-                        <div class="popover-row">
-                             <div>
-                                <p class="font-semibold">Equipaje facturado (23kg)</p>
-                                <p class="text-xs text-gray-500">Costo: 85.00 € por pieza</p>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <button type="button" class="counter-btn" data-type="baggage-23kg" data-action="decrement">-</button>
-                                <span id="baggage-23kg-count" class="font-semibold text-lg">0</span>
-                                <button type="button" class="counter-btn" data-type="baggage-23kg" data-action="increment">+</button>
-                            </div>
-                        </div>
-                        <button type="button" id="close-baggage-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
-                    </div>
-                </div>
-                <input type="hidden" id="origin-iata">
-                <input type="hidden" id="destination-iata">
-                <input type="hidden" id="departure-date">
-                <input type="hidden" id="return-date">
-                <button class="search-main-button" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-        </section>
-
-        <div id="results-container" class="max-w-6xl mx-auto mt-8 hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="results-title" class="text-2xl font-bold"></h2>
-                <button id="clear-search-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar Búsqueda</button>
-            </div>
-            <div id="search-loader" class="flight-search-loader hidden"><i class="fas fa-spinner fa-spin"></i><p>Buscando las mejores ofertas...</p></div>
-            <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </div>
-        
+    <main id="main-container" class="max-w-[1200px] mx-auto px-6">
+        <!-- Contenido principal y resultados de búsqueda -->
         <div id="main-content">
+             <section class="text-center my-12">
+                <h1 id="search-title" class="font-extrabold text-2xl sm:text-3xl md:text-4xl mt-6 mb-6">Encuentra el mejor vuelo</h1>
+                <nav id="search-nav" class="flex flex-wrap justify-center gap-4 text-xs sm:text-sm font-normal text-gray-700 mb-4">
+                     <button data-mode="all" class="search-nav-button flex items-center gap-1 border border-gray-700 rounded px-2 py-1 font-semibold"> <i class="fas fa-home"></i> Buscar todo </button>
+                     <button data-mode="hotels" class="search-nav-button flex items-center gap-1"> <i class="fas fa-bed"></i> Hoteles </button>
+                     <button data-mode="flights" class="search-nav-button flex items-center gap-1 border border-black rounded px-2 py-1 font-semibold active"> <i class="fas fa-plane"></i> Vuelos </button>
+                     <button data-mode="tours" class="search-nav-button flex items-center gap-1"> <i class="fas fa-camera"></i> Cosas que hacer </button>
+                     <button data-mode="restaurants" class="search-nav-button flex items-center gap-1"> <i class="fas fa-utensils"></i> Restaurantes </button>
+                     <button data-mode="rentals" class="search-nav-button flex items-center gap-1"> <i class="fas fa-key"></i> Alquileres vacacionales </button>
+                </nav>
+                <form id="search-form" aria-label="Buscar vuelos" class="search-form-container mb-12" role="search" novalidate>
+                    <div id="origin-container" class="search-input-group">
+                        <i id="origin-icon" class="fas fa-plane-departure"></i>
+                        <input id="origin-input" placeholder="Origen" type="text" required autocomplete="off"/>
+                        <div id="origin-suggestions" class="autocomplete-suggestions hidden"></div>
+                    </div>
+                    <div id="destination-container" class="search-input-group">
+                        <i id="destination-icon" class="fas fa-plane-arrival"></i>
+                        <input id="destination-input" placeholder="Destino" type="text" required autocomplete="off"/>
+                         <div id="destination-suggestions" class="autocomplete-suggestions hidden"></div>
+                    </div>
+                    <div id="date-picker-trigger" class="search-input-group cursor-pointer">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="date-range-display" class="text-gray-500">Fechas</span>
+                    </div>
+                    <div id="travelers-picker-trigger" class="search-input-group cursor-pointer">
+                        <i class="fas fa-user"></i>
+                        <span id="travelers-display">1 viajero</span>
+                        <div id="travelers-modal" class="popover-modal hidden">
+                            <div class="popover-row">
+                                <div>
+                                    <p class="font-semibold">Adultos</p>
+                                    <p class="text-xs text-gray-500">18 años o más</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="counter-btn" data-type="adults" data-action="decrement">-</button>
+                                    <span id="adults-count" class="font-semibold text-lg">1</span>
+                                    <button type="button" class="counter-btn" data-type="adults" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <div class="popover-row">
+                                 <div>
+                                    <p class="font-semibold">Niños</p>
+                                    <p class="text-xs text-gray-500">0 a 17 años</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="counter-btn" data-type="children" data-action="decrement">-</button>
+                                    <span id="children-count" class="font-semibold text-lg">0</span>
+                                    <button type="button" class="counter-btn" data-type="children" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <button type="button" id="close-travelers-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
+                        </div>
+                    </div>
+                     <div id="baggage-picker-trigger" class="search-input-group cursor-pointer">
+                        <i class="fas fa-suitcase-rolling"></i>
+                        <span id="baggage-display">Equipaje</span>
+                        <div id="baggage-modal" class="popover-modal hidden">
+                            <div class="popover-row">
+                                <div>
+                                    <p class="font-semibold">Equipaje de mano (10kg)</p>
+                                    <p class="text-xs text-gray-500">Costo: 45.00 € por pieza</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="counter-btn" data-type="baggage-10kg" data-action="decrement">-</button>
+                                    <span id="baggage-10kg-count" class="font-semibold text-lg">0</span>
+                                    <button type="button" class="counter-btn" data-type="baggage-10kg" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <div class="popover-row">
+                                 <div>
+                                    <p class="font-semibold">Equipaje facturado (23kg)</p>
+                                    <p class="text-xs text-gray-500">Costo: 85.00 € por pieza</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="counter-btn" data-type="baggage-23kg" data-action="decrement">-</button>
+                                    <span id="baggage-23kg-count" class="font-semibold text-lg">0</span>
+                                    <button type="button" class="counter-btn" data-type="baggage-23kg" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <button type="button" id="close-baggage-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="origin-iata">
+                    <input type="hidden" id="destination-iata">
+                    <input type="hidden" id="departure-date">
+                    <input type="hidden" id="return-date">
+                    <button class="search-main-button" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </section>
+            
             <section id="hero-section" aria-label="Los mejores hoteles del mundo, elegidos por ti" class="relative rounded-lg overflow-hidden mb-12 max-w-[1200px] mx-auto section-hero-image">
                 <div id="hero-slider-container" class="h-full">
-                    </div>
+                    <!-- Las diapositivas se generarán aquí con JS -->
+                </div>
                 <div id="hero-slider-dots"></div>
             </section>
             
@@ -577,7 +550,49 @@
                     </div>
                 </div>
             </section>
-             </div>
+        </div>
+        
+        <div id="results-container" class="hidden max-w-6xl mx-auto mt-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="results-title" class="text-2xl font-bold"></h2>
+                <button id="clear-search-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar Búsqueda</button>
+            </div>
+            <div id="search-loader" class="flight-search-loader hidden"><i class="fas fa-spinner fa-spin"></i><p>Buscando las mejores ofertas...</p></div>
+            <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    
+        <!-- NUEVO: Sección de Checkout para Criptomonedas -->
+        <div id="crypto-checkout-section" class="hidden max-w-4xl mx-auto py-12">
+             <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Finalizar Pago</h2>
+                <button id="close-crypto-checkout-btn" class="text-gray-500 hover:text-gray-800">
+                    <i class="fas fa-times fa-lg"></i>&nbsp;Volver
+                </button>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-2/3">
+                        <h3 class="font-bold text-gray-700 mb-3 text-lg">Resumen de la Reserva</h3>
+                        <div id="crypto-summary-details" class="text-sm space-y-2 text-gray-600">
+                            <!-- El resumen se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 flex flex-col items-center">
+                        <p class="font-semibold text-gray-700 mb-2">Escanear para Pagar</p>
+                        <div class="p-3 border rounded-lg bg-white shadow-sm">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" alt="Código QR de pago" id="crypto-qr-code-img" class="w-40 h-40">
+                        </div>
+                         <p class="text-xs text-gray-500 mt-2">Use su billetera para escanear</p>
+                    </div>
+                </div>
+                <div class="mt-6 border-t pt-6">
+                    <h3 class="font-bold text-gray-700 mb-3 text-lg">O Pagar a la Siguiente Dirección</h3>
+                    <div id="crypto-wallets-list" class="space-y-3">
+                        <!-- Las billeteras se llenarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer class="bg-gray-100 mt-12 py-10 text-xs text-blue-900">
@@ -718,11 +733,13 @@
         const departureDateInput = document.getElementById('departure-date');
         const returnDateInput = document.getElementById('return-date');
         const mainContent = document.getElementById('main-content');
+        const mainContainer = document.getElementById('main-container');
         const resultsContainer = document.getElementById('results-container');
         const cardsContainer = document.getElementById('cards-container');
         const searchLoader = document.getElementById('search-loader');
         const resultsTitle = document.getElementById('results-title');
         const clearSearchBtn = document.getElementById('clear-search-btn');
+        const cryptoCheckoutSection = document.getElementById('crypto-checkout-section');
         
         const calendarModal = document.getElementById('calendar-modal');
         const calendarMonthsContainer = document.getElementById('calendar-months-container');
@@ -884,6 +901,7 @@
             searchLoader.classList.remove('hidden');
             cardsContainer.innerHTML = '';
             resultsTitle.textContent = `Vuelos de ${origin} a ${destination}`;
+            searchLoader.querySelector('p').textContent = `Buscando vuelos de ${origin} a ${destination}...`
 
             const token = await getAmadeusToken();
             if (!token) {
@@ -907,7 +925,7 @@
             } catch (error) {
                 console.error("Error en la búsqueda de vuelos:", error);
                 showNotification("No se encontraron vuelos para esta ruta o hubo un error.", 'error');
-                cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron vuelos. Intenta con otra búsqueda.</p>`;
+                cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron vuelos. Por favor, revisa tus fechas o intenta con otros destinos.</p>`;
             } finally {
                 searchLoader.classList.add('hidden');
             }
@@ -922,11 +940,11 @@
         function renderFlightResults(flights, dictionaries) {
             cardsContainer.innerHTML = '';
             if (!flights || flights.length === 0) {
-                cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron vuelos para las fechas seleccionadas.</p>`;
+                cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron vuelos. Por favor, revisa tus fechas o intenta con otros destinos.</p>`;
                 return;
             }
 
-            flights.forEach(flight => {
+            flights.forEach((flight, index) => {
                 const basePrice = parseFloat(flight.price.total);
                 const finalPrice = calculateFinalPrice(basePrice);
 
@@ -935,7 +953,9 @@
                 const carrier = dictionaries.carriers[outbound.carrierCode];
 
                 const card = document.createElement('article');
-                card.className = 'border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
+                card.className = 'flight-card-article border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
+                card.style.opacity = 0; // Start invisible for animation
+                card.style.animationDelay = `${index * 0.1}s`;
                 card.dataset.basePrice = basePrice;
                 card.dataset.flightData = JSON.stringify({ flight, carrier });
 
@@ -986,6 +1006,7 @@
             searchLoader.classList.remove('hidden');
             cardsContainer.innerHTML = '';
             resultsTitle.textContent = `Hoteles en ${cityCode}`;
+            searchLoader.querySelector('p').textContent = `Buscando hoteles en ${cityCode}...`
 
             const token = await getAmadeusToken();
             if (!token) {
@@ -1509,41 +1530,45 @@
         populateCarousels();
 
         // Búsqueda
-        searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if(currentSearchMode === 'flights') {
-                const origin = originIataInput.value;
-                const destination = destinationIataInput.value;
-                const departure = departureDateInput.value;
-                const returnD = returnDateInput.value;
+        if(searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if(currentSearchMode === 'flights') {
+                    const origin = originIataInput.value;
+                    const destination = destinationIataInput.value;
+                    const departure = departureDateInput.value;
+                    const returnD = returnDateInput.value;
 
-                if (!origin || !destination || !departure) {
-                    showNotification('Por favor, selecciona un origen, destino y fecha de ida.', 'error');
-                    return;
-                }
-                searchFlights(origin, destination, departure, returnD, adultsCount, childrenCount);
-            } else if (currentSearchMode === 'hotels') {
-                const cityCode = originIataInput.value;
-                const checkIn = departureDateInput.value;
-                const checkOut = returnDateInput.value;
+                    if (!origin || !destination || !departure) {
+                        showNotification('Por favor, selecciona un origen, destino y fecha de ida.', 'error');
+                        return;
+                    }
+                    searchFlights(origin, destination, departure, returnD, adultsCount, childrenCount);
+                } else if (currentSearchMode === 'hotels') {
+                    const cityCode = originIataInput.value;
+                    const checkIn = departureDateInput.value;
+                    const checkOut = returnDateInput.value;
 
-                if (!cityCode || !checkIn) {
-                    showNotification('Por favor, selecciona una ciudad y fecha de entrada.', 'error');
-                    return;
+                    if (!cityCode || !checkIn) {
+                        showNotification('Por favor, selecciona una ciudad y fecha de entrada.', 'error');
+                        return;
+                    }
+                    searchHotels(cityCode, checkIn, checkOut, adultsCount);
                 }
-                searchHotels(cityCode, checkIn, checkOut, adultsCount);
-            }
-        });
+            });
+        }
         
-        clearSearchBtn.addEventListener('click', () => {
-            resultsContainer.classList.add('hidden');
-            mainContent.classList.remove('hidden');
-            originInput.value = '';
-            destinationInput.value = '';
-            originIataInput.value = '';
-            destinationIataInput.value = '';
-        });
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', () => {
+                resultsContainer.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                originInput.value = '';
+                destinationInput.value = '';
+                originIataInput.value = '';
+                destinationIataInput.value = '';
+            });
+        }
 
         document.querySelectorAll('.search-nav-button').forEach(button => {
             button.addEventListener('click', (e) => {
@@ -1562,53 +1587,64 @@
         });
 
         // Modal de Calendario
-        datePickerTrigger.addEventListener('click', () => { calendarModal.classList.remove('hidden'); calendarModal.classList.add('visible'); renderCalendar(); });
-        closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); updateDateDisplay(); });
-        clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendar(); updateDateDisplay(); });
-        prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
-        nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
+        if (datePickerTrigger) datePickerTrigger.addEventListener('click', () => { calendarModal.classList.remove('hidden'); calendarModal.classList.add('visible'); renderCalendar(); });
+        if (closeCalendarBtn) closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); updateDateDisplay(); });
+        if (clearDatesBtn) clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendar(); updateDateDisplay(); });
+        if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
+        if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
         
-        travelersPickerTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            baggageModal.classList.add('hidden');
-            baggageModal.classList.remove('visible');
-            travelersModal.classList.toggle('hidden');
-            travelersModal.classList.toggle('visible');
-        });
-        baggagePickerTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            travelersModal.classList.add('hidden');
-            travelersModal.classList.remove('visible');
-            baggageModal.classList.toggle('hidden');
-            baggageModal.classList.toggle('visible');
-        });
+        if (travelersPickerTrigger) {
+            travelersPickerTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (baggageModal) baggageModal.classList.add('hidden', 'visible');
+                if (travelersModal) {
+                    travelersModal.classList.toggle('hidden');
+                    travelersModal.classList.toggle('visible');
+                }
+            });
+        }
 
-        closeTravelersBtn.addEventListener('click', () => {travelersModal.classList.add('hidden'); travelersModal.classList.remove('visible');});
-        closeBaggageBtn.addEventListener('click', () => {baggageModal.classList.add('hidden'); baggageModal.classList.remove('visible');});
+        if (baggagePickerTrigger) {
+            baggagePickerTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (travelersModal) travelersModal.classList.add('hidden', 'visible');
+                if (baggageModal) {
+                    baggageModal.classList.toggle('hidden');
+                    baggageModal.classList.toggle('visible');
+                }
+            });
+        }
+
+        if (closeTravelersBtn) closeTravelersBtn.addEventListener('click', () => {travelersModal.classList.add('hidden'); travelersModal.classList.remove('visible');});
+        if (closeBaggageBtn) closeBaggageBtn.addEventListener('click', () => {baggageModal.classList.add('hidden'); baggageModal.classList.remove('visible');});
         
-        travelersModal.addEventListener('click', handleCounterClick);
-        baggageModal.addEventListener('click', handleCounterClick);
+        if (travelersModal) travelersModal.addEventListener('click', handleCounterClick);
+        if (baggageModal) baggageModal.addEventListener('click', handleCounterClick);
 
-        addPassengerBtn.addEventListener('click', addPassengerForm);
-        closeBookingModalBtn.addEventListener('click', () => { bookingModal.classList.remove('visible'); bookingModal.classList.add('hidden'); });
+        if (addPassengerBtn) addPassengerBtn.addEventListener('click', addPassengerForm);
+        if (closeBookingModalBtn) closeBookingModalBtn.addEventListener('click', () => { bookingModal.classList.remove('visible'); bookingModal.classList.add('hidden'); });
         
         document.addEventListener('click', function(event) {
-            if (!travelersPickerTrigger.contains(event.target) && !travelersModal.contains(event.target)) {
+            if (travelersPickerTrigger && !travelersPickerTrigger.contains(event.target) && travelersModal && !travelersModal.contains(event.target)) {
                 travelersModal.classList.add('hidden');
                 travelersModal.classList.remove('visible');
             }
-            if (!baggagePickerTrigger.contains(event.target) && !baggageModal.contains(event.target)) {
+            if (baggagePickerTrigger && !baggagePickerTrigger.contains(event.target) && baggageModal && !baggageModal.contains(event.target)) {
                 baggageModal.classList.add('hidden');
                 baggageModal.classList.remove('visible');
             }
         });
 
-        updateTravelersDisplay();
-        updateBaggageDisplay();
-        document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = true;
-        document.querySelector('[data-type="children"][data-action="decrement"]').disabled = true;
-        document.querySelector('[data-type="baggage-10kg"][data-action="decrement"]').disabled = true;
-        document.querySelector('[data-type="baggage-23kg"][data-action="decrement"]').disabled = true;
+        if (adultsCountSpan) {
+            updateTravelersDisplay();
+            document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = true;
+            document.querySelector('[data-type="children"][data-action="decrement"]').disabled = true;
+        }
+        if (baggageDisplay) {
+            updateBaggageDisplay();
+            document.querySelector('[data-type="baggage-10kg"][data-action="decrement"]').disabled = true;
+            document.querySelector('[data-type="baggage-23kg"][data-action="decrement"]').disabled = true;
+        }
 
         // Lógica del Slider Principal (REPARADA)
         const heroSection = document.getElementById('hero-section');
@@ -1652,7 +1688,6 @@
                 dot.className = 'slider-dot';
                 dot.addEventListener('click', () => { 
                     goToSlide(index);
-                    // Reset interval on manual click
                     clearInterval(slideInterval);
                     slideInterval = setInterval(nextSlide, 5000);
                 });
@@ -1677,8 +1712,7 @@
         const hotelModalNameInput = document.getElementById('hotel-modal-name');
         const hotelModalAdultsCountSpan = document.getElementById('hotel-modal-adults-count');
         const paymentPopup = document.getElementById('payment-info-popup');
-        const cryptoCheckoutModal = document.getElementById('crypto-checkout-modal');
-        const closeCryptoModalBtn = document.getElementById('close-crypto-modal-btn');
+        const closeCryptoCheckoutBtn = document.getElementById('close-crypto-checkout-btn');
 
         let hotelModalAdults = 1;
         let hotelModalSelectedPayment = null;
@@ -1714,6 +1748,7 @@
         
         function renderHotelCalendar() {
             const container = document.getElementById('hotel-modal-calendar-container');
+            if (!container) return;
             container.innerHTML = ''; // Clear previous calendar
             const calendarWrapper = document.createElement('div');
             
@@ -1837,10 +1872,10 @@
                         window.open(whatsappUrl, '_blank');
                         break;
                     case 'card':
-                        showPaymentPopup(`Serás redirigido a Mercado Pago para completar tu pago seguro.`);
+                        window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
                         break;
                     case 'crypto':
-                        openCryptoCheckoutModal({type: 'Hotel', name: hotelName, checkin, checkout, adults, bedType});
+                        openCryptoCheckout({type: 'Hotel', name: hotelName, checkin, checkout, adults, bedType});
                         break;
                 }
             }
@@ -1885,10 +1920,10 @@
                         window.open(whatsappUrl, '_blank');
                         break;
                     case 'card':
-                        showPaymentPopup(`Serás redirigido a Mercado Pago para completar tu pago seguro.`);
+                        window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
                         break;
                     case 'crypto':
-                        openCryptoCheckoutModal({type: 'Vuelo', flight: currentFlightData, price: currentFlightData.finalPrice});
+                        openCryptoCheckout({type: 'Vuelo', flight: currentFlightData, price: currentFlightData.finalPrice});
                         break;
                 }
             }
@@ -1902,19 +1937,32 @@
             }, 5000);
         }
         
-        // Crypto Checkout Modal Logic
-        if(closeCryptoModalBtn) {
-            closeCryptoModalBtn.addEventListener('click', () => {
-                cryptoCheckoutModal.classList.add('hidden');
-                cryptoCheckoutModal.classList.remove('visible');
+        // Crypto Checkout Section Logic
+        if(closeCryptoCheckoutBtn) {
+            closeCryptoCheckoutBtn.addEventListener('click', () => {
+                cryptoCheckoutSection.classList.add('hidden');
+                mainContent.classList.remove('hidden');
             });
         }
 
-        function openCryptoCheckoutModal(details) {
-            const summaryContainer = document.getElementById('crypto-summary');
-            const walletsContainer = document.getElementById('crypto-wallets');
-            const qrCodeImg = document.getElementById('crypto-qr-code');
+        function openCryptoCheckout(details) {
+            const summaryContainer = document.getElementById('crypto-summary-details');
+            const walletsContainer = document.getElementById('crypto-wallets-list');
+            const qrCodeImg = document.getElementById('crypto-qr-code-img');
             
+            mainContent.classList.add('hidden');
+            resultsContainer.classList.add('hidden');
+            if (hotelCardBookingModal) {
+                 hotelCardBookingModal.classList.remove('visible');
+                 hotelCardBookingModal.classList.add('hidden');
+            }
+            if (bookingModal) {
+                bookingModal.classList.remove('visible');
+                bookingModal.classList.add('hidden');
+            }
+            cryptoCheckoutSection.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             if (details.type === 'Hotel') {
                  summaryContainer.innerHTML = `
                     <p><strong>Hotel:</strong> ${details.name}</p>
@@ -1922,56 +1970,58 @@
                     <p><strong>Check-out:</strong> ${details.checkout}</p>
                     <p><strong>Pasajeros:</strong> ${details.adults} adulto(s)</p>
                     <p><strong>Cama:</strong> ${details.bedType}</p>
-                    <p class="font-bold mt-2">Monto a Pagar (aprox): 0.005 BTC</p>
+                    <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p>
                 `;
             } else if (details.type === 'Vuelo') {
                  summaryContainer.innerHTML = `
                     <p><strong>Vuelo:</strong> ${details.flight.carrier} (${details.flight.flight.itineraries[0].segments[0].departure.iataCode} → ${details.flight.flight.itineraries[0].segments[details.flight.flight.itineraries[0].segments.length - 1].arrival.iataCode})</p>
                     <p><strong>Pasajeros:</strong> ${adultsCount + childrenCount}</p>
-                    <p class="font-bold mt-2">Monto a Pagar: ${details.price.toFixed(2)} €</p>
+                    <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar: ${details.price.toFixed(2)} €</p>
                 `;
             }
 
             const wallets = [
-                { name: 'Bitcoin (BTC)', address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' },
-                { name: 'Ethereum (ETH)', address: '0x1234567890123456789012345678901234567890' },
-                { name: 'USDT (Tether)', address: '0xabcdef1234567890abcdef1234567890abcdef12' }
+                { name: 'Bitcoin (BTC)', address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4' },
+                { name: 'Ethereum (ETH)', address: '0x1234567890123456789012345678901234567890', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/eth.svg?quality=63&format=avif&resize=width/50.4' },
+                { name: 'USDT (Tether)', address: '0xabcdef1234567890abcdef1234567890abcdef12', logo: 'https://www.bybit.com/bycsi-root/app/assets/token/f904fc2c215f7f86cea97f5b562217ad.svg' },
+                { name: 'Solana (SOL)', address: 'So11111111111111111111111111111111111111112', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/sol.svg?quality=63&format=avif&resize=width/50.4' },
+                { name: 'USD Coin (USDC)', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', logo: 'https://cryptoindex.com/pic/coins/usdc.svg' },
             ];
 
             walletsContainer.innerHTML = wallets.map(wallet => `
-                <div class="bg-white p-3 rounded-lg border">
-                    <p class="text-sm font-semibold text-gray-700">${wallet.name}</p>
-                    <div class="flex items-center justify-between mt-1">
+                <div class="bg-white p-3 rounded-lg border flex items-center gap-4">
+                    <img src="${wallet.logo}" alt="${wallet.name}" class="w-8 h-8">
+                    <div class="flex-grow">
+                        <p class="text-sm font-semibold text-gray-700">${wallet.name}</p>
                         <p class="text-xs text-gray-500 break-all">${wallet.address}</p>
-                        <button class="copy-btn p-2 rounded-md hover:bg-gray-200" data-address="${wallet.address}">
-                            <i class="far fa-copy"></i>
-                        </button>
                     </div>
+                    <button class="copy-btn p-2 rounded-md hover:bg-gray-200" data-address="${wallet.address}">
+                        <i class="far fa-copy"></i>
+                    </button>
                 </div>
             `).join('');
             
-            qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${wallets[0].address}`;
-
-            cryptoCheckoutModal.classList.remove('hidden');
-            cryptoCheckoutModal.classList.add('visible');
+            qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${wallets[0].address}`;
         }
-
-        document.getElementById('crypto-checkout-modal').addEventListener('click', function(e) {
-            if (e.target.closest('.copy-btn')) {
-                const address = e.target.closest('.copy-btn').dataset.address;
-                const textArea = document.createElement("textarea");
-                textArea.value = address;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showNotification('¡Dirección copiada al portapapeles!', 'success');
-                } catch (err) {
-                    console.error('No se pudo copiar la dirección: ', err);
+        
+        if (cryptoCheckoutSection) {
+            cryptoCheckoutSection.addEventListener('click', function(e) {
+                if (e.target.closest('.copy-btn')) {
+                    const address = e.target.closest('.copy-btn').dataset.address;
+                    const textArea = document.createElement("textarea");
+                    textArea.value = address;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showNotification('¡Dirección copiada al portapapeles!', 'success');
+                    } catch (err) {
+                        console.error('No se pudo copiar la dirección: ', err);
+                    }
+                    document.body.removeChild(textArea);
                 }
-                document.body.removeChild(textArea);
-            }
-        });
+            });
+        }
 
 
     });
