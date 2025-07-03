@@ -145,27 +145,57 @@
     <!-- Modal del Calendario Principal -->
     <div id="calendar-modal" class="modal-overlay hidden"><div class="modal-container"><div class="calendar-header"><button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button><h3 class="font-semibold text-lg">Selecciona tus fechas</h3><button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button></div><div class="calendar-months" id="calendar-months-container"></div><div class="flex justify-end mt-4 gap-4"><button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button><button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button></div></div></div>
     
-    <!-- Modal de Reserva de Vuelo (Rediseñado) -->
+    <!-- Modal de Reserva de Vuelo (MODIFICADO) -->
     <div id="booking-modal" class="modal-overlay hidden">
-        <div class="modal-container max-w-3xl">
-             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-semibold text-lg">Confirmar Reserva de Vuelo</h3>
+        <div class="modal-container max-w-4xl max-h-[90vh] overflow-y-auto">
+             <div class="flex justify-between items-center mb-6">
+                <h3 class="font-semibold text-xl">Confirmar Reserva de Vuelo</h3>
                 <button id="close-booking-modal" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
             </div>
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-1/2">
-                    <h4 class="font-bold text-gray-700 mb-2">Pasajeros</h4>
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Columna Izquierda: Formularios -->
+                <div class="md:w-3/5">
                     <form id="booking-form">
-                        <div id="passengers-container" class="space-y-4 max-h-60 overflow-y-auto pr-2">
-                            <!-- Passenger forms will be injected here -->
+                        <!-- Datos del Titular -->
+                        <div class="mb-6">
+                            <h4 class="font-bold text-gray-800 mb-3 text-lg">Datos del Titular de la Reserva</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="contact-email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                                    <input type="email" id="contact-email" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                                </div>
+                                <div>
+                                    <label for="contact-phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                                    <input type="tel" id="contact-phone" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                                </div>
+                                <div class="sm:col-span-2">
+                                     <label for="contact-source" class="block text-sm font-medium text-gray-700">¿Dónde nos conoció?</label>
+                                     <select id="contact-source" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                                        <option>Redes Sociales (Instagram, Facebook, etc.)</option>
+                                        <option>Recomendación de un amigo o familiar</option>
+                                        <option>Buscador (Google, etc.)</option>
+                                        <option>Publicidad online</option>
+                                        <option>Otro</option>
+                                     </select>
+                                </div>
+                            </div>
                         </div>
-                        <button type="button" id="add-passenger-btn" class="w-full text-sm text-blue-600 hover:text-blue-800 font-semibold py-2 mt-2">+ Añadir otro viajero</button>
+
+                        <!-- Pasajeros -->
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-3 text-lg">Pasajeros</h4>
+                            <div id="passengers-container" class="space-y-6">
+                                <!-- Passenger forms will be injected here -->
+                            </div>
+                            <button type="button" id="add-passenger-btn" class="w-full text-sm text-blue-600 hover:text-blue-800 font-semibold py-2 mt-4">+ Añadir otro viajero</button>
+                        </div>
                     </form>
                 </div>
-                <div class="md:w-1/2">
-                    <h4 class="font-bold text-gray-700 mb-2">Resumen y Pago</h4>
-                    <div id="booking-flight-summary" class="mb-4 p-3 bg-gray-100 rounded-lg text-sm"></div>
-                    <div class="mt-4">
+                <!-- Columna Derecha: Resumen y Pago -->
+                <div class="md:w-2/5">
+                    <h4 class="font-bold text-gray-800 mb-3 text-lg">Resumen y Pago</h4>
+                    <div id="booking-flight-summary" class="mb-6 p-4 bg-gray-100 rounded-lg text-sm"></div>
+                    <div>
                          <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
                          <div class="space-y-3" id="flight-payment-options-container">
                             <div class="payment-option" data-payment="whatsapp">
@@ -452,7 +482,7 @@
                     <a class="text-sm font-semibold text-blue-900 underline mt-1 inline-block" href="https://wa.me/5804243156057">Información sobre el descuento en tarifas aéreas</a>
                 </div>
                 <h2 class="text-lg font-semibold text-gray-900 mb-1 max-w-4xl">Descubre vuelos a destinos populares</h2>
-                <p class="text-xs text-gray-700 mb-4 max-w-4xl">Se muestran vuelos de ida y vuelta para estas fechas: <span class="font-semibold">16 jun - 18 jun</span></p>
+                <p class="text-xs text-gray-700 mb-4 max-w-4xl">Se muestran vuelos de ida y vuelta para estas fechas: <span class="font-semibold">05 Ago - 10 Ago</span></p>
                 <nav class="border-b border-gray-200 max-w-4xl mb-4">
                     <ul class="flex space-x-6 text-sm font-semibold text-blue-700"><li class="border-b-2 border-blue-600 pb-2 cursor-pointer">Naha</li></ul>
                 </nav>
@@ -498,7 +528,7 @@
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <h3 class="text-lg font-semibold leading-tight max-w-xl">Las principales ofertas para ti a partir de tu búsqueda reciente</h3>
-                            <p class="text-xs font-normal mt-1">Se muestran ofertas para estas fechas: <span class="font-semibold">18 ago - 21 ago</span></p>
+                            <p class="text-xs font-normal mt-1">Se muestran ofertas para estas fechas: <span class="font-semibold">18 Ago - 21 Ago</span></p>
                         </div>
                         <button class="bg-white text-blue-600 text-xs font-semibold rounded-md px-3 py-1 whitespace-nowrap hover:bg-blue-50 transition" onclick="window.location.href='https://wa.me/5804243156057'">Abrir todas las ofertas</button>
                     </div>
@@ -529,7 +559,7 @@
                 </h2>
                 <p class="text-xs sm:text-sm text-gray-600 mb-3 max-w-[700px] mx-auto">
                     Se muestran ofertas para estas fechas:
-                    <span class="font-semibold">20 jun - 22 jun</span>
+                    <span class="font-semibold">20 Ago - 22 Ago</span>
                 </p>
                 <div class="carousel-container">
                     <div id="special-accommodations-carousel" class="flex space-x-3 scrollbar-hide pb-2 carousel-content-wrapper">
@@ -714,7 +744,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // --- BASE DE DATOS LOCAL DE AEROPUERTOS ---
+        // --- BASE DE DATOS LOCAL DE AEROPUERTOS Y NACIONALIDADES ---
         const airportsDb = [
             // Venezuela
             { name: 'Aeropuerto Internacional de Maiquetía Simón Bolívar', city: 'Caracas', country: 'Venezuela', iata: 'CCS', searchTerms: 'caracas venezuela ccs maiquetia' },
@@ -722,36 +752,20 @@
             { name: 'Aeropuerto Internacional Arturo Michelena', city: 'Valencia', country: 'Venezuela', iata: 'VLN', searchTerms: 'valencia venezuela vln arturo michelena' },
             { name: 'Aeropuerto Internacional General José Antonio Anzoátegui', city: 'Barcelona', country: 'Venezuela', iata: 'BLA', searchTerms: 'barcelona venezuela bla jose antonio anzoategui' },
             { name: 'Aeropuerto Internacional Del Caribe Santiago Mariño', city: 'Porlamar', country: 'Venezuela', iata: 'PMV', searchTerms: 'porlamar venezuela pmv santiago marino margarita' },
-
             // Colombia
             { name: 'Aeropuerto Internacional El Dorado', city: 'Bogotá', country: 'Colombia', iata: 'BOG', searchTerms: 'bogota colombia bog el dorado' },
             { name: 'Aeropuerto Internacional José María Córdova', city: 'Medellín', country: 'Colombia', iata: 'MDE', searchTerms: 'medellin colombia mde jose maria cordova' },
-            { name: 'Aeropuerto Internacional Rafael Núñez', city: 'Cartagena', country: 'Colombia', iata: 'CTG', searchTerms: 'cartagena colombia ctg rafael nunez' },
-            { name: 'Aeropuerto Internacional Alfonso Bonilla Aragón', city: 'Cali', country: 'Colombia', iata: 'CLO', searchTerms: 'cali colombia clo alfonso bonilla aragon' },
-
             // Chile
             { name: 'Aeropuerto Internacional Arturo Merino Benítez', city: 'Santiago de Chile', country: 'Chile', iata: 'SCL', searchTerms: 'santiago de chile chile scl arturo merino benitez' },
-            { name: 'Aeropuerto Internacional Diego Aracena', city: 'Iquique', country: 'Chile', iata: 'IQQ', searchTerms: 'iquique chile iqq diego aracena' },
-            { name: 'Aeropuerto El Loa', city: 'Calama', country: 'Chile', iata: 'CJC', searchTerms: 'calama chile cjc el loa' },
-
             // Argentina
             { name: 'Aeropuerto Internacional Ministro Pistarini', city: 'Buenos Aires', country: 'Argentina', iata: 'EZE', searchTerms: 'buenos aires argentina eze ministro pistarini ezeiza' },
-            { name: 'Aeroparque Jorge Newbery', city: 'Buenos Aires', country: 'Argentina', iata: 'AEP', searchTerms: 'buenos aires argentina aep jorge newbery aeroparque' },
-            { name: 'Aeropuerto Internacional Ingeniero Aeronáutico Ambrosio L.V. Taravella', city: 'Córdoba', country: 'Argentina', iata: 'COR', searchTerms: 'cordoba argentina cor pajas blancas' },
-
             // España
             { name: 'Aeropuerto Adolfo Suárez Madrid-Barajas', city: 'Madrid', country: 'España', iata: 'MAD', searchTerms: 'madrid españa mad adolfo suarez barajas' },
-            { name: 'Aeropuerto de Barcelona-El Prat', city: 'Barcelona', country: 'España', iata: 'BCN', searchTerms: 'barcelona españa bcn el prat' },
-
-            // EEUU
-            { name: 'Aeropuerto Internacional de Miami', city: 'Miami', country: 'Estados Unidos', iata: 'MIA', searchTerms: 'miami estados unidos usa mia' },
-            { name: 'Aeropuerto Internacional John F. Kennedy', city: 'Nueva York', country: 'Estados Unidos', iata: 'JFK', searchTerms: 'nueva york new york estados unidos usa jfk' },
-            
             // Otros
-            { name: 'Aeropuerto de Lisboa', city: 'Lisboa', country: 'Portugal', iata: 'LIS', searchTerms: 'lisboa portugal lis humberto delgado' },
-            { name: 'Aeropuerto Internacional de Tocumen', city: 'Panamá', country: 'Panamá', iata: 'PTY', searchTerms: 'panama pty tocumen' },
             { name: 'Aeropuerto Internacional de Estambul', city: 'Estambul', country: 'Turquía', iata: 'IST', searchTerms: 'estambul turquia turkey ist' },
         ];
+
+        const nationalities = ["Afgana", "Alemana", "Árabe", "Argentina", "Australiana", "Belga", "Boliviana", "Brasileña", "Camboyana", "Canadiense", "Chilena", "China", "Colombiana", "Coreana", "Costarricense", "Cubana", "Danesa", "Ecuatoriana", "Egipcia", "Salvadoreña", "Escocesa", "Española", "Estadounidense", "Estonia", "Etiope", "Filipina", "Finlandesa", "Francesa", "Galesa", "Griega", "Guatemalteca", "Haitiana", "Holandesa", "Hondureña", "Indonesa", "Inglesa", "Iraquí", "Iraní", "Irlandesa", "Israelí", "Italiana", "Japonesa", "Jordana", "Laosiana", "Letona", "Lituana", "Malaya", "Marroquí", "Mexicana", "Nicaragüense", "Noruega", "Neozelandesa", "Panameña", "Paraguaya", "Peruana", "Polaca", "Portuguesa", "Puertorriqueña", "Dominicana", "Rumana", "Rusa", "Sueca", "Suiza", "Tailandesa", "Taiwanesa", "Turca", "Ucraniana", "Uruguaya", "Venezolana", "Vietnamita"];
 
 
         // --- CONSTANTES Y VARIABLES ---
@@ -856,16 +870,6 @@
             }
         }
 
-        // --- Lógica de Búsqueda (AHORA LOCAL) ---
-
-        const debounce = (func, delay) => {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), delay);
-            };
-        };
-
         function searchLocations(keyword, inputElement, suggestionsContainer) {
             if (keyword.length < 2) {
                 suggestionsContainer.innerHTML = '';
@@ -912,14 +916,8 @@
             }
         }
         
-        originInput.addEventListener('input', () => {
-            searchLocations(originInput.value, originInput, document.getElementById('origin-suggestions'));
-        });
-
-        destinationInput.addEventListener('input', () => {
-            searchLocations(destinationInput.value, destinationInput, document.getElementById('destination-suggestions'));
-        });
-        
+        originInput.addEventListener('input', () => searchLocations(originInput.value, originInput, document.getElementById('origin-suggestions')));
+        destinationInput.addEventListener('input', () => searchLocations(destinationInput.value, destinationInput, document.getElementById('destination-suggestions')));
         document.addEventListener('click', (e) => {
             if (!originInput.parentElement.contains(e.target)) document.getElementById('origin-suggestions').classList.add('hidden');
             if (!destinationInput.parentElement.contains(e.target)) document.getElementById('destination-suggestions').classList.add('hidden');
@@ -927,6 +925,7 @@
 
 
         async function searchFlights(origin, destination, departureDate, returnDate, adults, children) {
+            console.log('Searching flights with params:', { origin, destination, departureDate, returnDate, adults, children }); // Log para depuración
             mainContent.classList.add('hidden');
             resultsContainer.classList.remove('hidden');
             searchLoader.classList.remove('hidden');
@@ -947,6 +946,8 @@
             if (children > 0) {
                 url += `&children=${children}`;
             }
+            
+            console.log('Fetching Amadeus URL:', url); // Log para depuración
 
             try {
                 const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
@@ -978,14 +979,13 @@
             flights.forEach((flight, index) => {
                 const basePrice = parseFloat(flight.price.total);
                 const finalPrice = calculateFinalPrice(basePrice);
-
                 const itinerary = flight.itineraries[0];
                 const outbound = itinerary.segments[0];
                 const carrier = dictionaries.carriers[outbound.carrierCode];
 
                 const card = document.createElement('article');
                 card.className = 'flight-card-article border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
-                card.style.opacity = 0; // Start invisible for animation
+                card.style.opacity = 0;
                 card.style.animationDelay = `${index * 0.1}s`;
                 card.dataset.basePrice = basePrice;
                 card.dataset.flightData = JSON.stringify({ flight, carrier });
@@ -1030,93 +1030,68 @@
             });
         }
 
-
-        async function searchHotels(cityCode, checkInDate, checkOutDate, adults) {
-            mainContent.classList.add('hidden');
-            resultsContainer.classList.remove('hidden');
-            searchLoader.classList.remove('hidden');
-            cardsContainer.innerHTML = '';
-            resultsTitle.textContent = `Hoteles en ${cityCode}`;
-            searchLoader.querySelector('p').textContent = `Buscando hoteles en ${cityCode}...`
-
-            const token = await getAmadeusToken();
-            if (!token) {
-                searchLoader.classList.add('hidden');
-                return;
-            }
-
-            let url = `https://test.api.amadeus.com/v2/shopping/hotel-offers?cityCode=${cityCode}&adults=${adults}&radius=5&radiusUnit=KM&paymentPolicy=NONE&includeClosed=false&bestRateOnly=true`;
-            if (checkInDate) url += `&checkInDate=${checkInDate}`;
-            if (checkOutDate) url += `&checkOutDate=${checkOutDate}`;
-            
-            try {
-                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
-                 if (!response.ok) {
-                    if (response.status >= 400 && response.status < 500) {
-                        console.warn("Amadeus API restriction: Hotel search failed. This is expected with the test API.");
-                        showNotification("La búsqueda de hoteles no está disponible en este momento (restricción de API de prueba).", 'error');
-                        cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron hoteles. La API de prueba tiene limitaciones.</p>`;
-                    } else {
-                        throw new Error(`Error en la búsqueda de hoteles: ${response.statusText}`);
-                    }
-                } else {
-                    const data = await response.json();
-                    renderHotelResults(data.data);
-                }
-            } catch (error) {
-                console.error("Error en la búsqueda de hoteles:", error);
-                showNotification("Hubo un error en la conexión al buscar hoteles.", 'error');
-                cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron hoteles. Intenta con otra búsqueda.</p>`;
-            } finally {
-                searchLoader.classList.add('hidden');
-            }
-        }
-
-        function renderHotelResults(hotels) {
-            cardsContainer.innerHTML = '';
-            if (!hotels || hotels.length === 0) {
-                cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron hoteles para los criterios seleccionados.</p>`;
-                return;
-            }
-
-            hotels.forEach(item => {
-                const hotel = item.hotel;
-                const offer = item.offers[0];
-                const card = document.createElement('article');
-                card.className = 'border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
-                card.innerHTML = `
-                    <img src="${(hotel.media && hotel.media[0]) ? hotel.media[0].uri : 'https://placehold.co/600x400/E2E8F0/4A5568?text=Hotel'}" alt="${hotel.name}" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-lg">${hotel.name}</h4>
-                        <p class="text-sm text-gray-600 mb-2">${hotel.cityCode}</p>
-                        <div class="flex items-center mb-2">
-                             ${'<i class="fas fa-star text-yellow-400"></i>'.repeat(hotel.rating || 3)}
-                        </div>
-                        <p class="text-xs text-gray-500 mb-4">${hotel.description ? hotel.description.text.substring(0, 100) + '...' : 'Descripción no disponible.'}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-xs text-gray-500">desde</p>
-                        <p class="font-bold text-xl text-guacamayafly-orange">${offer.price.total} ${offer.price.currency}</p>
-                        <p class="text-xs text-gray-500">por noche</p>
-                    </div>
-                    <button class="w-full mt-4 bg-guacamayafly-green text-white font-semibold py-2 rounded-full hover:bg-guacamayafly-dark-green transition">Ver oferta</button>
-                `;
-                cardsContainer.appendChild(card);
-            });
-        }
-        
+        // --- MODIFICADA: Lógica de Reserva de Vuelo ---
         function addPassengerForm() {
             passengerCount++;
             const passengerDiv = document.createElement('div');
-            passengerDiv.className = 'passenger-form-group';
+            passengerDiv.className = 'passenger-form-group border-t pt-6';
+            passengerDiv.id = `passenger-group-${passengerCount}`;
+
+            const nationalityOptions = nationalities.map(n => `<option value="${n}">${n}</option>`).join('');
+
             passengerDiv.innerHTML = `
-                <h5 class="font-semibold mb-2 text-sm">Pasajero ${passengerCount}</h5>
-                <div class="grid grid-cols-1 gap-2">
-                    <input type="text" placeholder="Nombre completo" class="p-2 border rounded w-full text-sm" required>
-                    <input type="number" placeholder="Edad" class="p-2 border rounded w-full text-sm" required>
+                <h5 class="font-semibold mb-3 text-md">Pasajero ${passengerCount}</h5>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <input type="text" name="firstname" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Apellido</label>
+                        <input type="text" name="lastname" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Nacionalidad</label>
+                        <select name="nationality" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                            ${nationalityOptions}
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2 flex items-center">
+                        <input type="checkbox" name="is-foreigner" class="h-4 w-4 text-guacamayafly-orange border-gray-300 rounded focus:ring-guacamayafly-orange">
+                        <label class="ml-2 block text-sm text-gray-900">Soy Extranjero</label>
+                    </div>
+                    <div name="cedula-field" class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Cédula Venezolana</label>
+                        <input type="text" name="cedula" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                    </div>
+                    <div name="passport-field" class="sm:col-span-2 hidden">
+                        <label class="block text-sm font-medium text-gray-700">Número de Pasaporte</label>
+                        <input type="text" name="passport" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm">
+                    </div>
                 </div>
             `;
             passengersContainer.appendChild(passengerDiv);
+
+            // Add event listener for the new checkbox
+            const foreignerCheckbox = passengerDiv.querySelector('input[name="is-foreigner"]');
+            const cedulaField = passengerDiv.querySelector('div[name="cedula-field"]');
+            const passportField = passengerDiv.querySelector('div[name="passport-field"]');
+            const cedulaInput = cedulaField.querySelector('input');
+            const passportInput = passportField.querySelector('input');
+
+            foreignerCheckbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    cedulaField.classList.add('hidden');
+                    cedulaInput.required = false;
+                    passportField.classList.remove('hidden');
+                    passportInput.required = true;
+                } else {
+                    cedulaField.classList.remove('hidden');
+                    cedulaInput.required = true;
+                    passportField.classList.add('hidden');
+                    passportInput.required = false;
+                }
+            });
         }
 
         function openBookingModal(flightData) {
@@ -1142,7 +1117,7 @@
             bookingFlightSummary.innerHTML = `
                 <strong>Vuelo:</strong> ${flightData.carrier} (${departureCode} → ${arrivalCode})<br>
                 <strong>Equipaje Adicional:</strong> ${baggageSummary}<br>
-                <strong>Precio Final:</strong> ${flightData.finalPrice.toFixed(2)} €
+                <strong class="text-lg">Precio Final: ${flightData.finalPrice.toFixed(2)} €</strong>
             `;
             bookingModal.classList.remove('hidden');
             bookingModal.classList.add('visible');
@@ -1322,7 +1297,6 @@
             }
         }
 
-        // --- NUEVA FUNCIÓN PARA SELECCIONAR VUELOS POPULARES ---
         window.selectPopularFlight = (origin, destination, departureDate, returnDate) => {
             const originAirport = airportsDb.find(a => a.iata === origin);
             const destAirport = airportsDb.find(a => a.iata === destination);
@@ -1345,7 +1319,6 @@
         }
 
 
-        // --- INICIALIZACIÓN Y DATOS ESTÁTICOS ---
         function populateCarousels() {
             const flightCarousel = document.getElementById('flight-carousel');
             const accommodationCarousel = document.getElementById('accommodation-carousel');
@@ -1365,234 +1338,51 @@
                 { airline: 'Turkish Airlines', stops: '1 escala', from: 'Estambul (IST)', to: 'Caracas (CCS)', fromIata: 'IST', toIata: 'CCS', time1: '02:20 - 14:00', time2: '10:00 - 07:00', price: '1300 €' },
             ];
 
-            const baseAccommodations = [
-                { name: 'Spa de Lujo', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/34/b0/15/masaje-sultan-el-mitico.jpg?w=1000&h=-1&s=1' },
-                { name: 'Iglú en Laponia', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1' },
-                { name: 'Bungalow sobre el agua', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/11/8c/6f/caption.jpg?w=900&h=-1&s=1' },
-                { name: 'Chalet en los Alpes', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' },
-                { name: 'Apartotel Urbano', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' },
-                { name: 'Casa-barco en Ámsterdam', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/22/03/4d/09/exterior-at-dusk.jpg?w=1000&h=-1&s=1' },
-                { name: 'Villa en la Toscana', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/4f/98/0d/agriturismo-i-casali.jpg?w=1000&h=-1&s=1' },
-                { name: 'Cabaña en el bosque', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/c1/0a/4b/cabin.jpg?w=1000&h=-1&s=1' },
-            ];
-            
-            const basePopularAccommodations = [
-                { name: 'Honolulu', location: 'Hawái, Estados Unidos', price: '335 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/0e/0a/6c/caption.jpg?w=1400&h=500&s=1' },
-                { name: 'Venecia', location: 'Véneto, Italia', price: '180 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=700&h=400&s=1' },
-                { name: 'Alpes Suizos', location: 'Suiza', price: '300 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1' },
-                { name: 'Bangkok', location: 'Tailandia', price: '69 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1' },
-                { name: 'Maldivas', location: 'Maldivas', price: '500 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=700&h=400&s=1' },
-                { name: 'París', location: 'Francia', price: '220 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/15/6d/d6/paris.jpg?w=1400&h=500&s=1' },
-                { name: 'Kioto', location: 'Japón', price: '150 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/89/30/1f/caption.jpg?w=1200&h=-1&s=1' },
-                { name: 'Reikiavik', location: 'Islandia', price: '250 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/b3/3a/5c/reykjavik.jpg?w=1200&h=-1&s=1' },
-            ];
+            const baseAccommodations = [ { name: 'Spa de Lujo', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/34/b0/15/masaje-sultan-el-mitico.jpg?w=1000&h=-1&s=1' }, { name: 'Iglú en Laponia', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1' }, { name: 'Bungalow sobre el agua', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/11/8c/6f/caption.jpg?w=900&h=-1&s=1' }, { name: 'Chalet en los Alpes', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' }, { name: 'Apartotel Urbano', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' }, { name: 'Casa-barco en Ámsterdam', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/22/03/4d/09/exterior-at-dusk.jpg?w=1000&h=-1&s=1' }, { name: 'Villa en la Toscana', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/4f/98/0d/agriturismo-i-casali.jpg?w=1000&h=-1&s=1' }, { name: 'Cabaña en el bosque', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/c1/0a/4b/cabin.jpg?w=1000&h=-1&s=1' }, ];
+            const basePopularAccommodations = [ { name: 'Honolulu', location: 'Hawái, Estados Unidos', price: '335 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/0e/0a/6c/caption.jpg?w=1400&h=500&s=1' }, { name: 'Venecia', location: 'Véneto, Italia', price: '180 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=700&h=400&s=1' }, { name: 'Alpes Suizos', location: 'Suiza', price: '300 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1' }, { name: 'Bangkok', location: 'Tailandia', price: '69 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1' }, { name: 'Maldivas', location: 'Maldivas', price: '500 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=700&h=400&s=1' }, { name: 'París', location: 'Francia', price: '220 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/15/6d/d6/paris.jpg?w=1400&h=500&s=1' }, { name: 'Kioto', location: 'Japón', price: '150 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/89/30/1f/caption.jpg?w=1200&h=-1&s=1' }, { name: 'Reikiavik', location: 'Islandia', price: '250 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/b3/3a/5c/reykjavik.jpg?w=1200&h=-1&s=1' }, ];
+            const baseOffers = [ { name: 'Ocean Palace Beach Resort', location: 'Italia', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/f2/69/4b/ocean-palace-beach-resort.jpg?w=1000&h=-1&s=1' }, { name: 'LACER OKINAWA MIEBASHI', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '530 €', priceNew: '424 €', perNight: '341 € por noche', discount: '20 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/91/a8/cc/hurawalhi-58-undersea.jpg?w=900&h=500&s=1' }, { name: 'Daikichi Okinawa', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '372 €', priceNew: '312 €', perNight: '104 € por noche', discount: '16 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/06/5e/16/romantic-getaway-to-vista.jpg?w=1000&h=-1&s=1' }, { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/20/e6/c4/nimb-hotel.jpg?w=1000&h=-1&s=1' }, { name: 'Hotel de Montaña', location: 'Alpes', rating: '9.0', reviewText: 'Fantástico', reviews: '450', priceOld: '350 €', priceNew: '298 €', perNight: '149 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' }, { name: 'City Center Boutique', location: 'París', rating: '8.5', reviewText: 'Muy Bueno', reviews: '600', priceOld: '250 €', priceNew: '225 €', perNight: '225 € por noche', discount: '10 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/f6/f3/7a/hotel-madison.jpg?w=1000&h=-1&s=1' }, ];
+            const basePackages = [ { name: 'Prince Smart Inn Naha', stars: '3', rating: '9.2/10 Increíble (752)', flight: 'Tokio (HND) - Naha (OKA)', save: '79 €', priceNew: '311', priceOld: '390', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg' }, { name: 'HOTEL ANTEROOM Naha', stars: '4', rating: '9.2/10 Increíble (497)', flight: 'Tokio (HND) - Naha (OKA)', save: '89 €', priceNew: '360', priceOld: '449', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg' }, { name: 'Rembrandt Style Naha', stars: '3', rating: '8.8/10 Excelente (46)', flight: 'Tokio (HND) - Naha (OKA)', save: '75 €', priceNew: '323', priceOld: '398', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg' }, { name: 'Hotel Gracery Naha', stars: '4', rating: '9/10 Increíble (1.000)', flight: 'Tokio (HND) - Naha (OKA)', save: '194 €', priceNew: '500', priceOld: '694', dates: 'De mar., 17 ago al dom., 18 ago (1 noche)', updated: 'hace 47 horas', img: 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg' }, { name: 'Paquete Roma Imperial', stars: '4', rating: '9.0/10 Excelente (850)', flight: 'Madrid (MAD) - Roma (FCO)', save: '120 €', priceNew: '480', priceOld: '600', dates: 'De vie., 12 sep al lun., 15 sep (3 noches)', updated: 'hace 2 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/33/f7/15/rome-at-dusk.jpg?w=1200&h=-1&s=1' }, { name: 'Escapada a Lisboa', stars: '3', rating: '8.5/10 Muy Bueno (600)', flight: 'Barcelona (BCN) - Lisboa (LIS)', save: '50 €', priceNew: '250', priceOld: '300', dates: 'De jue., 01 oct al dom., 04 oct (3 noches)', updated: 'hace 8 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/fc/86/lisbon.jpg?w=1200&h=-1&s=1' }, ];
+            const baseSpecialAccommodations = [ { name: 'Kutsurogian', location: 'Minamiuonuma', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '811 €', perNight: '405 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/1b/65/30/power-up-band-key-challenge.jpg?w=1000&h=-1&s=1' }, { name: 'HOSHINOYA Tokyo', location: 'Tokio', rating: '9.6', reviewText: 'Excepcional', reviews: '801', price: '1829 €', priceOld: '2400 €', discount: '25 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/6c/92/dc/dotonbori.jpg?w=1000&h=-1&s=1' }, { name: 'Fukiya Ryokan', location: 'Yugawara', rating: '10', reviewText: 'Excepcional', reviews: '25', price: '2023 €', priceOld: '2527 €', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/f9/cf/75/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Ryokan Tori', location: 'Kioto', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '538 €', perNight: '269 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ba/0c/1b/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Treehotel', location: 'Harads, Suecia', rating: '9.8', reviewText: 'Excepcional', reviews: '150', price: '1200 €', perNight: '600 € por noche', vip: true, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/3e/8a/a5/treehotel.jpg?w=1200&h=-1&s=1' }, { name: 'Giraffe Manor', location: 'Nairobi, Kenia', rating: '9.9', reviewText: 'Único en la vida', reviews: '500', price: '2500 €', perNight: '1250 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/7c/1a/8d/giraffe-manor.jpg?w=1200&h=-1&s=1' }, ];
+            const baseExperiences = [ { name: 'Visita guiada a la Torre Eiffel', rating: '4.4', reviews: '4554', price: '35 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/15/1b/d2/8d.jpg', tag: null }, { name: 'Entrada al museo Leonardo da Vinci', rating: '4.4', reviews: '116', price: '10 €', img: 'https://storage.googleapis.com/a1aa/image/b62daa48-69b3-47ef-2330-e180fe9709a4.jpg', tag: 'LO MÁS RESERVADO' }, { name: 'Crucero en barco por Amsterdam', rating: '4.9', reviews: '26.903', price: '22 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/15/70/fa/81.jpg', tag: 'LO MÁS RESERVADO' }, { name: 'Avistamiento de delfines y cuevas', rating: '4.9', reviews: '3167', price: '28 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/a6/b0/d9.jpg', tag: 'SE AGOTA RÁPIDO' }, { name: 'Tour gastronómico en Roma', rating: '4.8', reviews: '2500', price: '85 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0c/3e/8a/a5.jpg', tag: 'NUEVO' }, { name: 'Clase de cocina de paella', rating: '4.9', reviews: '1200', price: '70 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0b/9c/6e/4f.jpg', tag: 'LO MÁS RESERVADO' }, ];
+            const baseHotelDeals = [ { name: 'The Naha Terrace', location: 'Naha', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' }, { name: 'Hotel Moderno', location: 'Ciudad', rating: '8.5', reviewText: 'Muy bueno', reviews: '150', priceOld: '180 €', priceNew: '153 €', perNight: '76 € por noche', discount: '15 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' }, { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg' }, { name: 'Hostal Céntrico', location: 'Centro', rating: '7.8', reviewText: 'Bueno', reviews: '500', priceOld: '80 €', priceNew: '72 €', perNight: '36 € por noche', discount: '10 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg' }, { name: 'Hotel Histórico', location: 'Casco Antiguo', rating: '9.1', reviewText: 'Increíble', reviews: '750', priceOld: '220 €', priceNew: '187 €', perNight: '187 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/f6/f3/7a/hotel-madison.jpg?w=1000&h=-1&s=1' }, { name: 'Pensión Económica', location: 'Barrio Universitario', rating: '7.5', reviewText: 'Bueno', reviews: '200', priceOld: '60 €', priceNew: '54 €', perNight: '54 € por noche', discount: '10 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' }, ];
 
-            const baseOffers = [
-                { name: 'Ocean Palace Beach Resort', location: 'Italia', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/f2/69/4b/ocean-palace-beach-resort.jpg?w=1000&h=-1&s=1' },
-                { name: 'LACER OKINAWA MIEBASHI', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '530 €', priceNew: '424 €', perNight: '341 € por noche', discount: '20 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/91/a8/cc/hurawalhi-58-undersea.jpg?w=900&h=500&s=1' },
-                { name: 'Daikichi Okinawa', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '372 €', priceNew: '312 €', perNight: '104 € por noche', discount: '16 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/06/5e/16/romantic-getaway-to-vista.jpg?w=1000&h=-1&s=1' },
-                { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/20/e6/c4/nimb-hotel.jpg?w=1000&h=-1&s=1' },
-                { name: 'Hotel de Montaña', location: 'Alpes', rating: '9.0', reviewText: 'Fantástico', reviews: '450', priceOld: '350 €', priceNew: '298 €', perNight: '149 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' },
-                { name: 'City Center Boutique', location: 'París', rating: '8.5', reviewText: 'Muy Bueno', reviews: '600', priceOld: '250 €', priceNew: '225 €', perNight: '225 € por noche', discount: '10 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/f6/f3/7a/hotel-madison.jpg?w=1000&h=-1&s=1' },
-            ];
-
-            const basePackages = [
-                { name: 'Prince Smart Inn Naha', stars: '3', rating: '9.2/10 Increíble (752)', flight: 'Tokio (HND) - Naha (OKA)', save: '79 €', priceNew: '311', priceOld: '390', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg' },
-                { name: 'HOTEL ANTEROOM Naha', stars: '4', rating: '9.2/10 Increíble (497)', flight: 'Tokio (HND) - Naha (OKA)', save: '89 €', priceNew: '360', priceOld: '449', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg' },
-                { name: 'Rembrandt Style Naha', stars: '3', rating: '8.8/10 Excelente (46)', flight: 'Tokio (HND) - Naha (OKA)', save: '75 €', priceNew: '323', priceOld: '398', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg' },
-                { name: 'Hotel Gracery Naha', stars: '4', rating: '9/10 Increíble (1.000)', flight: 'Tokio (HND) - Naha (OKA)', save: '194 €', priceNew: '500', priceOld: '694', dates: 'De mar., 17 jun al dom., 18 jun (1 noche)', updated: 'hace 47 horas', img: 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg' },
-                { name: 'Paquete Roma Imperial', stars: '4', rating: '9.0/10 Excelente (850)', flight: 'Madrid (MAD) - Roma (FCO)', save: '120 €', priceNew: '480', priceOld: '600', dates: 'De vie., 12 sep al lun., 15 sep (3 noches)', updated: 'hace 2 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/33/f7/15/rome-at-dusk.jpg?w=1200&h=-1&s=1' },
-                { name: 'Escapada a Lisboa', stars: '3', rating: '8.5/10 Muy Bueno (600)', flight: 'Barcelona (BCN) - Lisboa (LIS)', save: '50 €', priceNew: '250', priceOld: '300', dates: 'De jue., 01 oct al dom., 04 oct (3 noches)', updated: 'hace 8 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/fc/86/lisbon.jpg?w=1200&h=-1&s=1' },
-            ];
-
-            const baseSpecialAccommodations = [
-                { name: 'Kutsurogian', location: 'Minamiuonuma', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '811 €', perNight: '405 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/1b/65/30/power-up-band-key-challenge.jpg?w=1000&h=-1&s=1' },
-                { name: 'HOSHINOYA Tokyo', location: 'Tokio', rating: '9.6', reviewText: 'Excepcional', reviews: '801', price: '1829 €', priceOld: '2400 €', discount: '25 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/6c/92/dc/dotonbori.jpg?w=1000&h=-1&s=1' },
-                { name: 'Fukiya Ryokan', location: 'Yugawara', rating: '10', reviewText: 'Excepcional', reviews: '25', price: '2023 €', priceOld: '2527 €', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/f9/cf/75/caption.jpg?w=1000&h=-1&s=1' },
-                { name: 'Ryokan Tori', location: 'Kioto', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '538 €', perNight: '269 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ba/0c/1b/caption.jpg?w=1000&h=-1&s=1' },
-                { name: 'Treehotel', location: 'Harads, Suecia', rating: '9.8', reviewText: 'Excepcional', reviews: '150', price: '1200 €', perNight: '600 € por noche', vip: true, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/3e/8a/a5/treehotel.jpg?w=1200&h=-1&s=1' },
-                { name: 'Giraffe Manor', location: 'Nairobi, Kenia', rating: '9.9', reviewText: 'Único en la vida', reviews: '500', price: '2500 €', perNight: '1250 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/7c/1a/8d/giraffe-manor.jpg?w=1200&h=-1&s=1' },
-            ];
-            
-            const baseExperiences = [
-                { name: 'Visita guiada a la Torre Eiffel', rating: '4.4', reviews: '4554', price: '35 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/15/1b/d2/8d.jpg', tag: null },
-                { name: 'Entrada al museo Leonardo da Vinci', rating: '4.4', reviews: '116', price: '10 €', img: 'https://storage.googleapis.com/a1aa/image/b62daa48-69b3-47ef-2330-e180fe9709a4.jpg', tag: 'LO MÁS RESERVADO' },
-                { name: 'Crucero en barco por Amsterdam', rating: '4.9', reviews: '26.903', price: '22 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/15/70/fa/81.jpg', tag: 'LO MÁS RESERVADO' },
-                { name: 'Avistamiento de delfines y cuevas', rating: '4.9', reviews: '3167', price: '28 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/a6/b0/d9.jpg', tag: 'SE AGOTA RÁPIDO' },
-                { name: 'Tour gastronómico en Roma', rating: '4.8', reviews: '2500', price: '85 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0c/3e/8a/a5.jpg', tag: 'NUEVO' },
-                { name: 'Clase de cocina de paella', rating: '4.9', reviews: '1200', price: '70 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0b/9c/6e/4f.jpg', tag: 'LO MÁS RESERVADO' },
-            ];
-
-            const baseHotelDeals = [
-                { name: 'The Naha Terrace', location: 'Naha', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' },
-                { name: 'Hotel Moderno', location: 'Ciudad', rating: '8.5', reviewText: 'Muy bueno', reviews: '150', priceOld: '180 €', priceNew: '153 €', perNight: '76 € por noche', discount: '15 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' },
-                { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg' },
-                { name: 'Hostal Céntrico', location: 'Centro', rating: '7.8', reviewText: 'Bueno', reviews: '500', priceOld: '80 €', priceNew: '72 €', perNight: '36 € por noche', discount: '10 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg' },
-                { name: 'Hotel Histórico', location: 'Casco Antiguo', rating: '9.1', reviewText: 'Increíble', reviews: '750', priceOld: '220 €', priceNew: '187 €', perNight: '187 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/f6/f3/7a/hotel-madison.jpg?w=1000&h=-1&s=1' },
-                { name: 'Pensión Económica', location: 'Barrio Universitario', rating: '7.5', reviewText: 'Bueno', reviews: '200', priceOld: '60 €', priceNew: '54 €', perNight: '54 € por noche', discount: '10 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' },
-            ];
-
-            // Llenar carruseles
             if (flightCarousel) flightCarousel.innerHTML = baseFlights.map(f => `
-                <li class="border border-gray-200 rounded-lg p-3 w-56 flex-shrink-0 bg-white interactive-card cursor-pointer" onclick="selectPopularFlight('${f.fromIata}', '${f.toIata}', '2025-06-16', '2025-06-18')">
-                    <div class="flex items-center space-x-1 mb-1">
-                        <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/>
-                        <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span>
-                    </div>
+                <li class="border border-gray-200 rounded-lg p-3 w-56 flex-shrink-0 bg-white interactive-card cursor-pointer" onclick="selectPopularFlight('${f.fromIata}', '${f.toIata}', '2025-08-05', '2025-08-10')">
+                    <div class="flex items-center space-x-1 mb-1"> <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/> <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span> </div>
                     <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.from}<span class="text-gray-500"> → </span>${f.to}</p>
                     <p class="text-xs text-gray-600 mb-3">${f.time1}</p>
                     <hr class="border-gray-200 mb-3"/>
-                    <div class="flex items-center space-x-1 mb-1">
-                        <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/>
-                        <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span>
-                    </div>
+                    <div class="flex items-center space-x-1 mb-1"> <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/> <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span> </div>
                     <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.to}<span class="text-gray-500"> → </span>${f.from}</p>
                     <p class="text-xs text-gray-600">${f.time2}</p>
                     <p class="text-sm font-semibold text-gray-900 mt-3">${f.price}</p>
                     <p class="text-xs text-gray-600">Ida y vuelta por persona</p>
                 </li>`).join('');
 
-            if (accommodationCarousel) accommodationCarousel.innerHTML = baseAccommodations.map(item => `
-                <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card" onclick="openHotelBookingModal('${item.name.replace(/'/g, '\\\'')}', '${item.img}')">
-                    <img alt="${item.name}" class="w-full h-40 object-cover rounded-lg" src="${item.img}" width="160" height="160"/>
-                    <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p>
-                </div>`).join('');
-
-            if (popularAccommodationsCarousel) popularAccommodationsCarousel.innerHTML = basePopularAccommodations.map(item => `
-                <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card" onclick="openHotelBookingModal('${item.name.replace(/'/g, '\\\'')}', '${item.img}')">
-                    <img alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" src="${item.img}" width="192" height="120"/>
-                    <div class="p-2 text-left">
-                        <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4>
-                        <p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p>
-                        <p class="text-[9px] text-gray-600 font-semibold">${item.price}</p>
-                        <p class="text-[8px] text-gray-400">precio medio por noche</p>
-                    </div>
-                </div>`).join('');
-
-            if (offersCarousel) offersCarousel.innerHTML = baseOffers.map(o => `
-                <div class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${o.name.replace(/'/g, '\\\'')}', '${o.img}')">
-                    <div class="relative rounded-lg overflow-hidden mb-2">
-                        <img alt="${o.name}" class="w-full h-32 object-cover rounded-lg" src="${o.img}"/>
-                        ${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
-                    </div>
-                    <div class="flex-grow">
-                        <p class="text-[9px] font-semibold mb-0.5">${o.location}</p>
-                        <h4 class="text-xs font-semibold leading-tight mb-1">${o.name}</h4>
-                        <div class="flex items-center space-x-1 mb-1">
-                            <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${o.rating}</span>
-                            <span class="text-[9px] font-normal">${o.reviewText}</span>
-                            <span class="text-[9px] font-normal opacity-50">(${o.reviews} comentarios)</span>
-                        </div>
-                        <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${o.priceOld}</div>
-                        <div class="text-xs font-bold mb-0.5">${o.priceNew}</div>
-                        <div class="text-[9px] font-normal opacity-80 mb-1">${o.perNight}</div>
-                        <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div>
-                        <div class="member-price-tag mt-2">Precio para miembros disponible</div>
-                    </div>
-                </div>`).join('');
-
-            if (vacationPackagesCarousel) vacationPackagesCarousel.innerHTML = basePackages.map(p => `
-                 <article class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${p.name.replace(/'/g, '\\\'')}', '${p.img}')">
-                     <img alt="${p.name}" class="w-full h-44 object-cover" src="${p.img}" height="200" width="400"/>
-                     <div class="p-3 text-xs sm:text-sm text-left flex-grow flex flex-col">
-                        <div class="flex-grow">
-                            <h2 class="font-semibold mb-1 leading-tight">${p.name}</h2>
-                            <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">${'<i class="fas fa-star text-yellow-400"></i>'.repeat(parseInt(p.stars))}<span> ${p.stars} estrellas · ${p.rating}</span></div>
-                            <div class="text-gray-600 text-[9px] sm:text-xs mb-2"><i class="fas fa-plane-departure"></i> ${p.flight}</div>
-                            <div class="bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded mb-1 inline-block"><i class="fas fa-tag mr-1"></i>Ahorra ${p.save}</div>
-                            <div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div>
-                            <div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div>
-                        </div>
-                     </div>
-                </article>`).join('');
-            
-            if (specialAccommodationsCarousel) specialAccommodationsCarousel.innerHTML = baseSpecialAccommodations.map(s => `
-                <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card" onclick="openHotelBookingModal('${s.name.replace(/'/g, '\\\'')}', '${s.img}')">
-                    <img alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1" src="${s.img}"/>
-                    ${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''}
-                    <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div>
-                    <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">${s.reviewText}</p>
-                    <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(${s.reviews} comentarios)</p>
-                    <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">${s.name}</p>
-                    <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">${s.location}</p>
-                    <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1">
-                        <span>${s.price}</span>
-                        ${s.priceOld ? `<span class="text-gray-500 line-through text-sm sm:text-base">${s.priceOld}</span>` : ''}
-                    </p>
-                    ${s.perNight ? `<p class="text-[8px] sm:text-[9px] text-gray-500">${s.perNight}</p>` : ''}
-                    ${s.discount ? `<p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">${s.discount}</p>` : ''}
-                </article>`).join('');
-
-            if (experiencesCarousel) experiencesCarousel.innerHTML = baseExperiences.map(item => `
-                <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col">
-                    <div class="relative">
-                        <img alt="${item.name}" class="w-full h-36 object-cover" src="${item.img}" height="128" width="192">
-                        <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button>
-                    </div>
-                    <div class="p-2 text-xs leading-tight flex-grow flex flex-col">
-                        <div class="flex-grow">
-                            ${item.tag ? `<div class="inline-block bg-gray-200 text-gray-700 text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase mb-1">${item.tag}</div>` : ''}
-                            <p class="font-semibold text-gray-900 truncate">${item.name}</p>
-                            <div class="flex items-center space-x-1 mt-1">
-                                <span class="text-green-600 font-semibold text-xs">${item.rating}</span>
-                                <div class="flex space-x-0.5"><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-gray-300 text-[6px]"></i></div>
-                                <span class="text-gray-500">(${item.reviews})</span>
-                            </div>
-                            <p class="text-gray-400 text-[9px] mt-0.5">a partir de ${item.price} por adulto</p>
-                        </div>
-                        <button class="w-full mt-2 bg-guacamayafly-green text-white font-semibold py-1.5 rounded-full hover:bg-guacamayafly-dark-green transition text-xs" onclick="handleCardBooking('Experiencia', '${item.name.replace(/'/g, '\\\'')}', 'Precio ${item.price}')">Reservar</button>
-                    </div>
-                </article>`).join('');
-
-            if (hotelDealsCarousel) hotelDealsCarousel.innerHTML = baseHotelDeals.map(h => `
-                 <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${h.name.replace(/'/g, '\\\'')}', '${h.img}')">
-                    <div class="relative">
-                        <img alt="${h.name}" class="w-full h-36 object-cover" src="${h.img}">
-                         ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
-                        <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button>
-                    </div>
-                    <div class="p-2 text-xs leading-tight flex-grow flex flex-col">
-                        <div class="flex-grow">
-                            <p class="text-[9px] font-semibold mb-0.5">${h.location}</p>
-                            <h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4>
-                            <div class="flex items-center space-x-1 mb-1">
-                                <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span>
-                                <span class="text-[9px] font-normal">${h.reviewText}</span>
-                                <span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span>
-                            </div>
-                            <p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p>
-                            <p class="text-xs font-bold mb-0.5">${h.priceNew}</p>
-                            <p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p>
-                            <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div>
-                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
-                        </div>
-                    </div>
-                </article>`).join('');
+            if (accommodationCarousel) accommodationCarousel.innerHTML = baseAccommodations.map(item => `<div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card" onclick="openHotelBookingModal('${item.name.replace(/'/g, '\\\'')}', '${item.img}')"> <img alt="${item.name}" class="w-full h-40 object-cover rounded-lg" src="${item.img}" width="160" height="160"/> <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p> </div>`).join('');
+            if (popularAccommodationsCarousel) popularAccommodationsCarousel.innerHTML = basePopularAccommodations.map(item => `<div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card" onclick="openHotelBookingModal('${item.name.replace(/'/g, '\\\'')}', '${item.img}')"> <img alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" src="${item.img}" width="192" height="120"/> <div class="p-2 text-left"> <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4> <p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p> <p class="text-[9px] text-gray-600 font-semibold">${item.price}</p> <p class="text-[8px] text-gray-400">precio medio por noche</p> </div> </div>`).join('');
+            if (offersCarousel) offersCarousel.innerHTML = baseOffers.map(o => `<div class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${o.name.replace(/'/g, '\\\'')}', '${o.img}')"> <div class="relative rounded-lg overflow-hidden mb-2"> <img alt="${o.name}" class="w-full h-32 object-cover rounded-lg" src="${o.img}"/> ${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''} </div> <div class="flex-grow"> <p class="text-[9px] font-semibold mb-0.5">${o.location}</p> <h4 class="text-xs font-semibold leading-tight mb-1">${o.name}</h4> <div class="flex items-center space-x-1 mb-1"> <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${o.rating}</span> <span class="text-[9px] font-normal">${o.reviewText}</span> <span class="text-[9px] font-normal opacity-50">(${o.reviews} comentarios)</span> </div> <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${o.priceOld}</div> <div class="text-xs font-bold mb-0.5">${o.priceNew}</div> <div class="text-[9px] font-normal opacity-80 mb-1">${o.perNight}</div> <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div> <div class="member-price-tag mt-2">Precio para miembros disponible</div> </div> </div>`).join('');
+            if (vacationPackagesCarousel) vacationPackagesCarousel.innerHTML = basePackages.map(p => ` <article class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${p.name.replace(/'/g, '\\\'')}', '${p.img}')"> <img alt="${p.name}" class="w-full h-44 object-cover" src="${p.img}" height="200" width="400"/> <div class="p-3 text-xs sm:text-sm text-left flex-grow flex flex-col"> <div class="flex-grow"> <h2 class="font-semibold mb-1 leading-tight">${p.name}</h2> <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">${'<i class="fas fa-star text-yellow-400"></i>'.repeat(parseInt(p.stars))}<span> ${p.stars} estrellas · ${p.rating}</span></div> <div class="text-gray-600 text-[9px] sm:text-xs mb-2"><i class="fas fa-plane-departure"></i> ${p.flight}</div> <div class="bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded mb-1 inline-block"><i class="fas fa-tag mr-1"></i>Ahorra ${p.save}</div> <div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div> <div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div> </div> </div> </article>`).join('');
+            if (specialAccommodationsCarousel) specialAccommodationsCarousel.innerHTML = baseSpecialAccommodations.map(s => ` <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card" onclick="openHotelBookingModal('${s.name.replace(/'/g, '\\\'')}', '${s.img}')"> <img alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1" src="${s.img}"/> ${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''} <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div> <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">${s.reviewText}</p> <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(${s.reviews} comentarios)</p> <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">${s.name}</p> <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">${s.location}</p> <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1"> <span>${s.price}</span> ${s.priceOld ? `<span class="text-gray-500 line-through text-sm sm:text-base">${s.priceOld}</span>` : ''} </p> ${s.perNight ? `<p class="text-[8px] sm:text-[9px] text-gray-500">${s.perNight}</p>` : ''} ${s.discount ? `<p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">${s.discount}</p>` : ''} </article>`).join('');
+            if (experiencesCarousel) experiencesCarousel.innerHTML = baseExperiences.map(item => ` <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col"> <div class="relative"> <img alt="${item.name}" class="w-full h-36 object-cover" src="${item.img}" height="128" width="192"> <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button> </div> <div class="p-2 text-xs leading-tight flex-grow flex flex-col"> <div class="flex-grow"> ${item.tag ? `<div class="inline-block bg-gray-200 text-gray-700 text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase mb-1">${item.tag}</div>` : ''} <p class="font-semibold text-gray-900 truncate">${item.name}</p> <div class="flex items-center space-x-1 mt-1"> <span class="text-green-600 font-semibold text-xs">${item.rating}</span> <div class="flex space-x-0.5"><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-gray-300 text-[6px]"></i></div> <span class="text-gray-500">(${item.reviews})</span> </div> <p class="text-gray-400 text-[9px] mt-0.5">a partir de ${item.price} por adulto</p> </div> <button class="w-full mt-2 bg-guacamayafly-green text-white font-semibold py-1.5 rounded-full hover:bg-guacamayafly-dark-green transition text-xs" onclick="handleCardBooking('Experiencia', '${item.name.replace(/'/g, '\\\'')}', 'Precio ${item.price}')">Reservar</button> </div> </article>`).join('');
+            if (hotelDealsCarousel) hotelDealsCarousel.innerHTML = baseHotelDeals.map(h => ` <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col cursor-pointer" onclick="openHotelBookingModal('${h.name.replace(/'/g, '\\\'')}', '${h.img}')"> <div class="relative"> <img alt="${h.name}" class="w-full h-36 object-cover" src="${h.img}"> ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''} <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button> </div> <div class="p-2 text-xs leading-tight flex-grow flex flex-col"> <div class="flex-grow"> <p class="text-[9px] font-semibold mb-0.5">${h.location}</p> <h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4> <div class="flex items-center space-x-1 mb-1"> <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span> <span class="text-[9px] font-normal">${h.reviewText}</span> <span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span> </div> <p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p> <p class="text-xs font-bold mb-0.5">${h.priceNew}</p> <p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p> <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div> <div class="member-price-tag mt-2">Precio para miembros disponible</div> </div> </div> </article>`).join('');
         }
 
-
         // --- INICIALIZACIÓN Y EVENT LISTENERS ---
-
-        // Ocultar loader al cargar la página
         if (loader) {
             loader.classList.add('hidden');
             loader.addEventListener('transitionend', () => loader.remove());
         }
-
-        // Llenar carruseles con datos
         populateCarousels();
 
-        // Búsqueda
         if(searchForm) {
             searchForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
                 if(currentSearchMode === 'flights') {
                     const origin = originIataInput.value;
                     const destination = destinationIataInput.value;
                     const departure = departureDateInput.value;
                     const returnD = returnDateInput.value;
-
                     if (!origin || !destination || !departure) {
                         showNotification('Por favor, selecciona un origen, destino y fecha de ida.', 'error');
                         return;
@@ -1602,7 +1392,6 @@
                     const cityCode = originIataInput.value;
                     const checkIn = departureDateInput.value;
                     const checkOut = returnDateInput.value;
-
                     if (!cityCode || !checkIn) {
                         showNotification('Por favor, selecciona una ciudad y fecha de entrada.', 'error');
                         return;
@@ -1627,7 +1416,6 @@
             button.addEventListener('click', (e) => {
                 const newMode = e.currentTarget.dataset.mode;
                 if (newMode === currentSearchMode) return;
-                
                 if (newMode === 'all' || newMode === 'flights' || newMode === 'hotels') {
                     currentSearchMode = newMode;
                     document.querySelectorAll('.search-nav-button').forEach(btn => btn.classList.remove('active'));
@@ -1639,7 +1427,6 @@
             });
         });
 
-        // Modal de Calendario
         if (datePickerTrigger) datePickerTrigger.addEventListener('click', () => { calendarModal.classList.remove('hidden'); calendarModal.classList.add('visible'); renderCalendar(); });
         if (closeCalendarBtn) closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); updateDateDisplay(); });
         if (clearDatesBtn) clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendar(); updateDateDisplay(); });
@@ -1670,10 +1457,8 @@
 
         if (closeTravelersBtn) closeTravelersBtn.addEventListener('click', () => {travelersModal.classList.add('hidden'); travelersModal.classList.remove('visible');});
         if (closeBaggageBtn) closeBaggageBtn.addEventListener('click', () => {baggageModal.classList.add('hidden'); baggageModal.classList.remove('visible');});
-        
         if (travelersModal) travelersModal.addEventListener('click', handleCounterClick);
         if (baggageModal) baggageModal.addEventListener('click', handleCounterClick);
-
         if (addPassengerBtn) addPassengerBtn.addEventListener('click', addPassengerForm);
         if (closeBookingModalBtn) closeBookingModalBtn.addEventListener('click', () => { bookingModal.classList.remove('visible'); bookingModal.classList.add('hidden'); });
         
@@ -1699,18 +1484,10 @@
             document.querySelector('[data-type="baggage-23kg"][data-action="decrement"]').disabled = true;
         }
 
-        // Lógica del Slider Principal (REPARADA)
         const heroSection = document.getElementById('hero-section');
         const sliderContainer = document.getElementById('hero-slider-container');
         const dotsContainer = document.getElementById('hero-slider-dots');
-        const slidesData = [
-            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1', title: 'Los mejores hoteles del mundo, elegidos por ti', text: 'Desde complejos turísticos junto a la playa hasta los alojamientos más únicos. Consulta el mejor 1 % de hoteles y guarda tus favoritos.' },
-            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=1200&h=-1&s=1', title: 'Escapadas románticas en Venecia', text: 'Descubre la magia de los canales, la arquitectura histórica y la gastronomía italiana en un viaje inolvidable.' },
-            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1', title: 'Aventura en los Alpes Suizos', text: 'Explora paisajes montañosos impresionantes, lagos cristalinos y pueblos encantadores. Ideal para senderismo y esquí.' },
-            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=1200&h=-1&s=1', title: 'Paraísos tropicales en las Maldivas', text: 'Relájate en bungalows sobre el agua, disfruta de playas de arena blanca y bucea en arrecifes de coral vibrantes.' },
-            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1', title: 'Explora la vibrante Bangkok', text: 'Sumérgete en la cultura tailandesa, visita templos majestuosos y disfruta de la increíble comida callejera.' }
-        ];
-
+        const slidesData = [ { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1', title: 'Los mejores hoteles del mundo, elegidos por ti', text: 'Desde complejos turísticos junto a la playa hasta los alojamientos más únicos. Consulta el mejor 1 % de hoteles y guarda tus favoritos.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=1200&h=-1&s=1', title: 'Escapadas románticas en Venecia', text: 'Descubre la magia de los canales, la arquitectura histórica y la gastronomía italiana en un viaje inolvidable.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1', title: 'Aventura en los Alpes Suizos', text: 'Explora paisajes montañosos impresionantes, lagos cristalinos y pueblos encantadores. Ideal para senderismo y esquí.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=1200&h=-1&s=1', title: 'Paraísos tropicales en las Maldivas', text: 'Relájate en bungalows sobre el agua, disfruta de playas de arena blanca y bucea en arrecifes de coral vibrantes.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1', title: 'Explora la vibrante Bangkok', text: 'Sumérgete en la cultura tailandesa, visita templos majestuosos y disfruta de la increíble comida callejera.' } ];
         let currentSlide = 0;
         let slideInterval;
 
@@ -1730,13 +1507,11 @@
             if (!sliderContainer || !dotsContainer) return;
             sliderContainer.innerHTML = '';
             dotsContainer.innerHTML = '';
-            
             slidesData.forEach((slide, index) => {
                 const slideElement = document.createElement('div');
                 slideElement.className = 'hero-slide';
                 slideElement.innerHTML = `<img src="${slide.img}" alt="${slide.title}" /><div class="hero-text-overlay"><div class="max-w-lg text-white drop-shadow-lg"><h2 class="font-extrabold text-xl sm:text-2xl mb-1">${slide.title}</h2><p class="text-xs sm:text-sm max-w-md mb-3 leading-tight">${slide.text}</p><button class="bg-white text-black rounded-full px-4 py-1 text-xs font-semibold hover:bg-gray-200 transition-colors" type="button">Ver más</button></div></div>`;
                 sliderContainer.appendChild(slideElement);
-
                 const dot = document.createElement('div');
                 dot.className = 'slider-dot';
                 dot.addEventListener('click', () => { 
@@ -1756,7 +1531,6 @@
             startSlider();
         }
         
-        // --- Hotel Card Booking Modal Logic ---
         const hotelCardBookingModal = document.getElementById('hotel-card-booking-modal');
         const closeHotelModalBtn = document.getElementById('close-hotel-modal-btn');
         const hotelModalForm = document.getElementById('hotel-modal-form');
@@ -1767,7 +1541,6 @@
         const hotelModalChildrenCountSpan = document.getElementById('hotel-modal-children-count');
         const paymentPopup = document.getElementById('payment-info-popup');
         const closeCryptoCheckoutBtn = document.getElementById('close-crypto-checkout-btn');
-
         let hotelModalAdults = 1;
         let hotelModalChildren = 0;
         let hotelModalSelectedPayment = null;
@@ -1779,71 +1552,50 @@
             hotelModalTitle.textContent = `Reservar: ${name}`;
             hotelModalImg.src = image;
             hotelModalNameInput.value = name;
-            
             hotelModalAdults = 1;
             hotelModalChildren = 0;
             hotelModalAdultsCountSpan.textContent = hotelModalAdults;
             hotelModalChildrenCountSpan.textContent = hotelModalChildren;
-
             const adultDecrementBtn = hotelModalForm.querySelector('[data-type="hotel-adults"][data-action="decrement"]');
             if(adultDecrementBtn) adultDecrementBtn.disabled = true;
             const childDecrementBtn = hotelModalForm.querySelector('[data-type="hotel-children"][data-action="decrement"]');
             if(childDecrementBtn) childDecrementBtn.disabled = true;
-
-
             hotelModalCheckin = null;
             hotelModalCheckout = null;
             hotelModalCurrentDate = new Date();
             renderHotelCalendar();
-            
             hotelCardBookingModal.classList.remove('hidden');
             hotelCardBookingModal.classList.add('visible');
         };
 
-        if(closeHotelModalBtn) {
-            closeHotelModalBtn.addEventListener('click', () => {
-                hotelCardBookingModal.classList.add('hidden');
-                hotelCardBookingModal.classList.remove('visible');
-            });
-        }
+        if(closeHotelModalBtn) closeHotelModalBtn.addEventListener('click', () => { hotelCardBookingModal.classList.add('hidden'); hotelCardBookingModal.classList.remove('visible'); });
         
         function renderHotelCalendar() {
             const container = document.getElementById('hotel-modal-calendar-container');
             if (!container) return;
-            container.innerHTML = ''; // Clear previous calendar
+            container.innerHTML = '';
             const calendarWrapper = document.createElement('div');
-            
             const header = document.createElement('div');
             header.className = 'calendar-header';
-            header.innerHTML = `
-                <button id="hotel-prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
-                <h4 class="font-semibold text-center">${hotelModalCurrentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4>
-                <button id="hotel-next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
-            `;
+            header.innerHTML = ` <button id="hotel-prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button> <h4 class="font-semibold text-center">${hotelModalCurrentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4> <button id="hotel-next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button> `;
             calendarWrapper.appendChild(header);
-            
             const gridEl = document.createElement('div');
             gridEl.className = 'calendar-grid';
             ['D', 'L', 'M', 'X', 'J', 'V', 'S'].forEach(day => gridEl.innerHTML += `<div class="calendar-day weekday">${day}</div>`);
-            
             const monthDate = new Date(hotelModalCurrentDate.getFullYear(), hotelModalCurrentDate.getMonth(), 1);
             let firstDayOfMonth = monthDate.getDay();
             for (let j = 0; j < firstDayOfMonth; j++) gridEl.appendChild(document.createElement('div'));
-
             const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
             const today = new Date();
             today.setHours(0,0,0,0);
-
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayEl = document.createElement('div');
                 const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
                 dayEl.className = 'calendar-day';
                 dayEl.textContent = day;
                 dayEl.dataset.date = dayDate.toISOString().split('T')[0];
-                
                 const rand = Math.random();
                 if (rand < 0.3) dayEl.classList.add('price-cheap'); else if (rand < 0.7) dayEl.classList.add('price-medium'); else dayEl.classList.add('price-expensive');
-                
                 if (dayDate < today) {
                     dayEl.classList.add('disabled');
                 } else {
@@ -1853,10 +1605,8 @@
             }
             calendarWrapper.appendChild(gridEl);
             container.appendChild(calendarWrapper);
-            
             document.getElementById('hotel-prev-month').addEventListener('click', () => { hotelModalCurrentDate.setMonth(hotelModalCurrentDate.getMonth() - 1); renderHotelCalendar(); });
             document.getElementById('hotel-next-month').addEventListener('click', () => { hotelModalCurrentDate.setMonth(hotelModalCurrentDate.getMonth() + 1); renderHotelCalendar(); });
-            
             updateHotelCalendarSelection();
         }
 
@@ -1910,14 +1660,12 @@
                 document.querySelectorAll('#payment-options-container .payment-option').forEach(opt => opt.classList.remove('selected'));
                 paymentOption.classList.add('selected');
                 hotelModalSelectedPayment = paymentOption.dataset.payment;
-                
                 const hotelName = hotelModalNameInput.value;
                 const checkin = hotelModalCheckin ? hotelModalCheckin.toISOString().split('T')[0] : null;
                 const checkout = hotelModalCheckout ? hotelModalCheckout.toISOString().split('T')[0] : null;
                 const adults = hotelModalAdults;
                 const children = hotelModalChildren;
                 const bedType = hotelModalForm.querySelector('input[name="bed-type"]:checked').value;
-
                 const firstName = document.getElementById('hotel-modal-firstname').value;
                 const lastName = document.getElementById('hotel-modal-lastname').value;
                 const email = document.getElementById('hotel-modal-email').value;
@@ -1928,7 +1676,6 @@
                     document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
                     return;
                 }
-
                 if (!checkin || !checkout) {
                     showNotification('Por favor, selecciona las fechas de check-in y check-out.', 'error');
                     document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
@@ -1936,20 +1683,9 @@
                 }
 
                 let message = ``;
-                
                 switch(hotelModalSelectedPayment) {
                     case 'whatsapp':
-                        message = `¡Hola! Quisiera solicitar una reserva para el siguiente hotel:\n\n` +
-                                  `*Hotel:* ${hotelName}\n` +
-                                  `*Check-in:* ${checkin}\n` +
-                                  `*Check-out:* ${checkout}\n` +
-                                  `*Huéspedes:* ${adults} adulto(s), ${children} niño(s)\n` +
-                                  `*Tipo de Cama:* ${bedType}\n\n` +
-                                  `*Datos del Titular:*\n` +
-                                  `- Nombre: ${firstName} ${lastName}\n` +
-                                  `- Correo: ${email}\n` +
-                                  `- Teléfono: ${phone}\n\n` +
-                                  `Por favor, confírmenme la disponibilidad y el precio final. ¡Gracias!`;
+                        message = `¡Hola! Quisiera solicitar una reserva para el siguiente hotel:\n\n` + `*Hotel:* ${hotelName}\n` + `*Check-in:* ${checkin}\n` + `*Check-out:* ${checkout}\n` + `*Huéspedes:* ${adults} adulto(s), ${children} niño(s)\n` + `*Tipo de Cama:* ${bedType}\n\n` + `*Datos del Titular:*\n` + `- Nombre: ${firstName} ${lastName}\n` + `- Correo: ${email}\n` + `- Teléfono: ${phone}\n\n` + `Por favor, confírmenme la disponibilidad y el precio final. ¡Gracias!`;
                         const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
                         window.open(whatsappUrl, '_blank');
                         break;
@@ -1963,6 +1699,7 @@
             }
         });
 
+        // MODIFICADO: Event Listener para Pagos de Vuelo
         document.getElementById('flight-payment-options-container').addEventListener('click', (e) => {
             const paymentOption = e.target.closest('.payment-option');
             if(paymentOption) {
@@ -1970,32 +1707,64 @@
                 paymentOption.classList.add('selected');
                 const selectedPayment = paymentOption.dataset.payment;
                 
-                let formIsValid = true;
-                const passengerForms = document.querySelectorAll('#booking-form .passenger-form-group');
-                if (passengerForms.length === 0) formIsValid = false;
-                passengerForms.forEach((form) => {
-                    const inputs = form.querySelectorAll('input');
-                    if (!inputs[0].value || !inputs[1].value) {
-                        formIsValid = false;
-                    }
-                });
-
-                if (!formIsValid) {
-                    showNotification('Por favor, completa los datos de todos los pasajeros primero.', 'error');
-                    document.querySelectorAll('#flight-payment-options-container .payment-option').forEach(opt => opt.classList.remove('selected'));
+                // Validar datos del titular
+                const contactEmail = document.getElementById('contact-email').value;
+                const contactPhone = document.getElementById('contact-phone').value;
+                if (!contactEmail || !contactPhone) {
+                    showNotification('Por favor, completa los datos del titular de la reserva.', 'error');
+                    paymentOption.classList.remove('selected');
                     return;
                 }
 
+                // Validar datos de pasajeros
+                let allPassengersValid = true;
+                const passengerForms = document.querySelectorAll('#booking-form .passenger-form-group');
+                if (passengerForms.length === 0) allPassengersValid = false;
+                
+                passengerForms.forEach((form) => {
+                    const inputs = form.querySelectorAll('input[required], select[required]');
+                    inputs.forEach(input => {
+                        if (!input.value) {
+                            allPassengersValid = false;
+                        }
+                    });
+                });
+
+                if (!allPassengersValid) {
+                    showNotification('Por favor, completa los datos de todos los pasajeros.', 'error');
+                    paymentOption.classList.remove('selected');
+                    return;
+                }
+
+                // Construir mensaje
+                const contactSource = document.getElementById('contact-source').value;
+                const itinerary = currentFlightData.flight.itineraries[0];
+                const departureCode = itinerary.segments[0].departure.iataCode;
+                const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
                 let message = `¡Hola! Quisiera concretar la reserva para el siguiente vuelo:\n\n` +
-                              `*Vuelo:* ${currentFlightData.carrier} (${currentFlightData.flight.itineraries[0].segments[0].departure.iataCode} → ${currentFlightData.flight.itineraries[0].segments[currentFlightData.flight.itineraries[0].segments.length - 1].arrival.iataCode})\n` +
+                              `*Vuelo:* ${currentFlightData.carrier} (${departureCode} → ${arrivalCode})\n` +
                               `*Precio Total:* ${currentFlightData.finalPrice.toFixed(2)} €\n\n` +
+                              `*Datos del Titular:*\n` +
+                              `- Correo: ${contactEmail}\n` +
+                              `- Teléfono: ${contactPhone}\n` +
+                              `- Nos conoció por: ${contactSource}\n\n` +
                               `*Datos de los Pasajeros:*\n`;
                 
                 passengerForms.forEach((form, index) => {
-                    const inputs = form.querySelectorAll('input');
-                    message += `\n*Pasajero ${index + 1}:*\n- Nombre: ${inputs[0].value}\n- Edad: ${inputs[1].value}\n`;
+                    const firstname = form.querySelector('input[name="firstname"]').value;
+                    const lastname = form.querySelector('input[name="lastname"]').value;
+                    const nationality = form.querySelector('select[name="nationality"]').value;
+                    const isForeigner = form.querySelector('input[name="is-foreigner"]').checked;
+                    const cedula = form.querySelector('input[name="cedula"]').value;
+                    const passport = form.querySelector('input[name="passport"]').value;
+
+                    message += `\n*Pasajero ${index + 1}:*\n` +
+                               `- Nombre: ${firstname} ${lastname}\n` +
+                               `- Nacionalidad: ${nationality}\n` +
+                               `- Documento: ${isForeigner ? 'Pasaporte ' + passport : 'C.I. ' + cedula}\n`;
                 });
 
+                // Ejecutar acción de pago
                 switch(selectedPayment) {
                     case 'whatsapp':
                         const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
@@ -2019,7 +1788,6 @@
             }, 5000);
         }
         
-        // Crypto Checkout Section Logic
         if(closeCryptoCheckoutBtn) {
             closeCryptoCheckoutBtn.addEventListener('click', () => {
                 cryptoCheckoutSection.classList.add('hidden');
@@ -2046,43 +1814,16 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if (details.type === 'Hotel') {
-                 summaryContainer.innerHTML = `
-                    <p><strong>Hotel:</strong> ${details.name}</p>
-                    <p><strong>Check-in:</strong> ${details.checkin}</p>
-                    <p><strong>Check-out:</strong> ${details.checkout}</p>
-                    <p><strong>Huéspedes:</strong> ${details.adults} adulto(s), ${details.children} niño(s)</p>
-                    <p><strong>Cama:</strong> ${details.bedType}</p>
-                    <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p>
-                `;
+                 summaryContainer.innerHTML = ` <p><strong>Hotel:</strong> ${details.name}</p> <p><strong>Check-in:</strong> ${details.checkin}</p> <p><strong>Check-out:</strong> ${details.checkout}</p> <p><strong>Huéspedes:</strong> ${details.adults} adulto(s), ${details.children} niño(s)</p> <p><strong>Cama:</strong> ${details.bedType}</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p> `;
             } else if (details.type === 'Vuelo') {
-                 summaryContainer.innerHTML = `
-                    <p><strong>Vuelo:</strong> ${details.flight.carrier} (${details.flight.flight.itineraries[0].segments[0].departure.iataCode} → ${details.flight.flight.itineraries[0].segments[details.flight.flight.itineraries[0].segments.length - 1].arrival.iataCode})</p>
-                    <p><strong>Pasajeros:</strong> ${adultsCount + childrenCount}</p>
-                    <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar: ${details.price.toFixed(2)} €</p>
-                `;
+                 const itinerary = details.flight.flight.itineraries[0];
+                 const departureCode = itinerary.segments[0].departure.iataCode;
+                 const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
+                 summaryContainer.innerHTML = ` <p><strong>Vuelo:</strong> ${details.flight.carrier} (${departureCode} → ${arrivalCode})</p> <p><strong>Pasajeros:</strong> ${adultsCount + childrenCount}</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar: ${details.price.toFixed(2)} €</p> `;
             }
 
-            const wallets = [
-                { name: 'Bitcoin (BTC)', address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4' },
-                { name: 'Ethereum (ETH)', address: '0x1234567890123456789012345678901234567890', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/eth.svg?quality=63&format=avif&resize=width/50.4' },
-                { name: 'USDT (Tether)', address: '0xabcdef1234567890abcdef1234567890abcdef12', logo: 'https://www.bybit.com/bycsi-root/app/assets/token/f904fc2c215f7f86cea97f5b562217ad.svg' },
-                { name: 'Solana (SOL)', address: 'So11111111111111111111111111111111111111112', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/sol.svg?quality=63&format=avif&resize=width/50.4' },
-                { name: 'USD Coin (USDC)', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', logo: 'https://cryptoindex.com/pic/coins/usdc.svg' },
-            ];
-
-            walletsContainer.innerHTML = wallets.map(wallet => `
-                <div class="bg-white p-3 rounded-lg border flex items-center gap-4">
-                    <img src="${wallet.logo}" alt="${wallet.name}" class="w-8 h-8">
-                    <div class="flex-grow">
-                        <p class="text-sm font-semibold text-gray-700">${wallet.name}</p>
-                        <p class="text-xs text-gray-500 break-all">${wallet.address}</p>
-                    </div>
-                    <button class="copy-btn p-2 rounded-md hover:bg-gray-200" data-address="${wallet.address}">
-                        <i class="far fa-copy"></i>
-                    </button>
-                </div>
-            `).join('');
-            
+            const wallets = [ { name: 'Bitcoin (BTC)', address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4' }, { name: 'Ethereum (ETH)', address: '0x1234567890123456789012345678901234567890', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/eth.svg?quality=63&format=avif&resize=width/50.4' }, { name: 'USDT (Tether)', address: '0xabcdef1234567890abcdef1234567890abcdef12', logo: 'https://www.bybit.com/bycsi-root/app/assets/token/f904fc2c215f7f86cea97f5b562217ad.svg' }, { name: 'Solana (SOL)', address: 'So11111111111111111111111111111111111111112', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/sol.svg?quality=63&format=avif&resize=width/50.4' }, { name: 'USD Coin (USDC)', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', logo: 'https://cryptoindex.com/pic/coins/usdc.svg' }, ];
+            walletsContainer.innerHTML = wallets.map(wallet => ` <div class="bg-white p-3 rounded-lg border flex items-center gap-4"> <img src="${wallet.logo}" alt="${wallet.name}" class="w-8 h-8"> <div class="flex-grow"> <p class="text-sm font-semibold text-gray-700">${wallet.name}</p> <p class="text-xs text-gray-500 break-all">${wallet.address}</p> </div> <button class="copy-btn p-2 rounded-md hover:bg-gray-200" data-address="${wallet.address}"> <i class="far fa-copy"></i> </button> </div> `).join('');
             qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${wallets[0].address}`;
         }
         
