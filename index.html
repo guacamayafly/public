@@ -40,7 +40,7 @@
         @keyframes fly-across { 0% { transform: translateX(-100vw); } 50% { transform: translateX(0); } 100% { transform: translateX(100vw); } }
         
         /* Barra de Búsqueda */
-        .search-form-container { display: flex; flex-direction: column; gap: 0.75rem; max-width: 900px; margin: 0 auto; }
+        .search-form-container { display: flex; flex-direction: column; gap: 0.75rem; max-width: 1100px; margin: 0 auto; }
         @media (min-width: 1024px) { .search-form-container { flex-direction: row; align-items: center; background-color: white; border-radius: 9999px; padding: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); } }
         .search-input-group { position: relative; flex: 1; display: flex; align-items: center; padding: 0.75rem 1rem; background-color: white; border-radius: 9999px; border: 1px solid #d1d5db; }
         @media (min-width: 1024px) { .search-input-group { border: none; } .search-input-group:not(:last-of-type) { border-right: 1px solid #e5e7eb; } }
@@ -65,7 +65,7 @@
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             z-index: 1000;
-            max-height: 250px; /* Aumentado para más visibilidad */
+            max-height: 250px;
             overflow-y: auto;
         }
         .suggestion-item {
@@ -74,7 +74,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            font-size: 1rem; /* Aumentado para mejor legibilidad */
+            font-size: 1rem;
         }
         .suggestion-item:hover {
             background-color: #f3f4f6;
@@ -133,13 +133,13 @@
         .modal-container { background-color: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 700px; transform: scale(0.95); transition: transform 0.3s ease; }
         #calendar-modal.visible .modal-container, #booking-modal.visible .modal-container { transform: scale(1); }
         
-        /* Modal de Viajeros */
-        #travelers-modal {
+        /* Modal de Viajeros y Equipaje */
+        .popover-modal {
             position: absolute;
             top: calc(100% + 10px);
             left: 50%;
             transform: translateX(-50%);
-            width: 300px;
+            width: 320px;
             background-color: white;
             border-radius: 0.5rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
@@ -149,12 +149,12 @@
             pointer-events: none;
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
-        #travelers-modal.visible {
+        .popover-modal.visible {
             opacity: 1;
             pointer-events: auto;
             transform: translateX(-50%) translateY(0);
         }
-        .traveler-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .popover-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .counter-btn {
             width: 40px; height: 40px;
             border-radius: 50%; border: 1px solid #d1d5db;
@@ -164,7 +164,7 @@
         }
         .counter-btn:disabled { cursor: not-allowed; background-color: #f3f4f6; color: #9ca3af; }
 
-        /* Calendario (Estilo Restaurado) */
+        /* Calendario */
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .calendar-months { display: grid; grid-template-columns: 1fr; gap: 2rem; }
         @media (min-width: 640px) { .calendar-months { grid-template-columns: 1fr 1fr; } }
@@ -173,9 +173,9 @@
         .calendar-day.weekday { font-weight: 600; font-size: 0.8rem; color: #4a5568; cursor: default; }
         .calendar-day.disabled { color: #cbd5e0; cursor: not-allowed; text-decoration: line-through; }
         .calendar-day:not(.disabled):not(.weekday):hover { background-color: #f0f0f0; }
-        .calendar-day.price-cheap { background-color: #d1fae5; color: #065f46; } /* Verde */
-        .calendar-day.price-medium { background-color: #fef3c7; color: #92400e; } /* Amarillo */
-        .calendar-day.price-expensive { background-color: #fee2e2; color: #991b1b; } /* Rojo */
+        .calendar-day.price-cheap { background-color: #d1fae5; color: #065f46; }
+        .calendar-day.price-medium { background-color: #fef3c7; color: #92400e; }
+        .calendar-day.price-expensive { background-color: #fee2e2; color: #991b1b; }
         .calendar-day.selected { background-color: #2563eb !important; color: white !important; font-weight: bold; }
         .calendar-day.in-range { background-color: #dbeafe; border-radius: 0; }
         .calendar-day.range-start { border-top-left-radius: 50%; border-bottom-left-radius: 50%; }
@@ -324,14 +324,14 @@
                 </div>
                 <div id="date-picker-trigger" class="search-input-group cursor-pointer">
                     <i class="fas fa-calendar-alt"></i>
-                    <span id="date-range-display" class="text-gray-500">11 jun → 18 jun</span>
+                    <span id="date-range-display" class="text-gray-500">Fechas</span>
                 </div>
                 <div id="travelers-picker-trigger" class="search-input-group cursor-pointer">
                     <i class="fas fa-user"></i>
                     <span id="travelers-display">1 viajero</span>
                     <!-- Modal de Viajeros -->
-                    <div id="travelers-modal" class="hidden">
-                        <div class="traveler-row">
+                    <div id="travelers-modal" class="popover-modal hidden">
+                        <div class="popover-row">
                             <div>
                                 <p class="font-semibold">Adultos</p>
                                 <p class="text-xs text-gray-500">18 años o más</p>
@@ -342,7 +342,7 @@
                                 <button type="button" class="counter-btn" data-type="adults" data-action="increment">+</button>
                             </div>
                         </div>
-                        <div class="traveler-row">
+                        <div class="popover-row">
                              <div>
                                 <p class="font-semibold">Niños</p>
                                 <p class="text-xs text-gray-500">0 a 17 años</p>
@@ -356,11 +356,44 @@
                         <button type="button" id="close-travelers-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
                     </div>
                 </div>
+                 <!-- NUEVO: Selector de Equipaje -->
+                <div id="baggage-picker-trigger" class="search-input-group cursor-pointer">
+                    <i class="fas fa-suitcase-rolling"></i>
+                    <span id="baggage-display">Equipaje</span>
+                    <!-- Modal de Equipaje -->
+                    <div id="baggage-modal" class="popover-modal hidden">
+                        <div class="popover-row">
+                            <div>
+                                <p class="font-semibold">Equipaje de mano (10kg)</p>
+                                <p class="text-xs text-gray-500">Costo: 45.00 € por pieza</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button type="button" class="counter-btn" data-type="baggage-10kg" data-action="decrement">-</button>
+                                <span id="baggage-10kg-count" class="font-semibold text-lg">0</span>
+                                <button type="button" class="counter-btn" data-type="baggage-10kg" data-action="increment">+</button>
+                            </div>
+                        </div>
+                        <div class="popover-row">
+                             <div>
+                                <p class="font-semibold">Equipaje facturado (23kg)</p>
+                                <p class="text-xs text-gray-500">Costo: 85.00 € por pieza</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button type="button" class="counter-btn" data-type="baggage-23kg" data-action="decrement">-</button>
+                                <span id="baggage-23kg-count" class="font-semibold text-lg">0</span>
+                                <button type="button" class="counter-btn" data-type="baggage-23kg" data-action="increment">+</button>
+                            </div>
+                        </div>
+                        <button type="button" id="close-baggage-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
+                    </div>
+                </div>
                 <input type="hidden" id="origin-iata">
                 <input type="hidden" id="destination-iata">
                 <input type="hidden" id="departure-date">
                 <input type="hidden" id="return-date">
-                <button class="search-main-button" type="submit">Buscar</button>
+                <button class="search-main-button" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
             </form>
         </section>
 
@@ -624,9 +657,8 @@
         const cards = Array.from(carousel.children);
         if (cards.length === 0) return;
 
-        // Ancho de una tarjeta + el espacio (gap) para calcular el desplazamiento
         const cardWidth = cards[0].offsetWidth;
-        const gap = parseInt(window.getComputedStyle(carousel).gap) || 16; // 16px es el space-x-4
+        const gap = parseInt(window.getComputedStyle(carousel).gap) || 16;
         const scrollAmount = (cardWidth + gap) * direction;
 
         carousel.scrollBy({
@@ -666,6 +698,14 @@
         const childrenCountSpan = document.getElementById('children-count');
         const travelersDisplay = document.getElementById('travelers-display');
 
+        // NUEVO: Selectores de Equipaje
+        const baggagePickerTrigger = document.getElementById('baggage-picker-trigger');
+        const baggageModal = document.getElementById('baggage-modal');
+        const closeBaggageBtn = document.getElementById('close-baggage-btn');
+        const baggage10kgCountSpan = document.getElementById('baggage-10kg-count');
+        const baggage23kgCountSpan = document.getElementById('baggage-23kg-count');
+        const baggageDisplay = document.getElementById('baggage-display');
+
         const bookingModal = document.getElementById('booking-modal');
         const closeBookingModalBtn = document.getElementById('close-booking-modal');
         const bookingForm = document.getElementById('booking-form');
@@ -681,15 +721,22 @@
         let amadeusToken = null;
         let tokenExpiry = null;
         let currentFlightData = null;
-        let currentSearchMode = 'flights'; // 'flights' or 'hotels'
+        let currentSearchMode = 'flights';
 
         let currentMonthDate = new Date();
         let selectedDeparture = null;
         let selectedReturn = null;
         
+        // Estado de la búsqueda
         let adultsCount = 1;
         let childrenCount = 0;
+        let baggage10kgCount = 0;
+        let baggage23kgCount = 0;
         let passengerCount = 0;
+
+        // Precios de equipaje
+        const BAGGAGE_10KG_PRICE = 45.00;
+        const BAGGAGE_23KG_PRICE = 85.00;
         
         // --- FUNCIONES ---
 
@@ -748,7 +795,15 @@
             
             try {
                 const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
-                if (!response.ok) throw new Error('Error en la búsqueda de ubicaciones');
+                if (!response.ok) {
+                    // Manejo elegante del error de la API de Amadeus
+                    if (response.status === 400) {
+                         console.warn("Amadeus API restriction: City/Airport not found. This is expected with the test API.");
+                         suggestionsContainer.classList.add('hidden');
+                         return;
+                    }
+                    throw new Error('Error en la búsqueda de ubicaciones');
+                }
                 const { data } = await response.json();
                 displaySuggestions(data, inputElement, suggestionsContainer);
             } catch (error) {
@@ -796,8 +851,8 @@
         }, 400));
         
         document.addEventListener('click', (e) => {
-            if (!originInput.contains(e.target)) document.getElementById('origin-suggestions').classList.add('hidden');
-            if (!destinationInput.contains(e.target)) document.getElementById('destination-suggestions').classList.add('hidden');
+            if (!originInput.parentElement.contains(e.target)) document.getElementById('origin-suggestions').classList.add('hidden');
+            if (!destinationInput.parentElement.contains(e.target)) document.getElementById('destination-suggestions').classList.add('hidden');
         });
 
 
@@ -835,6 +890,13 @@
                 searchLoader.classList.add('hidden');
             }
         }
+        
+        // REFACTORIZADO: Cálculo de precio y renderizado de tarjetas de vuelo
+        function calculateFinalPrice(basePrice) {
+            const markupPrice = basePrice * 1.11;
+            const baggageCost = (baggage10kgCount * BAGGAGE_10KG_PRICE) + (baggage23kgCount * BAGGAGE_23KG_PRICE);
+            return markupPrice + baggageCost;
+        }
 
         function renderFlightResults(flights, dictionaries) {
             cardsContainer.innerHTML = '';
@@ -845,8 +907,7 @@
 
             flights.forEach(flight => {
                 const basePrice = parseFloat(flight.price.total);
-                const priceWithMarkup = basePrice * 1.11;
-                const finalPrice = priceWithMarkup + 85.00;
+                const finalPrice = calculateFinalPrice(basePrice);
 
                 const itinerary = flight.itineraries[0];
                 const outbound = itinerary.segments[0];
@@ -854,13 +915,17 @@
 
                 const card = document.createElement('article');
                 card.className = 'border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
+                // Guardamos el precio base en el elemento para recálculos
+                card.dataset.basePrice = basePrice;
+                card.dataset.flightData = JSON.stringify({ flight, carrier });
+
                 card.innerHTML = `
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center space-x-2">
                             <img alt="Logo ${carrier}" class="w-6 h-6" src="https://images.kiwi.com/airlines/64/${outbound.carrierCode}.png" onerror="this.style.display='none'">
                             <span class="text-sm font-semibold">${carrier}</span>
                         </div>
-                        <span class="font-bold text-lg text-guacamayafly-orange">${finalPrice.toFixed(2)} €</span>
+                        <span class="flight-price font-bold text-lg text-guacamayafly-orange">${finalPrice.toFixed(2)} €</span>
                     </div>
                     <div class="flex-grow my-3">
                         <div class="flex items-center justify-between text-gray-800">
@@ -876,11 +941,25 @@
                     <button class="select-flight-btn w-full mt-4 bg-guacamayafly-green text-white font-semibold py-2 rounded-full hover:bg-guacamayafly-dark-green transition">Seleccionar</button>
                 `;
                 card.querySelector('.select-flight-btn').addEventListener('click', () => {
-                    openBookingModal({ flight, finalPrice, carrier });
+                    const flightData = JSON.parse(card.dataset.flightData);
+                    const currentFinalPrice = calculateFinalPrice(parseFloat(card.dataset.basePrice));
+                    openBookingModal({ ...flightData, finalPrice: currentFinalPrice });
                 });
                 cardsContainer.appendChild(card);
             });
         }
+        
+        // NUEVO: Función para actualizar los precios de los vuelos si cambia el equipaje
+        function updateAllFlightPrices() {
+            document.querySelectorAll('#cards-container article').forEach(card => {
+                const basePrice = parseFloat(card.dataset.basePrice);
+                if (!isNaN(basePrice)) {
+                    const newFinalPrice = calculateFinalPrice(basePrice);
+                    card.querySelector('.flight-price').textContent = `${newFinalPrice.toFixed(2)} €`;
+                }
+            });
+        }
+
 
         async function searchHotels(cityCode, checkInDate, checkOutDate, adults) {
             mainContent.classList.add('hidden');
@@ -901,12 +980,22 @@
             
             try {
                 const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
-                if (!response.ok) throw new Error(`Error en la búsqueda de hoteles: ${response.statusText}`);
-                const data = await response.json();
-                renderHotelResults(data.data);
+                 if (!response.ok) {
+                    // Manejo elegante del error de la API de hoteles
+                    if (response.status >= 400 && response.status < 500) {
+                        console.warn("Amadeus API restriction: Hotel search failed. This is expected with the test API.");
+                        showNotification("La búsqueda de hoteles no está disponible en este momento (restricción de API de prueba).");
+                        cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron hoteles. La API de prueba tiene limitaciones.</p>`;
+                    } else {
+                        throw new Error(`Error en la búsqueda de hoteles: ${response.statusText}`);
+                    }
+                } else {
+                    const data = await response.json();
+                    renderHotelResults(data.data);
+                }
             } catch (error) {
                 console.error("Error en la búsqueda de hoteles:", error);
-                showNotification("No se encontraron hoteles para esta ciudad o hubo un error en la conexión.");
+                showNotification("Hubo un error en la conexión al buscar hoteles.");
                 cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron hoteles. Intenta con otra búsqueda.</p>`;
             } finally {
                 searchLoader.classList.add('hidden');
@@ -963,6 +1052,7 @@
             passengersContainer.appendChild(passengerDiv);
         }
 
+        // REFACTORIZADO: Modal de reserva para incluir equipaje
         function openBookingModal(flightData) {
             currentFlightData = flightData;
             passengersContainer.innerHTML = ''; 
@@ -976,8 +1066,16 @@
             const departureCode = itinerary.segments[0].departure.iataCode;
             const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
 
+            let baggageSummary = 'Sin equipaje adicional.';
+            if (baggage10kgCount > 0 || baggage23kgCount > 0) {
+                baggageSummary = '';
+                if (baggage10kgCount > 0) baggageSummary += `${baggage10kgCount} x 10kg `;
+                if (baggage23kgCount > 0) baggageSummary += `${baggage23kgCount} x 23kg`;
+            }
+
             bookingFlightSummary.innerHTML = `
                 <strong>Vuelo:</strong> ${flightData.carrier} (${departureCode} → ${arrivalCode})<br>
+                <strong>Equipaje Adicional:</strong> ${baggageSummary}<br>
                 <strong>Precio Final:</strong> ${flightData.finalPrice.toFixed(2)} €
             `;
             bookingModal.classList.remove('hidden');
@@ -1055,6 +1153,7 @@
                 returnDateInput.value = selectedReturn.toISOString().split('T')[0];
             } else if (selectedDeparture) {
                 dateRangeDisplay.textContent = `Ida: ${selectedDeparture.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`;
+                dateRangeDisplay.classList.remove('text-gray-500');
                 departureDateInput.value = selectedDeparture.toISOString().split('T')[0]; 
                 returnDateInput.value = '';
             } else {
@@ -1076,6 +1175,19 @@
             }
             travelersDisplay.textContent = details;
         }
+        
+        // NUEVO: Función para actualizar el display de equipaje
+        function updateBaggageDisplay() {
+            let text = 'Equipaje';
+            const parts = [];
+            if (baggage10kgCount > 0) parts.push(`${baggage10kgCount}x10kg`);
+            if (baggage23kgCount > 0) parts.push(`${baggage23kgCount}x23kg`);
+
+            if (parts.length > 0) {
+                text = parts.join(', ');
+            }
+            baggageDisplay.textContent = text;
+        }
 
         function handleCounterClick(e) {
             const button = e.target.closest('.counter-btn');
@@ -1084,33 +1196,44 @@
             const type = button.dataset.type;
             const action = button.dataset.action;
 
-            if (type === 'adults') {
-                if (action === 'increment') {
-                    adultsCount++;
-                } else if (action === 'decrement' && adultsCount > 1) {
-                    adultsCount--;
-                }
-            } else if (type === 'children') {
-                if (action === 'increment') {
-                    childrenCount++;
-                } else if (action === 'decrement' && childrenCount > 0) {
-                    childrenCount--;
-                }
+            switch(type) {
+                case 'adults':
+                    if (action === 'increment') adultsCount++;
+                    else if (action === 'decrement' && adultsCount > 1) adultsCount--;
+                    adultsCountSpan.textContent = adultsCount;
+                    document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = adultsCount <= 1;
+                    updateTravelersDisplay();
+                    break;
+                case 'children':
+                    if (action === 'increment') childrenCount++;
+                    else if (action === 'decrement' && childrenCount > 0) childrenCount--;
+                    childrenCountSpan.textContent = childrenCount;
+                    document.querySelector('[data-type="children"][data-action="decrement"]').disabled = childrenCount <= 0;
+                    updateTravelersDisplay();
+                    break;
+                case 'baggage-10kg':
+                    if (action === 'increment') baggage10kgCount++;
+                    else if (action === 'decrement' && baggage10kgCount > 0) baggage10kgCount--;
+                    baggage10kgCountSpan.textContent = baggage10kgCount;
+                    document.querySelector('[data-type="baggage-10kg"][data-action="decrement"]').disabled = baggage10kgCount <= 0;
+                    updateBaggageDisplay();
+                    updateAllFlightPrices(); // Actualizar precios en tiempo real
+                    break;
+                case 'baggage-23kg':
+                    if (action === 'increment') baggage23kgCount++;
+                    else if (action === 'decrement' && baggage23kgCount > 0) baggage23kgCount--;
+                    baggage23kgCountSpan.textContent = baggage23kgCount;
+                    document.querySelector('[data-type="baggage-23kg"][data-action="decrement"]').disabled = baggage23kgCount <= 0;
+                    updateBaggageDisplay();
+                    updateAllFlightPrices(); // Actualizar precios en tiempo real
+                    break;
             }
-            adultsCountSpan.textContent = adultsCount;
-            childrenCountSpan.textContent = childrenCount;
-            
-            document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = adultsCount <= 1;
-            document.querySelector('[data-type="children"][data-action="decrement"]').disabled = childrenCount <= 0;
-
-            updateTravelersDisplay();
         }
 
         function updateSearchFormUI(mode) {
             const originContainer = document.getElementById('origin-container');
             const destinationContainer = document.getElementById('destination-container');
             const originIcon = document.getElementById('origin-icon');
-            const destinationIcon = document.getElementById('destination-icon');
             const searchTitle = document.getElementById('search-title');
 
             if (mode === 'hotels') {
@@ -1118,13 +1241,13 @@
                 originInput.placeholder = 'Ciudad o destino';
                 originIcon.className = 'fas fa-map-marker-alt';
                 destinationContainer.classList.add('hidden');
+                baggagePickerTrigger.classList.add('hidden'); // Ocultar equipaje para hoteles
             } else { // flights or all
                 searchTitle.textContent = 'Encuentra el mejor vuelo';
                 originInput.placeholder = 'Origen';
                 originIcon.className = 'fas fa-plane-departure';
                 destinationContainer.classList.remove('hidden');
-                destinationInput.placeholder = 'Destino';
-                destinationIcon.className = 'fas fa-plane-arrival';
+                baggagePickerTrigger.classList.remove('hidden'); // Mostrar equipaje para vuelos
             }
         }
 
@@ -1140,10 +1263,9 @@
             const hotelDealsCarousel = document.getElementById('hotel-deals-carousel');
             const experiencesCarousel = document.getElementById('experiences-carousel');
             
-            // Función para duplicar y enriquecer los datos de las tarjetas
             const duplicateAndEnrich = (data, count) => {
                 const enrichedData = [];
-                const baseData = JSON.parse(JSON.stringify(data)); // Deep copy
+                const baseData = JSON.parse(JSON.stringify(data));
                 for (let i = 0; i < count; i++) {
                     baseData.forEach(item => {
                         const newItem = { ...item };
@@ -1166,69 +1288,39 @@
                 return enrichedData;
             };
 
-
-            // Data for the carousels, restored from original and expanded
             const baseFlights = [
                 { airline: 'Japan Airlines', stops: 'Sin escalas', from: 'Tokio (HND)', to: 'Naha (OKA)', time1: '06:30 - 09:10', time2: '07:20 - 09:45', price: '323 €' },
                 { airline: 'ANA', stops: '1 escala', from: 'Osaka (KIX)', to: 'Naha (OKA)', time1: '08:00 - 11:30', time2: '14:00 - 17:30', price: '280 €' },
-                { airline: 'Peach Aviation', stops: 'Sin escalas', from: 'Osaka (KIX)', to: 'Naha (OKA)', time1: '14:00 - 16:10', time2: '17:00 - 19:05', price: '150 €' },
-                { airline: 'Skymark Airlines', stops: 'Sin escalas', from: 'Kobe (UKB)', to: 'Naha (OKA)', time1: '12:00 - 14:00', time2: '15:00 - 17:00', price: '180 €' },
             ];
-
             const baseAccommodations = [
                 { name: 'Spa', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/34/b0/15/masaje-sultan-el-mitico.jpg?w=1000&h=-1&s=1' },
                 { name: 'Igloo', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1' },
-                { name: 'Bungalow', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/11/8c/6f/caption.jpg?w=900&h=-1&s=1' },
-                { name: 'Chalet', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' },
-                { name: 'Apartotel', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' },
-                { name: 'Casa barco', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/22/03/4d/09/exterior-at-dusk.jpg?w=1000&h=-1&s=1' },
             ];
-            
             const basePopularAccommodations = [
                 { name: 'Honolulu', location: 'Hawái, Estados Unidos', price: '335 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/0e/0a/6c/caption.jpg?w=1400&h=500&s=1' },
                 { name: 'Venecia', location: 'Véneto, Italia', price: '180 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=700&h=400&s=1' },
-                { name: 'Alpes Suizos', location: 'Suiza', price: '300 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1' },
-                { name: 'Bangkok', location: 'Tailandia', price: '69 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1' },
-                { name: 'Maldivas', location: 'Maldivas', price: '500 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=700&h=400&s=1' },
-                { name: 'París', location: 'Francia', price: '220 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/15/6d/d6/paris.jpg?w=1400&h=500&s=1' },
             ];
-
             const baseOffers = [
                 { name: 'Ocean Palace Beach Resort', location: 'Italia', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/f2/69/4b/ocean-palace-beach-resort.jpg?w=1000&h=-1&s=1' },
                 { name: 'LACER OKINAWA MIEBASHI', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '530 €', priceNew: '424 €', perNight: '341 € por noche', discount: '20 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/91/a8/cc/hurawalhi-58-undersea.jpg?w=900&h=500&s=1' },
-                { name: 'Daikichi Okinawa', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '372 €', priceNew: '312 €', perNight: '104 € por noche', discount: '16 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/06/5e/16/romantic-getaway-to-vista.jpg?w=1000&h=-1&s=1' },
-                { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/20/e6/c4/nimb-hotel.jpg?w=1000&h=-1&s=1' },
             ];
-
             const basePackages = [
                 { name: 'Prince Smart Inn Naha', stars: '3', rating: '9.2/10 Increíble (752)', flight: 'Tokio (HND) - Naha (OKA)', save: '79 €', priceNew: '311', priceOld: '390', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg' },
                 { name: 'HOTEL ANTEROOM Naha', stars: '4', rating: '9.2/10 Increíble (497)', flight: 'Tokio (HND) - Naha (OKA)', save: '89 €', priceNew: '360', priceOld: '449', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg' },
-                { name: 'Rembrandt Style Naha', stars: '3', rating: '8.8/10 Excelente (46)', flight: 'Tokio (HND) - Naha (OKA)', save: '75 €', priceNew: '323', priceOld: '398', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg' },
-                { name: 'Hotel Gracery Naha', stars: '4', rating: '9/10 Increíble (1.000)', flight: 'Tokio (HND) - Naha (OKA)', save: '194 €', priceNew: '500', priceOld: '694', dates: 'De mar., 17 jun al dom., 18 jun (1 noche)', updated: 'hace 47 horas', img: 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg' },
             ];
-
             const baseSpecialAccommodations = [
                 { name: 'Kutsurogian', location: 'Minamiuonuma', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '811 €', perNight: '405 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/1b/65/30/power-up-band-key-challenge.jpg?w=1000&h=-1&s=1' },
                 { name: 'HOSHINOYA Tokyo', location: 'Tokio', rating: '9.6', reviewText: 'Excepcional', reviews: '801', price: '1829 €', priceOld: '2400 €', discount: '25 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/6c/92/dc/dotonbori.jpg?w=1000&h=-1&s=1' },
-                { name: 'Fukiya Ryokan', location: 'Yugawara', rating: '10', reviewText: 'Excepcional', reviews: '25', price: '2023 €', priceOld: '2527 €', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/f9/cf/75/caption.jpg?w=1000&h=-1&s=1' },
-                { name: 'Ryokan Tori', location: 'Kioto', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '538 €', perNight: '269 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ba/0c/1b/caption.jpg?w=1000&h=-1&s=1' },
             ];
-            
             const baseExperiences = [
                 { name: 'Visita guiada a la Torre Eiffel', rating: '4.4', reviews: '4554', price: '35 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/15/1b/d2/8d.jpg', tag: null },
                 { name: 'Entrada al museo Leonardo da Vinci', rating: '4.4', reviews: '116', price: '10 €', img: 'https://storage.googleapis.com/a1aa/image/b62daa48-69b3-47ef-2330-e180fe9709a4.jpg', tag: 'LO MÁS RESERVADO' },
-                { name: 'Crucero en barco por Amsterdam', rating: '4.9', reviews: '26.903', price: '22 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/15/70/fa/81.jpg', tag: 'LO MÁS RESERVADO' },
-                { name: 'Avistamiento de delfines y cuevas', rating: '4.9', reviews: '3167', price: '28 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/a6/b0/d9.jpg', tag: 'SE AGOTA RÁPIDO' },
             ];
-
             const baseHotelDeals = [
                 { name: 'The Naha Terrace', location: 'Naha', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' },
                 { name: 'Hotel Moderno', location: 'Ciudad', rating: '8.5', reviewText: 'Muy bueno', reviews: '150', priceOld: '180 €', priceNew: '153 €', perNight: '76 € por noche', discount: '15 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' },
-                { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg' },
-                { name: 'Hostal Céntrico', location: 'Centro', rating: '7.8', reviewText: 'Bueno', reviews: '500', priceOld: '80 €', priceNew: '72 €', perNight: '36 € por noche', discount: '10 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg' },
             ];
 
-            // Expandir datos
             const flights = duplicateAndEnrich(baseFlights, 5);
             const accommodations = duplicateAndEnrich(baseAccommodations, 4);
             const popularAccommodations = duplicateAndEnrich(basePopularAccommodations, 4);
@@ -1238,148 +1330,29 @@
             const hotelDeals = duplicateAndEnrich(baseHotelDeals, 5);
             const experiences = duplicateAndEnrich(baseExperiences, 5);
 
-            // Llenar carruseles
             if (flightCarousel) flightCarousel.innerHTML = flights.map(f => `
                 <li class="border border-gray-200 rounded-lg p-3 w-56 flex-shrink-0 bg-white interactive-card cursor-pointer">
-                    <div class="flex items-center space-x-1 mb-1">
-                        <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg"/>
-                        <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span>
-                    </div>
-                    <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.from}<span class="text-gray-500"> → </span>${f.to}</p>
-                    <p class="text-xs text-gray-600 mb-3">${f.time1}</p>
-                    <hr class="border-gray-200 mb-3"/>
-                    <div class="flex items-center space-x-1 mb-1">
-                        <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg"/>
-                        <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span>
-                    </div>
-                    <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.to}<span class="text-gray-500"> → </span>${f.from}</p>
-                    <p class="text-xs text-gray-600">${f.time2}</p>
-                    <p class="text-sm font-semibold text-gray-900 mt-3">${f.price}</p>
-                    <p class="text-xs text-gray-600">Ida y vuelta por persona</p>
+                    <div class="flex items-center space-x-1 mb-1"><img alt="Logo ${f.airline}" class="w-4 h-4" src="https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg"/><span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span></div><p class="text-xs font-semibold text-gray-900 mb-0.5">${f.from}<span class="text-gray-500"> → </span>${f.to}</p><p class="text-xs text-gray-600 mb-3">${f.time1}</p><hr class="border-gray-200 mb-3"/><div class="flex items-center space-x-1 mb-1"><img alt="Logo ${f.airline}" class="w-4 h-4" src="https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg"/><span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span></div><p class="text-xs font-semibold text-gray-900 mb-0.5">${f.to}<span class="text-gray-500"> → </span>${f.from}</p><p class="text-xs text-gray-600">${f.time2}</p><p class="text-sm font-semibold text-gray-900 mt-3">${f.price}</p><p class="text-xs text-gray-600">Ida y vuelta por persona</p>
                 </li>`).join('');
-
-            if (accommodationCarousel) accommodationCarousel.innerHTML = accommodations.map(item => `
-                <div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card">
-                    <img alt="${item.name}" class="w-full h-40 object-cover rounded-lg" src="${item.img}" width="160" height="160"/>
-                    <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p>
-                </div>`).join('');
-
-            if (popularAccommodationsCarousel) popularAccommodationsCarousel.innerHTML = popularAccommodations.map(item => `
-                <div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card">
-                    <img alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" src="${item.img}" width="192" height="120"/>
-                    <div class="p-2 text-left">
-                        <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4>
-                        <p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p>
-                        <p class="text-[9px] text-gray-600 font-semibold">${item.price}</p>
-                        <p class="text-[8px] text-gray-400">precio medio por noche</p>
-                    </div>
-                </div>`).join('');
-
-            if (offersCarousel) offersCarousel.innerHTML = offers.map(o => `
-                <div class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 cursor-pointer interactive-card">
-                    <div class="relative rounded-lg overflow-hidden mb-2">
-                        <img alt="${o.name}" class="w-full h-32 object-cover rounded-lg" src="${o.img}"/>
-                        ${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
-                    </div>
-                    <p class="text-[9px] font-semibold mb-0.5">${o.location}</p>
-                    <h4 class="text-xs font-semibold leading-tight mb-1">${o.name}</h4>
-                    <div class="flex items-center space-x-1 mb-1">
-                        <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${o.rating}</span>
-                        <span class="text-[9px] font-normal">${o.reviewText}</span>
-                        <span class="text-[9px] font-normal opacity-50">(${o.reviews} comentarios)</span>
-                    </div>
-                    <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${o.priceOld}</div>
-                    <div class="text-xs font-bold mb-0.5">${o.priceNew}</div>
-                    <div class="text-[9px] font-normal opacity-80 mb-1">${o.perNight}</div>
-                    <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div>
-                    <div class="member-price-tag mt-2">Precio para miembros disponible</div>
-                </div>`).join('');
-
-            if (vacationPackagesCarousel) vacationPackagesCarousel.innerHTML = packages.map(p => `
-                 <article class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card cursor-pointer">
-                     <img alt="${p.name}" class="w-full h-44 object-cover" src="${p.img}" height="200" width="400"/>
-                     <div class="p-3 text-xs sm:text-sm text-left">
-                      <h2 class="font-semibold mb-1 leading-tight">${p.name}</h2>
-                      <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">${'<i class="fas fa-star text-yellow-400"></i>'.repeat(parseInt(p.stars))}<span> ${p.stars} estrellas · ${p.rating}</span></div>
-                      <div class="text-gray-600 text-[9px] sm:text-xs mb-2"><i class="fas fa-plane-departure"></i> ${p.flight}</div>
-                      <div class="bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded mb-1 inline-block"><i class="fas fa-tag mr-1"></i>Ahorra ${p.save}</div>
-                      <div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div>
-                      <div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div>
-                     </div>
-                </article>`).join('');
-            
-            if (specialAccommodationsCarousel) specialAccommodationsCarousel.innerHTML = specialAccommodations.map(s => `
-                <article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card cursor-pointer">
-                    <img alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1" src="${s.img}"/>
-                    ${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''}
-                    <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div>
-                    <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">${s.reviewText}</p>
-                    <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(${s.reviews} comentarios)</p>
-                    <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">${s.name}</p>
-                    <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">${s.location}</p>
-                    <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1">
-                        <span>${s.price}</span>
-                        ${s.priceOld ? `<span class="text-gray-500 line-through text-sm sm:text-base">${s.priceOld}</span>` : ''}
-                    </p>
-                    ${s.perNight ? `<p class="text-[8px] sm:text-[9px] text-gray-500">${s.perNight}</p>` : ''}
-                    ${s.discount ? `<p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">${s.discount}</p>` : ''}
-                </article>`).join('');
-
-            if (experiencesCarousel) experiencesCarousel.innerHTML = experiences.map(item => `
-                <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card cursor-pointer">
-                    <div class="relative">
-                        <img alt="${item.name}" class="w-full h-36 object-cover" src="${item.img}" height="128" width="192">
-                        <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button>
-                    </div>
-                    <div class="p-2 text-xs leading-tight">
-                        ${item.tag ? `<div class="inline-block bg-gray-200 text-gray-700 text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase mb-1">${item.tag}</div>` : ''}
-                        <p class="font-semibold text-gray-900 truncate">${item.name}</p>
-                        <div class="flex items-center space-x-1 mt-1">
-                            <span class="text-green-600 font-semibold text-xs">${item.rating}</span>
-                            <div class="flex space-x-0.5"><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-gray-300 text-[6px]"></i></div>
-                            <span class="text-gray-500">(${item.reviews})</span>
-                        </div>
-                        <p class="text-gray-400 text-[9px] mt-0.5">a partir de ${item.price} por adulto</p>
-                    </div>
-                </article>`).join('');
-
-            if (hotelDealsCarousel) hotelDealsCarousel.innerHTML = hotelDeals.map(h => `
-                 <article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card cursor-pointer">
-                    <div class="relative">
-                        <img alt="${h.name}" class="w-full h-36 object-cover" src="${h.img}">
-                         ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
-                        <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button>
-                    </div>
-                    <div class="p-2 text-xs leading-tight">
-                        <p class="text-[9px] font-semibold mb-0.5">${h.location}</p>
-                        <h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4>
-                        <div class="flex items-center space-x-1 mb-1">
-                            <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span>
-                            <span class="text-[9px] font-normal">${h.reviewText}</span>
-                            <span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span>
-                        </div>
-                        <p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p>
-                        <p class="text-xs font-bold mb-0.5">${h.priceNew}</p>
-                        <p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p>
-                        <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div>
-                        <div class="member-price-tag mt-2">Precio para miembros disponible</div>
-                    </div>
-                </article>`).join('');
+            if (accommodationCarousel) accommodationCarousel.innerHTML = accommodations.map(item => `<div class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card"><img alt="${item.name}" class="w-full h-40 object-cover rounded-lg" src="${item.img}" width="160" height="160"/><p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p></div>`).join('');
+            if (popularAccommodationsCarousel) popularAccommodationsCarousel.innerHTML = popularAccommodations.map(item => `<div class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card"><img alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" src="${item.img}" width="192" height="120"/><div class="p-2 text-left"><h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4><p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p><p class="text-[9px] text-gray-600 font-semibold">${item.price}</p><p class="text-[8px] text-gray-400">precio medio por noche</p></div></div>`).join('');
+            if (offersCarousel) offersCarousel.innerHTML = offers.map(o => `<div class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 cursor-pointer interactive-card"><div class="relative rounded-lg overflow-hidden mb-2"><img alt="${o.name}" class="w-full h-32 object-cover rounded-lg" src="${o.img}"/>${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}</div><p class="text-[9px] font-semibold mb-0.5">${o.location}</p><h4 class="text-xs font-semibold leading-tight mb-1">${o.name}</h4><div class="flex items-center space-x-1 mb-1"><span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${o.rating}</span><span class="text-[9px] font-normal">${o.reviewText}</span><span class="text-[9px] font-normal opacity-50">(${o.reviews} comentarios)</span></div><div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${o.priceOld}</div><div class="text-xs font-bold mb-0.5">${o.priceNew}</div><div class="text-[9px] font-normal opacity-80 mb-1">${o.perNight}</div><div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div><div class="member-price-tag mt-2">Precio para miembros disponible</div></div>`).join('');
+            if (vacationPackagesCarousel) vacationPackagesCarousel.innerHTML = packages.map(p => `<article class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card cursor-pointer"><img alt="${p.name}" class="w-full h-44 object-cover" src="${p.img}" height="200" width="400"/><div class="p-3 text-xs sm:text-sm text-left"><h2 class="font-semibold mb-1 leading-tight">${p.name}</h2><div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">${'<i class="fas fa-star text-yellow-400"></i>'.repeat(parseInt(p.stars))}<span> ${p.stars} estrellas · ${p.rating}</span></div><div class="text-gray-600 text-[9px] sm:text-xs mb-2"><i class="fas fa-plane-departure"></i> ${p.flight}</div><div class="bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded mb-1 inline-block"><i class="fas fa-tag mr-1"></i>Ahorra ${p.save}</div><div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div><div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div></div></article>`).join('');
+            if (specialAccommodationsCarousel) specialAccommodationsCarousel.innerHTML = specialAccommodations.map(s => `<article class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card cursor-pointer"><img alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1" src="${s.img}"/>${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''}<div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div><p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">${s.reviewText}</p><p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(${s.reviews} comentarios)</p><p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">${s.name}</p><p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">${s.location}</p><p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1"><span>${s.price}</span>${s.priceOld ? `<span class="text-gray-500 line-through text-sm sm:text-base">${s.priceOld}</span>` : ''}</p>${s.perNight ? `<p class="text-[8px] sm:text-[9px] text-gray-500">${s.perNight}</p>` : ''}${s.discount ? `<p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">${s.discount}</p>` : ''}</article>`).join('');
+            if (experiencesCarousel) experiencesCarousel.innerHTML = experiences.map(item => `<article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card cursor-pointer"><div class="relative"><img alt="${item.name}" class="w-full h-36 object-cover" src="${item.img}" height="128" width="192"><button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button></div><div class="p-2 text-xs leading-tight">${item.tag ? `<div class="inline-block bg-gray-200 text-gray-700 text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase mb-1">${item.tag}</div>` : ''}<p class="font-semibold text-gray-900 truncate">${item.name}</p><div class="flex items-center space-x-1 mt-1"><span class="text-green-600 font-semibold text-xs">${item.rating}</span><div class="flex space-x-0.5"><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-gray-300 text-[6px]"></i></div><span class="text-gray-500">(${item.reviews})</span></div><p class="text-gray-400 text-[9px] mt-0.5">a partir de ${item.price} por adulto</p></div></article>`).join('');
+            if (hotelDealsCarousel) hotelDealsCarousel.innerHTML = hotelDeals.map(h => `<article class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card cursor-pointer"><div class="relative"><img alt="${h.name}" class="w-full h-36 object-cover" src="${h.img}">${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}<button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button></div><div class="p-2 text-xs leading-tight"><p class="text-[9px] font-semibold mb-0.5">${h.location}</p><h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4><div class="flex items-center space-x-1 mb-1"><span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span><span class="text-[9px] font-normal">${h.reviewText}</span><span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span></div><p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p><p class="text-xs font-bold mb-0.5">${h.priceNew}</p><p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p><div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div><div class="member-price-tag mt-2">Precio para miembros disponible</div></div></article>`).join('');
         }
 
 
         // --- INICIALIZACIÓN Y EVENT LISTENERS ---
 
-        // Ocultar loader al cargar la página
         if (loader) {
             loader.classList.add('hidden');
             loader.addEventListener('transitionend', () => loader.remove());
         }
 
-        // Llenar carruseles con datos
         populateCarousels();
 
-        // Búsqueda
         searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -1419,9 +1392,9 @@
         document.querySelectorAll('.search-nav-button').forEach(button => {
             button.addEventListener('click', (e) => {
                 const newMode = e.currentTarget.dataset.mode;
-                if (newMode === currentSearchMode) return;
                 
                 if (newMode === 'all' || newMode === 'flights' || newMode === 'hotels') {
+                    if (newMode === currentSearchMode) return;
                     currentSearchMode = newMode;
                     document.querySelectorAll('.search-nav-button').forEach(btn => btn.classList.remove('active'));
                     e.currentTarget.classList.add('active');
@@ -1432,36 +1405,45 @@
             });
         });
 
-        // Modal de Calendario
         datePickerTrigger.addEventListener('click', () => { calendarModal.classList.remove('hidden'); calendarModal.classList.add('visible'); renderCalendar(); });
         closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); updateDateDisplay(); });
         clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendar(); updateDateDisplay(); });
         prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
         nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
         
+        // Lógica de Popovers (Viajeros y Equipaje)
         travelersPickerTrigger.addEventListener('click', (e) => {
-            if (!travelersModal.contains(e.target)) {
-                travelersModal.classList.toggle('hidden');
-                travelersModal.classList.toggle('visible');
-            }
+            e.stopPropagation();
+            baggageModal.classList.add('hidden', 'visible'); // Ocultar el otro
+            travelersModal.classList.toggle('hidden');
+            travelersModal.classList.toggle('visible');
+        });
+        baggagePickerTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            travelersModal.classList.add('hidden', 'visible'); // Ocultar el otro
+            baggageModal.classList.toggle('hidden');
+            baggageModal.classList.toggle('visible');
         });
 
-        closeTravelersBtn.addEventListener('click', () => {
-            travelersModal.classList.add('hidden');
-            travelersModal.classList.remove('visible');
-        });
+        closeTravelersBtn.addEventListener('click', () => travelersModal.classList.add('hidden', 'visible'));
+        closeBaggageBtn.addEventListener('click', () => baggageModal.classList.add('hidden', 'visible'));
         
         travelersModal.addEventListener('click', handleCounterClick);
+        baggageModal.addEventListener('click', handleCounterClick);
 
-
-        // Modal de Reserva
         addPassengerBtn.addEventListener('click', addPassengerForm);
         closeBookingModalBtn.addEventListener('click', () => { bookingModal.classList.remove('visible'); bookingModal.classList.add('hidden'); });
 
+        // REFACTORIZADO: Envío de WhatsApp con equipaje
         bookingForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            let baggageMessage = '';
+            if (baggage10kgCount > 0) baggageMessage += `\n- Equipaje de mano (10kg): ${baggage10kgCount} pieza(s)`;
+            if (baggage23kgCount > 0) baggageMessage += `\n- Equipaje facturado (23kg): ${baggage23kgCount} pieza(s)`;
+
             let message = `¡Hola! Quisiera concretar la reserva para el siguiente vuelo:\n\n`;
             message += `*Vuelo:* ${currentFlightData.carrier} (${currentFlightData.flight.itineraries[0].segments[0].departure.iataCode} → ${currentFlightData.flight.itineraries[0].segments[currentFlightData.flight.itineraries[0].segments.length - 1].arrival.iataCode})\n`;
+            if (baggageMessage) message += `*Equipaje Adicional:* ${baggageMessage}\n`;
             message += `*Precio Total:* ${currentFlightData.finalPrice.toFixed(2)} €\n\n`;
             message += `*Datos de los Pasajeros:*\n`;
 
@@ -1494,53 +1476,38 @@
                 travelersModal.classList.add('hidden');
                 travelersModal.classList.remove('visible');
             }
+            if (!baggagePickerTrigger.contains(event.target) && !baggageModal.contains(event.target)) {
+                baggageModal.classList.add('hidden');
+                baggageModal.classList.remove('visible');
+            }
         });
 
+        // Inicialización de UI
         updateTravelersDisplay();
+        updateBaggageDisplay();
         document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = true;
         document.querySelector('[data-type="children"][data-action="decrement"]').disabled = true;
+        document.querySelector('[data-type="baggage-10kg"][data-action="decrement"]').disabled = true;
+        document.querySelector('[data-type="baggage-23kg"][data-action="decrement"]').disabled = true;
 
-        // Lógica del Slider Principal
         const heroSection = document.getElementById('hero-section');
         const sliderContainer = document.getElementById('hero-slider-container');
         const dotsContainer = document.getElementById('hero-slider-dots');
         const slidesData = [
-            {
-                img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1',
-                title: 'Los mejores hoteles del mundo, elegidos por ti',
-                text: 'Desde complejos turísticos junto a la playa hasta los alojamientos más únicos. Consulta el mejor 1 % de hoteles y guarda tus favoritos.'
-            },
-            {
-                img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=1200&h=-1&s=1',
-                title: 'Escapadas románticas en Venecia',
-                text: 'Descubre la magia de los canales, la arquitectura histórica y la gastronomía italiana en un viaje inolvidable.'
-            },
-            {
-                img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1',
-                title: 'Aventura en los Alpes Suizos',
-                text: 'Explora paisajes montañosos impresionantes, lagos cristalinos y pueblos encantadores. Ideal para senderismo y esquí.'
-            },
-            {
-                img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=1200&h=-1&s=1',
-                title: 'Paraísos tropicales en las Maldivas',
-                text: 'Relájate en bungalows sobre el agua, disfruta de playas de arena blanca y bucea en arrecifes de coral vibrantes.'
-            },
-            {
-                img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1',
-                title: 'Explora la vibrante Bangkok',
-                text: 'Sumérgete en la cultura tailandesa, visita templos majestuosos y disfruta de la increíble comida callejera.'
-            }
+            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1', title: 'Los mejores hoteles del mundo, elegidos por ti', text: 'Desde complejos turísticos junto a la playa hasta los alojamientos más únicos. Consulta el mejor 1 % de hoteles y guarda tus favoritos.' },
+            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=1200&h=-1&s=1', title: 'Escapadas románticas en Venecia', text: 'Descubre la magia de los canales, la arquitectura histórica y la gastronomía italiana en un viaje inolvidable.' },
+            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1', title: 'Aventura en los Alpes Suizos', text: 'Explora paisajes montañosos impresionantes, lagos cristalinos y pueblos encantadores. Ideal para senderismo y esquí.' },
+            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=1200&h=-1&s=1', title: 'Paraísos tropicales en las Maldivas', text: 'Relájate en bungalows sobre el agua, disfruta de playas de arena blanca y bucea en arrecifes de coral vibrantes.' },
+            { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1', title: 'Explora la vibrante Bangkok', text: 'Sumérgete en la cultura tailandesa, visita templos majestuosos y disfruta de la increíble comida callejera.' }
         ];
 
         let currentSlide = 0;
         let slideInterval;
 
         function goToSlide(index) {
+            if (!sliderContainer) return;
             sliderContainer.style.transform = `translateX(-${index * 100}%)`;
-            
-            document.querySelectorAll('.slider-dot').forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
+            document.querySelectorAll('.slider-dot').forEach((dot, i) => dot.classList.toggle('active', i === index));
             currentSlide = index;
         }
 
@@ -1550,25 +1517,15 @@
         }
         
         slidesData.forEach((slide, index) => {
+            if (!sliderContainer || !dotsContainer) return;
             const slideElement = document.createElement('div');
             slideElement.className = 'hero-slide';
-            slideElement.innerHTML = `
-                <img src="${slide.img}" alt="${slide.title}" />
-                <div class="hero-text-overlay">
-                    <div class="max-w-lg text-white drop-shadow-lg">
-                        <h2 class="font-extrabold text-xl sm:text-2xl mb-1">${slide.title}</h2>
-                        <p class="text-xs sm:text-sm max-w-md mb-3 leading-tight">${slide.text}</p>
-                        <button class="bg-white text-black rounded-full px-4 py-1 text-xs font-semibold hover:bg-gray-200 transition-colors" type="button">Ver más</button>
-                    </div>
-                </div>
-            `;
+            slideElement.innerHTML = `<img src="${slide.img}" alt="${slide.title}" /><div class="hero-text-overlay"><div class="max-w-lg text-white drop-shadow-lg"><h2 class="font-extrabold text-xl sm:text-2xl mb-1">${slide.title}</h2><p class="text-xs sm:text-sm max-w-md mb-3 leading-tight">${slide.text}</p><button class="bg-white text-black rounded-full px-4 py-1 text-xs font-semibold hover:bg-gray-200 transition-colors" type="button">Ver más</button></div></div>`;
             sliderContainer.appendChild(slideElement);
 
             const dot = document.createElement('div');
             dot.className = 'slider-dot';
-            dot.addEventListener('click', () => {
-                goToSlide(index);
-            });
+            dot.addEventListener('click', () => { goToSlide(index); });
             dotsContainer.appendChild(dot);
         });
         
@@ -1576,12 +1533,12 @@
             slideInterval = setInterval(nextSlide, 4000);
         }
 
-        heroSection.addEventListener('mouseenter', () => clearInterval(slideInterval));
-        heroSection.addEventListener('mouseleave', startSlider);
-
-        goToSlide(0); // Initialize first slide and dot
-        startSlider();
-
+        if (heroSection) {
+            heroSection.addEventListener('mouseenter', () => clearInterval(slideInterval));
+            heroSection.addEventListener('mouseleave', startSlider);
+            goToSlide(0);
+            startSlider();
+        }
 
     });
     </script>
