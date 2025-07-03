@@ -668,6 +668,45 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // --- BASE DE DATOS LOCAL DE AEROPUERTOS ---
+        const airportsDb = [
+            // Venezuela
+            { name: 'Aeropuerto Internacional de Maiquetía Simón Bolívar', city: 'Caracas', country: 'Venezuela', iata: 'CCS', searchTerms: 'caracas venezuela ccs maiquetia' },
+            { name: 'Aeropuerto Internacional La Chinita', city: 'Maracaibo', country: 'Venezuela', iata: 'MAR', searchTerms: 'maracaibo venezuela mar la chinita' },
+            { name: 'Aeropuerto Internacional Arturo Michelena', city: 'Valencia', country: 'Venezuela', iata: 'VLN', searchTerms: 'valencia venezuela vln arturo michelena' },
+            { name: 'Aeropuerto Internacional General José Antonio Anzoátegui', city: 'Barcelona', country: 'Venezuela', iata: 'BLA', searchTerms: 'barcelona venezuela bla jose antonio anzoategui' },
+            { name: 'Aeropuerto Internacional Del Caribe Santiago Mariño', city: 'Porlamar', country: 'Venezuela', iata: 'PMV', searchTerms: 'porlamar venezuela pmv santiago marino margarita' },
+
+            // Colombia
+            { name: 'Aeropuerto Internacional El Dorado', city: 'Bogotá', country: 'Colombia', iata: 'BOG', searchTerms: 'bogota colombia bog el dorado' },
+            { name: 'Aeropuerto Internacional José María Córdova', city: 'Medellín', country: 'Colombia', iata: 'MDE', searchTerms: 'medellin colombia mde jose maria cordova' },
+            { name: 'Aeropuerto Internacional Rafael Núñez', city: 'Cartagena', country: 'Colombia', iata: 'CTG', searchTerms: 'cartagena colombia ctg rafael nunez' },
+            { name: 'Aeropuerto Internacional Alfonso Bonilla Aragón', city: 'Cali', country: 'Colombia', iata: 'CLO', searchTerms: 'cali colombia clo alfonso bonilla aragon' },
+
+            // Chile
+            { name: 'Aeropuerto Internacional Arturo Merino Benítez', city: 'Santiago de Chile', country: 'Chile', iata: 'SCL', searchTerms: 'santiago de chile chile scl arturo merino benitez' },
+            { name: 'Aeropuerto Internacional Diego Aracena', city: 'Iquique', country: 'Chile', iata: 'IQQ', searchTerms: 'iquique chile iqq diego aracena' },
+            { name: 'Aeropuerto El Loa', city: 'Calama', country: 'Chile', iata: 'CJC', searchTerms: 'calama chile cjc el loa' },
+
+            // Argentina
+            { name: 'Aeropuerto Internacional Ministro Pistarini', city: 'Buenos Aires', country: 'Argentina', iata: 'EZE', searchTerms: 'buenos aires argentina eze ministro pistarini ezeiza' },
+            { name: 'Aeroparque Jorge Newbery', city: 'Buenos Aires', country: 'Argentina', iata: 'AEP', searchTerms: 'buenos aires argentina aep jorge newbery aeroparque' },
+            { name: 'Aeropuerto Internacional Ingeniero Aeronáutico Ambrosio L.V. Taravella', city: 'Córdoba', country: 'Argentina', iata: 'COR', searchTerms: 'cordoba argentina cor pajas blancas' },
+
+            // España
+            { name: 'Aeropuerto Adolfo Suárez Madrid-Barajas', city: 'Madrid', country: 'España', iata: 'MAD', searchTerms: 'madrid españa mad adolfo suarez barajas' },
+            { name: 'Aeropuerto de Barcelona-El Prat', city: 'Barcelona', country: 'España', iata: 'BCN', searchTerms: 'barcelona españa bcn el prat' },
+
+            // EEUU
+            { name: 'Aeropuerto Internacional de Miami', city: 'Miami', country: 'Estados Unidos', iata: 'MIA', searchTerms: 'miami estados unidos usa mia' },
+            { name: 'Aeropuerto Internacional John F. Kennedy', city: 'Nueva York', country: 'Estados Unidos', iata: 'JFK', searchTerms: 'nueva york new york estados unidos usa jfk' },
+            
+            // Otros
+            { name: 'Aeropuerto de Lisboa', city: 'Lisboa', country: 'Portugal', iata: 'LIS', searchTerms: 'lisboa portugal lis humberto delgado' },
+            { name: 'Aeropuerto Internacional de Tocumen', city: 'Panamá', country: 'Panamá', iata: 'PTY', searchTerms: 'panama pty tocumen' },
+        ];
+
+
         // --- CONSTANTES Y VARIABLES ---
         const loader = document.getElementById('loader');
         const searchForm = document.getElementById('search-form');
@@ -698,7 +737,6 @@
         const childrenCountSpan = document.getElementById('children-count');
         const travelersDisplay = document.getElementById('travelers-display');
 
-        // NUEVO: Selectores de Equipaje
         const baggagePickerTrigger = document.getElementById('baggage-picker-trigger');
         const baggageModal = document.getElementById('baggage-modal');
         const closeBaggageBtn = document.getElementById('close-baggage-btn');
@@ -727,14 +765,12 @@
         let selectedDeparture = null;
         let selectedReturn = null;
         
-        // Estado de la búsqueda
         let adultsCount = 1;
         let childrenCount = 0;
         let baggage10kgCount = 0;
         let baggage23kgCount = 0;
         let passengerCount = 0;
 
-        // Precios de equipaje
         const BAGGAGE_10KG_PRICE = 45.00;
         const BAGGAGE_23KG_PRICE = 85.00;
         
@@ -771,7 +807,7 @@
             }
         }
 
-        // --- Lógica de Búsqueda ---
+        // --- Lógica de Búsqueda (AHORA LOCAL) ---
 
         const debounce = (func, delay) => {
             let timeout;
@@ -781,34 +817,19 @@
             };
         };
 
-        async function searchLocations(keyword, inputElement, suggestionsContainer) {
-            if (keyword.length < 3) {
+        function searchLocations(keyword, inputElement, suggestionsContainer) {
+            if (keyword.length < 2) {
                 suggestionsContainer.innerHTML = '';
                 suggestionsContainer.classList.add('hidden');
                 return;
             }
             
-            const token = await getAmadeusToken();
-            if (!token) return;
-
-            const url = `https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY,AIRPORT&keyword=${keyword}`;
+            const lowerKeyword = keyword.toLowerCase();
+            const results = airportsDb.filter(airport => 
+                airport.searchTerms.toLowerCase().includes(lowerKeyword)
+            );
             
-            try {
-                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
-                if (!response.ok) {
-                    // Manejo elegante del error de la API de Amadeus
-                    if (response.status === 400) {
-                         console.warn("Amadeus API restriction: City/Airport not found. This is expected with the test API.");
-                         suggestionsContainer.classList.add('hidden');
-                         return;
-                    }
-                    throw new Error('Error en la búsqueda de ubicaciones');
-                }
-                const { data } = await response.json();
-                displaySuggestions(data, inputElement, suggestionsContainer);
-            } catch (error) {
-                console.error("Error buscando ubicaciones:", error);
-            }
+            displaySuggestions(results, inputElement, suggestionsContainer);
         }
 
         function displaySuggestions(suggestions, inputElement, suggestionsContainer) {
@@ -818,18 +839,18 @@
                     const item = document.createElement('div');
                     item.className = 'suggestion-item';
                     item.innerHTML = `
-                        <i class="fas ${suggestion.subType === 'CITY' ? 'fa-city' : 'fa-plane'} text-gray-400"></i>
+                        <i class="fas fa-plane text-gray-400"></i>
                         <div>
-                            <p>${suggestion.name} <span class="iata-code">${suggestion.iataCode}</span></p>
-                            <p class="text-xs text-gray-500">${suggestion.address.countryName}</p>
+                            <p>${suggestion.city} <span class="iata-code">${suggestion.iata}</span></p>
+                            <p class="text-xs text-gray-500">${suggestion.country}</p>
                         </div>
                     `;
                     item.addEventListener('click', () => {
-                        inputElement.value = `${suggestion.name} (${suggestion.iataCode})`;
+                        inputElement.value = `${suggestion.city} (${suggestion.iata})`;
                         if (inputElement.id === 'origin-input') {
-                            originIataInput.value = suggestion.iataCode;
+                            originIataInput.value = suggestion.iata;
                         } else {
-                            destinationIataInput.value = suggestion.iataCode;
+                            destinationIataInput.value = suggestion.iata;
                         }
                         suggestionsContainer.innerHTML = '';
                         suggestionsContainer.classList.add('hidden');
@@ -842,13 +863,13 @@
             }
         }
         
-        originInput.addEventListener('input', debounce(() => {
+        originInput.addEventListener('input', () => {
             searchLocations(originInput.value, originInput, document.getElementById('origin-suggestions'));
-        }, 400));
+        });
 
-        destinationInput.addEventListener('input', debounce(() => {
+        destinationInput.addEventListener('input', () => {
             searchLocations(destinationInput.value, destinationInput, document.getElementById('destination-suggestions'));
-        }, 400));
+        });
         
         document.addEventListener('click', (e) => {
             if (!originInput.parentElement.contains(e.target)) document.getElementById('origin-suggestions').classList.add('hidden');
@@ -891,7 +912,6 @@
             }
         }
         
-        // REFACTORIZADO: Cálculo de precio y renderizado de tarjetas de vuelo
         function calculateFinalPrice(basePrice) {
             const markupPrice = basePrice * 1.11;
             const baggageCost = (baggage10kgCount * BAGGAGE_10KG_PRICE) + (baggage23kgCount * BAGGAGE_23KG_PRICE);
@@ -915,7 +935,6 @@
 
                 const card = document.createElement('article');
                 card.className = 'border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
-                // Guardamos el precio base en el elemento para recálculos
                 card.dataset.basePrice = basePrice;
                 card.dataset.flightData = JSON.stringify({ flight, carrier });
 
@@ -949,7 +968,6 @@
             });
         }
         
-        // NUEVO: Función para actualizar los precios de los vuelos si cambia el equipaje
         function updateAllFlightPrices() {
             document.querySelectorAll('#cards-container article').forEach(card => {
                 const basePrice = parseFloat(card.dataset.basePrice);
@@ -981,7 +999,6 @@
             try {
                 const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
                  if (!response.ok) {
-                    // Manejo elegante del error de la API de hoteles
                     if (response.status >= 400 && response.status < 500) {
                         console.warn("Amadeus API restriction: Hotel search failed. This is expected with the test API.");
                         showNotification("La búsqueda de hoteles no está disponible en este momento (restricción de API de prueba).");
@@ -1052,7 +1069,6 @@
             passengersContainer.appendChild(passengerDiv);
         }
 
-        // REFACTORIZADO: Modal de reserva para incluir equipaje
         function openBookingModal(flightData) {
             currentFlightData = flightData;
             passengersContainer.innerHTML = ''; 
@@ -1176,7 +1192,6 @@
             travelersDisplay.textContent = details;
         }
         
-        // NUEVO: Función para actualizar el display de equipaje
         function updateBaggageDisplay() {
             let text = 'Equipaje';
             const parts = [];
@@ -1217,7 +1232,7 @@
                     baggage10kgCountSpan.textContent = baggage10kgCount;
                     document.querySelector('[data-type="baggage-10kg"][data-action="decrement"]').disabled = baggage10kgCount <= 0;
                     updateBaggageDisplay();
-                    updateAllFlightPrices(); // Actualizar precios en tiempo real
+                    updateAllFlightPrices();
                     break;
                 case 'baggage-23kg':
                     if (action === 'increment') baggage23kgCount++;
@@ -1225,13 +1240,12 @@
                     baggage23kgCountSpan.textContent = baggage23kgCount;
                     document.querySelector('[data-type="baggage-23kg"][data-action="decrement"]').disabled = baggage23kgCount <= 0;
                     updateBaggageDisplay();
-                    updateAllFlightPrices(); // Actualizar precios en tiempo real
+                    updateAllFlightPrices();
                     break;
             }
         }
 
         function updateSearchFormUI(mode) {
-            const originContainer = document.getElementById('origin-container');
             const destinationContainer = document.getElementById('destination-container');
             const originIcon = document.getElementById('origin-icon');
             const searchTitle = document.getElementById('search-title');
@@ -1241,13 +1255,13 @@
                 originInput.placeholder = 'Ciudad o destino';
                 originIcon.className = 'fas fa-map-marker-alt';
                 destinationContainer.classList.add('hidden');
-                baggagePickerTrigger.classList.add('hidden'); // Ocultar equipaje para hoteles
-            } else { // flights or all
+                baggagePickerTrigger.classList.add('hidden');
+            } else { 
                 searchTitle.textContent = 'Encuentra el mejor vuelo';
                 originInput.placeholder = 'Origen';
                 originIcon.className = 'fas fa-plane-departure';
                 destinationContainer.classList.remove('hidden');
-                baggagePickerTrigger.classList.remove('hidden'); // Mostrar equipaje para vuelos
+                baggagePickerTrigger.classList.remove('hidden');
             }
         }
 
@@ -1411,22 +1425,23 @@
         prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
         nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
         
-        // Lógica de Popovers (Viajeros y Equipaje)
         travelersPickerTrigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            baggageModal.classList.add('hidden', 'visible'); // Ocultar el otro
+            baggageModal.classList.add('hidden');
+            baggageModal.classList.remove('visible');
             travelersModal.classList.toggle('hidden');
             travelersModal.classList.toggle('visible');
         });
         baggagePickerTrigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            travelersModal.classList.add('hidden', 'visible'); // Ocultar el otro
+            travelersModal.classList.add('hidden');
+            travelersModal.classList.remove('visible');
             baggageModal.classList.toggle('hidden');
             baggageModal.classList.toggle('visible');
         });
 
-        closeTravelersBtn.addEventListener('click', () => travelersModal.classList.add('hidden', 'visible'));
-        closeBaggageBtn.addEventListener('click', () => baggageModal.classList.add('hidden', 'visible'));
+        closeTravelersBtn.addEventListener('click', () => {travelersModal.classList.add('hidden'); travelersModal.classList.remove('visible');});
+        closeBaggageBtn.addEventListener('click', () => {baggageModal.classList.add('hidden'); baggageModal.classList.remove('visible');});
         
         travelersModal.addEventListener('click', handleCounterClick);
         baggageModal.addEventListener('click', handleCounterClick);
@@ -1434,7 +1449,6 @@
         addPassengerBtn.addEventListener('click', addPassengerForm);
         closeBookingModalBtn.addEventListener('click', () => { bookingModal.classList.remove('visible'); bookingModal.classList.add('hidden'); });
 
-        // REFACTORIZADO: Envío de WhatsApp con equipaje
         bookingForm.addEventListener('submit', function(e) {
             e.preventDefault();
             let baggageMessage = '';
@@ -1482,7 +1496,6 @@
             }
         });
 
-        // Inicialización de UI
         updateTravelersDisplay();
         updateBaggageDisplay();
         document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = true;
