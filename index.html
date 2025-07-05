@@ -93,84 +93,75 @@
             padding: 0;
             max-height: 90vh;
             overflow: hidden;
+            max-width: 400px;
         }
         .calendar-modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 1rem;
+            padding: 1rem;
             border-bottom: 1px solid #e5e7eb;
         }
         .calendar-modal-top-info {
-            padding: 1rem;
-        }
-        .calendar-date-display {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+            justify-content: space-around;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
         }
-        .date-box {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
+        .info-box {
             text-align: center;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            flex: 1;
         }
-        .date-box span {
+        .info-box span {
             display: block;
         }
-        .date-box .label {
+        .info-box .label {
             font-size: 0.75rem;
             color: #6b7280;
         }
-        .date-box .date-value {
+        .info-box .value {
             font-weight: 600;
         }
         .calendar-modal-body {
-            padding: 0 1rem 1rem 1rem;
+            padding: 1rem;
             overflow-y: auto;
-        }
-        .price-legend {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .legend-color-box {
-            width: 1rem;
-            height: 1rem;
-            border-radius: 0.25rem;
         }
         .calendar-modal-footer {
             padding: 1rem;
             border-top: 1px solid #e5e7eb;
             background-color: white;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             gap: 1rem;
-            flex-wrap: wrap;
         }
-        .quick-select-btn {
-            background-color: transparent;
-            border: 1px solid #4b5563;
-            color: #4b5563;
-            padding: 0.5rem 1rem;
+        .price-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+        .price-legend > div { display: flex; align-items: center; gap: 0.5rem; }
+        .price-legend .color-box { width: 1rem; height: 1rem; border-radius: 0.25rem; }
+        .quick-select-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .quick-select-buttons button {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
             border-radius: 9999px;
-            font-weight: 600;
+            background-color: white;
             cursor: pointer;
-            transition: all 0.2s;
+            font-weight: 600;
         }
-        .quick-select-btn:hover {
-            background-color: #f3f4f6;
-        }
+        .quick-select-buttons button:hover { background-color: #f3f4f6; }
+
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .calendar-months { display: grid; grid-template-columns: 1fr; gap: 2rem; }
         @media (min-width: 768px) { .calendar-months { grid-template-columns: 1fr 1fr; } }
@@ -257,52 +248,47 @@
     <div id="calendar-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <div class="calendar-modal-header">
-                <h3 class="font-semibold text-lg flex-grow text-center">Selecciona tus fechas</h3>
-                <button id="close-calendar-modal-x" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+                 <h3 class="font-semibold text-lg">Selecciona fechas</h3>
+                 <button id="close-calendar-modal-x" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
             </div>
             <div class="calendar-modal-top-info">
-                <div class="calendar-date-display">
-                    <div class="date-box">
-                        <span class="label">Check-in</span>
-                        <span id="checkin-display" class="date-value">--</span>
-                    </div>
-                    <div class="date-box">
-                        <span class="label">Check-out</span>
-                        <span id="checkout-display" class="date-value">--</span>
-                    </div>
+                <div class="info-box">
+                    <span class="label">Check-in</span>
+                    <span id="calendar-checkin-display" class="value">--</span>
                 </div>
-                <p class="text-sm text-gray-600 flex items-center gap-2">
-                    <i class="far fa-calendar-alt"></i>
-                    <span>Selecciona fechas para encontrar los mejores precios para tu viaje</span>
-                </p>
+                <div class="info-box">
+                    <span class="label">Check-out</span>
+                    <span id="calendar-checkout-display" class="value">--</span>
+                </div>
+                <div class="info-box">
+                    <span class="label">Huéspedes</span>
+                    <span id="calendar-guests-display" class="value">--</span>
+                </div>
             </div>
             <div class="calendar-modal-body">
+                <div class="flex items-center gap-2 text-sm text-gray-700 mb-4">
+                    <i class="far fa-calendar-alt"></i>
+                    <p>Selecciona fechas para encontrar los mejores precios para tu viaje</p>
+                </div>
                 <div class="calendar-header">
                     <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
-                    <div id="calendar-title-container" class="font-semibold text-center"></div>
+                    <h4 id="calendar-month-year" class="font-semibold text-lg"></h4>
                     <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
                 </div>
                 <div class="calendar-months" id="calendar-months-container"></div>
                 <div class="price-legend">
-                    <div class="legend-item">
-                        <div class="legend-color-box bg-green-200"></div>
-                        <span>Más barato</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color-box bg-red-200"></div>
-                        <span>Más caro</span>
-                    </div>
+                    <div><div class="color-box" style="background-color: #d1fae5;"></div><span>Más barato</span></div>
+                    <div><div class="color-box" style="background-color: #fee2e2;"></div><span>Más caro</span></div>
+                </div>
+                <p class="text-center text-xs text-gray-500 mt-2">Según los precios promedio</p>
+                 <div class="quick-select-buttons">
+                    <button id="tonight-btn">Esta noche</button>
+                    <button id="next-weekend-btn">El próximo fin de semana</button>
                 </div>
             </div>
             <div class="calendar-modal-footer">
-                <div>
-                    <button id="tonight-btn" class="quick-select-btn">Esta noche</button>
-                    <button id="weekend-btn" class="quick-select-btn">El próximo fin de semana</button>
-                </div>
-                <div>
-                    <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
-                    <button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button>
-                </div>
+                <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
+                <button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button>
             </div>
         </div>
     </div>
@@ -898,54 +884,14 @@
         });
     }
     
-    // MODIFICADO: Función para iniciar reserva desde tarjetas de carrusel (no vuelos)
+    // Función para iniciar reserva desde tarjetas de carrusel (no vuelos)
     function handleCardBooking(type, name, details) {
-        showDevelopmentPopup(() => {
-            const message = `¡Hola! Estoy interesado en reservar la siguiente oferta:\n\n*Tipo:* ${type}\n*Nombre:* ${name}\n*Detalles:* ${details}`;
-            const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        });
+        const message = `¡Hola! Estoy interesado en reservar la siguiente oferta:\n\n*Tipo:* ${type}\n*Nombre:* ${name}\n*Detalles:* ${details}`;
+        const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // --- Lógica del Pop-up de Desarrollo ---
-        const devPopupOverlay = document.getElementById('development-popup-overlay');
-        const devPopupCloseBtn = document.getElementById('development-popup-close');
-        let onPopupConfirmCallback = null;
-
-        function showDevelopmentPopup(callback) {
-            onPopupConfirmCallback = callback;
-            if (devPopupOverlay) {
-                devPopupOverlay.classList.remove('hidden');
-                setTimeout(() => devPopupOverlay.classList.add('visible'), 10); // Pequeño delay para la transición
-            }
-        }
-
-        if (devPopupCloseBtn) {
-            devPopupCloseBtn.addEventListener('click', () => {
-                if (devPopupOverlay) {
-                    devPopupOverlay.classList.remove('visible');
-                    devPopupOverlay.addEventListener('transitionend', () => {
-                        devPopupOverlay.classList.add('hidden');
-                        if (onPopupConfirmCallback) {
-                            sessionStorage.setItem('initialPopupShown', 'true');
-                        }
-                    }, { once: true });
-                }
-                if (typeof onPopupConfirmCallback === 'function') {
-                    onPopupConfirmCallback();
-                    onPopupConfirmCallback = null; // Resetear el callback
-                }
-            });
-        }
-        
-        // --- Lógica para mostrar pop-up en la primera visita ---
-        if (!sessionStorage.getItem('initialPopupShown')) {
-            showDevelopmentPopup(() => {
-                sessionStorage.setItem('initialPopupShown', 'true');
-            });
-        }
-        
         // --- BASE DE DATOS LOCAL DE AEROPUERTOS Y NACIONALIDADES ---
         const airportsDb = [
             // Venezuela
@@ -995,11 +941,12 @@
         const closeCalendarBtn = document.getElementById('close-calendar-btn');
         const clearDatesBtn = document.getElementById('clear-dates-btn');
         const closeCalendarModalX = document.getElementById('close-calendar-modal-x');
-        const checkinDisplay = document.getElementById('checkin-display');
-        const checkoutDisplay = document.getElementById('checkout-display');
+        const calendarCheckinDisplay = document.getElementById('calendar-checkin-display');
+        const calendarCheckoutDisplay = document.getElementById('calendar-checkout-display');
+        const calendarGuestsDisplay = document.getElementById('calendar-guests-display');
+        const calendarMonthYear = document.getElementById('calendar-month-year');
         const tonightBtn = document.getElementById('tonight-btn');
-        const weekendBtn = document.getElementById('weekend-btn');
-        const calendarTitleContainer = document.getElementById('calendar-title-container');
+        const nextWeekendBtn = document.getElementById('next-weekend-btn');
         
         const travelersPickerTrigger = document.getElementById('travelers-picker-trigger');
         const travelersModal = document.getElementById('travelers-modal');
@@ -1331,21 +1278,24 @@
             bookingModal.classList.add('visible');
         }
 
-        // MODIFICADO: Lógica del Calendario
         function renderCalendar() {
             calendarMonthsContainer.innerHTML = '';
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-
+            
+            calendarMonthYear.textContent = currentMonthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+            
             const monthsToShow = window.innerWidth < 768 ? 1 : 2;
-            let titleHTML = '';
 
             for (let i = 0; i < monthsToShow; i++) {
                 const monthDate = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() + i, 1);
-                if(i > 0) titleHTML += ' - ';
-                titleHTML += monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
-
+                if (monthsToShow === 1) {
+                     calendarMonthYear.textContent = monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                }
                 const monthEl = document.createElement('div');
+                if (monthsToShow > 1) {
+                    monthEl.innerHTML = `<h4 class="font-semibold text-center mb-2">${monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4>`;
+                }
                 const gridEl = document.createElement('div');
                 gridEl.className = 'calendar-grid';
                 ['D', 'L', 'M', 'X', 'J', 'V', 'S'].forEach(day => gridEl.innerHTML += `<div class="calendar-day weekday">${day}</div>`);
@@ -1374,7 +1324,6 @@
                 monthEl.appendChild(gridEl);
                 calendarMonthsContainer.appendChild(monthEl);
             }
-            calendarTitleContainer.innerHTML = titleHTML;
             updateCalendarSelection();
         }
 
@@ -1392,26 +1341,16 @@
 
         function updateCalendarSelection() {
             const formatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
-            if (checkinDisplay) {
-                checkinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
-            }
-            if (checkoutDisplay) {
-                checkoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
-            }
-
+            calendarCheckinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
+            calendarCheckoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
+            calendarGuestsDisplay.textContent = `${adultsCount + childrenCount} Huéspedes`;
+            
             document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
                 day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
                 const dayDate = new Date(day.dataset.date + 'T00:00:00');
-                if (selectedDeparture && day.dataset.date === selectedDeparture.toISOString().split('T')[0]) {
-                    day.classList.add('selected', 'range-start');
-                    if(!selectedReturn) day.classList.add('range-end');
-                }
-                if (selectedReturn && day.dataset.date === selectedReturn.toISOString().split('T')[0]) {
-                     day.classList.add('selected', 'range-end');
-                }
-                if (selectedDeparture && selectedReturn && dayDate > selectedDeparture && dayDate < selectedReturn) {
-                    day.classList.add('in-range');
-                }
+                if (selectedDeparture && day.dataset.date === selectedDeparture.toISOString().split('T')[0]) day.classList.add('selected', 'range-start');
+                if (selectedReturn && day.dataset.date === selectedReturn.toISOString().split('T')[0]) day.classList.add('selected', 'range-end');
+                if (selectedDeparture && selectedReturn && dayDate > selectedDeparture && dayDate < selectedReturn) day.classList.add('in-range');
             });
         }
 
@@ -1771,39 +1710,31 @@
         if (clearDatesBtn) clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendar(); updateDateDisplay(); });
         if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
         if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
+        if (tonightBtn) tonightBtn.addEventListener('click', () => {
+            const today = new Date();
+            const tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1);
+            selectedDeparture = today;
+            selectedReturn = tomorrow;
+            updateDateDisplay();
+            calendarModal.classList.remove('visible');
+            calendarModal.classList.add('hidden');
+        });
+        if (nextWeekendBtn) nextWeekendBtn.addEventListener('click', () => {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+            const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+            const nextFriday = new Date(today);
+            nextFriday.setDate(today.getDate() + daysUntilFriday);
+            const nextSunday = new Date(nextFriday);
+            nextSunday.setDate(nextFriday.getDate() + 2);
+            selectedDeparture = nextFriday;
+            selectedReturn = nextSunday;
+            updateDateDisplay();
+            calendarModal.classList.remove('visible');
+            calendarModal.classList.add('hidden');
+        });
         
-        if(tonightBtn) {
-            tonightBtn.addEventListener('click', () => {
-                const today = new Date();
-                const tomorrow = new Date();
-                tomorrow.setDate(today.getDate() + 1);
-                selectedDeparture = today;
-                selectedReturn = tomorrow;
-                currentMonthDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                renderCalendar();
-            });
-        }
-
-        if(weekendBtn) {
-            weekendBtn.addEventListener('click', () => {
-                let today = new Date();
-                let dayOfWeek = today.getDay(); // 0 (Sun) to 6 (Sat)
-                let daysUntilFriday = (5 - dayOfWeek + 7) % 7;
-                if (daysUntilFriday === 0 && today.getHours() > 12) { // If it's Friday afternoon, get next Friday
-                    daysUntilFriday = 7;
-                }
-                let nextFriday = new Date();
-                nextFriday.setDate(today.getDate() + daysUntilFriday);
-                let nextSunday = new Date(nextFriday);
-                nextSunday.setDate(nextFriday.getDate() + 2);
-                
-                selectedDeparture = nextFriday;
-                selectedReturn = nextSunday;
-                currentMonthDate = new Date(nextFriday.getFullYear(), nextFriday.getMonth(), 1);
-                renderCalendar();
-            });
-        }
-
         if (travelersPickerTrigger) {
             travelersPickerTrigger.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1948,7 +1879,7 @@
             const calendarWrapper = document.createElement('div');
             const header = document.createElement('div');
             header.className = 'calendar-header';
-            header.innerHTML = ` <button id="hotel-prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button><h4 class="font-semibold text-center">${hotelModalCurrentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4> <button id="hotel-next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button> `;
+            header.innerHTML = ` <button id="hotel-prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button> <h4 class="font-semibold text-center">${hotelModalCurrentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4> <button id="hotel-next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button> `;
             calendarWrapper.appendChild(header);
             const gridEl = document.createElement('div');
             gridEl.className = 'calendar-grid';
@@ -2025,139 +1956,129 @@
             });
         }
         
-        // MODIFICADO: Event Listener para Pagos de Hotel
         document.getElementById('payment-options-container').addEventListener('click', (e) => {
              const paymentOption = e.target.closest('.payment-option');
-             if(!paymentOption) return;
+             if(paymentOption) {
+                document.querySelectorAll('#payment-options-container .payment-option').forEach(opt => opt.classList.remove('selected'));
+                paymentOption.classList.add('selected');
+                hotelModalSelectedPayment = paymentOption.dataset.payment;
+                const hotelName = hotelModalNameInput.value;
+                const checkin = hotelModalCheckin ? hotelModalCheckin.toISOString().split('T')[0] : null;
+                const checkout = hotelModalCheckout ? hotelModalCheckout.toISOString().split('T')[0] : null;
+                const adults = hotelModalAdults;
+                const children = hotelModalChildren;
+                const bedType = hotelModalForm.querySelector('input[name="bed-type"]:checked').value;
+                const firstName = document.getElementById('hotel-modal-firstname').value;
+                const lastName = document.getElementById('hotel-modal-lastname').value;
+                const email = document.getElementById('hotel-modal-email').value;
+                const phone = document.getElementById('hotel-modal-phone').value;
 
-             // Deseleccionar otros y seleccionar este
-             document.querySelectorAll('#payment-options-container .payment-option').forEach(opt => opt.classList.remove('selected'));
-             paymentOption.classList.add('selected');
-             
-             hotelModalSelectedPayment = paymentOption.dataset.payment;
-             const hotelName = hotelModalNameInput.value;
-             const checkin = hotelModalCheckin ? hotelModalCheckin.toISOString().split('T')[0] : null;
-             const checkout = hotelModalCheckout ? hotelModalCheckout.toISOString().split('T')[0] : null;
-             const adults = hotelModalAdults;
-             const children = hotelModalChildren;
-             const bedType = hotelModalForm.querySelector('input[name="bed-type"]:checked').value;
-             const firstName = document.getElementById('hotel-modal-firstname').value;
-             const lastName = document.getElementById('hotel-modal-lastname').value;
-             const email = document.getElementById('hotel-modal-email').value;
-             const phone = document.getElementById('hotel-modal-phone').value;
+                if (!firstName || !lastName || !email || !phone) {
+                    showNotification('Por favor, completa todos los datos del titular.', 'error');
+                    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+                    return;
+                }
+                if (!checkin || !checkout) {
+                    showNotification('Por favor, selecciona las fechas de check-in y check-out.', 'error');
+                    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+                    return;
+                }
 
-             if (!firstName || !lastName || !email || !phone) {
-                 showNotification('Por favor, completa todos los datos del titular.', 'error');
-                 paymentOption.classList.remove('selected');
-                 return;
-             }
-             if (!checkin || !checkout) {
-                 showNotification('Por favor, selecciona las fechas de check-in y check-out.', 'error');
-                 paymentOption.classList.remove('selected');
-                 return;
-             }
-
-             let bookingAction;
-             switch(hotelModalSelectedPayment) {
-                 case 'whatsapp':
-                     bookingAction = () => {
-                        const message = `¡Hola! Quisiera solicitar una reserva para el siguiente hotel:\n\n` + `*Hotel:* ${hotelName}\n` + `*Check-in:* ${checkin}\n` + `*Check-out:* ${checkout}\n` + `*Huéspedes:* ${adults} adulto(s), ${children} niño(s)\n` + `*Tipo de Cama:* ${bedType}\n\n` + `*Datos del Titular:*\n` + `- Nombre: ${firstName} ${lastName}\n` + `- Correo: ${email}\n` + `- Teléfono: ${phone}\n\n` + `Por favor, confírmenme la disponibilidad y el precio final. ¡Gracias!`;
+                let message = ``;
+                switch(hotelModalSelectedPayment) {
+                    case 'whatsapp':
+                        message = `¡Hola! Quisiera solicitar una reserva para el siguiente hotel:\n\n` + `*Hotel:* ${hotelName}\n` + `*Check-in:* ${checkin}\n` + `*Check-out:* ${checkout}\n` + `*Huéspedes:* ${adults} adulto(s), ${children} niño(s)\n` + `*Tipo de Cama:* ${bedType}\n\n` + `*Datos del Titular:*\n` + `- Nombre: ${firstName} ${lastName}\n` + `- Correo: ${email}\n` + `- Teléfono: ${phone}\n\n` + `Por favor, confírmenme la disponibilidad y el precio final. ¡Gracias!`;
                         const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
                         window.open(whatsappUrl, '_blank');
-                     };
-                     break;
-                 case 'card':
-                     bookingAction = () => window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
-                     break;
-                 case 'crypto':
-                     bookingAction = () => openCryptoCheckout({type: 'Hotel', name: hotelName, checkin, checkout, adults, children, bedType});
-                     break;
-             }
-
-             if (bookingAction) {
-                showDevelopmentPopup(bookingAction);
-             }
+                        break;
+                    case 'card':
+                        window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
+                        break;
+                    case 'crypto':
+                        openCryptoCheckout({type: 'Hotel', name: hotelName, checkin, checkout, adults, children, bedType});
+                        break;
+                }
+            }
         });
 
         // MODIFICADO: Event Listener para Pagos de Vuelo
         document.getElementById('flight-payment-options-container').addEventListener('click', (e) => {
             const paymentOption = e.target.closest('.payment-option');
-            if(!paymentOption) return;
+            if(paymentOption) {
+                document.querySelectorAll('#flight-payment-options-container .payment-option').forEach(opt => opt.classList.remove('selected'));
+                paymentOption.classList.add('selected');
+                const selectedPayment = paymentOption.dataset.payment;
+                
+                // Validar datos del titular
+                const contactEmail = document.getElementById('contact-email').value;
+                const contactPhone = document.getElementById('contact-phone').value;
+                if (!contactEmail || !contactPhone) {
+                    showNotification('Por favor, completa los datos del titular de la reserva.', 'error');
+                    paymentOption.classList.remove('selected');
+                    return;
+                }
 
-            document.querySelectorAll('#flight-payment-options-container .payment-option').forEach(opt => opt.classList.remove('selected'));
-            paymentOption.classList.add('selected');
-            const selectedPayment = paymentOption.dataset.payment;
-            
-            const contactEmail = document.getElementById('contact-email').value;
-            const contactPhone = document.getElementById('contact-phone').value;
-            if (!contactEmail || !contactPhone) {
-                showNotification('Por favor, completa los datos del titular de la reserva.', 'error');
-                paymentOption.classList.remove('selected');
-                return;
-            }
-
-            let allPassengersValid = true;
-            const passengerForms = document.querySelectorAll('#booking-form .passenger-form-group');
-            if (passengerForms.length === 0) allPassengersValid = false;
-            
-            passengerForms.forEach((form) => {
-                const inputs = form.querySelectorAll('input[required], select[required]');
-                inputs.forEach(input => {
-                    if (!input.value) {
-                        allPassengersValid = false;
-                    }
+                // Validar datos de pasajeros
+                let allPassengersValid = true;
+                const passengerForms = document.querySelectorAll('#booking-form .passenger-form-group');
+                if (passengerForms.length === 0) allPassengersValid = false;
+                
+                passengerForms.forEach((form) => {
+                    const inputs = form.querySelectorAll('input[required], select[required]');
+                    inputs.forEach(input => {
+                        if (!input.value) {
+                            allPassengersValid = false;
+                        }
+                    });
                 });
-            });
 
-            if (!allPassengersValid) {
-                showNotification('Por favor, completa los datos de todos los pasajeros.', 'error');
-                paymentOption.classList.remove('selected');
-                return;
-            }
+                if (!allPassengersValid) {
+                    showNotification('Por favor, completa los datos de todos los pasajeros.', 'error');
+                    paymentOption.classList.remove('selected');
+                    return;
+                }
 
-            const contactSource = document.getElementById('contact-source').value;
-            const itinerary = currentFlightData.flight.itineraries[0];
-            const departureCode = itinerary.segments[0].departure.iataCode;
-            const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
-            let message = `¡Hola! Quisiera concretar la reserva para el siguiente vuelo:\n\n` +
-                          `*Vuelo:* ${currentFlightData.carrier} (${departureCode} → ${arrivalCode})\n` +
-                          `*Precio Total:* ${currentFlightData.finalPrice.toFixed(2)} €\n\n` +
-                          `*Datos del Titular:*\n` +
-                          `- Correo: ${contactEmail}\n` +
-                          `- Teléfono: ${contactPhone}\n` +
-                          `- Nos conoció por: ${contactSource}\n\n` +
-                          `*Datos de los Pasajeros:*\n`;
-            
-            passengerForms.forEach((form, index) => {
-                const firstname = form.querySelector('input[name="firstname"]').value;
-                const lastname = form.querySelector('input[name="lastname"]').value;
-                const nationality = form.querySelector('select[name="nationality"]').value;
-                const isForeigner = form.querySelector('input[name="is-foreigner"]').checked;
-                const cedula = form.querySelector('input[name="cedula"]').value;
-                const passport = form.querySelector('input[name="passport"]').value;
-                message += `\n*Pasajero ${index + 1}:*\n` +
-                           `- Nombre: ${firstname} ${lastname}\n` +
-                           `- Nacionalidad: ${nationality}\n` +
-                           `- Documento: ${isForeigner ? 'Pasaporte ' + passport : 'C.I. ' + cedula}\n`;
-            });
+                // Construir mensaje
+                const contactSource = document.getElementById('contact-source').value;
+                const itinerary = currentFlightData.flight.itineraries[0];
+                const departureCode = itinerary.segments[0].departure.iataCode;
+                const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
+                let message = `¡Hola! Quisiera concretar la reserva para el siguiente vuelo:\n\n` +
+                              `*Vuelo:* ${currentFlightData.carrier} (${departureCode} → ${arrivalCode})\n` +
+                              `*Precio Total:* ${currentFlightData.finalPrice.toFixed(2)} €\n\n` +
+                              `*Datos del Titular:*\n` +
+                              `- Correo: ${contactEmail}\n` +
+                              `- Teléfono: ${contactPhone}\n` +
+                              `- Nos conoció por: ${contactSource}\n\n` +
+                              `*Datos de los Pasajeros:*\n`;
+                
+                passengerForms.forEach((form, index) => {
+                    const firstname = form.querySelector('input[name="firstname"]').value;
+                    const lastname = form.querySelector('input[name="lastname"]').value;
+                    const nationality = form.querySelector('select[name="nationality"]').value;
+                    const isForeigner = form.querySelector('input[name="is-foreigner"]').checked;
+                    const cedula = form.querySelector('input[name="cedula"]').value;
+                    const passport = form.querySelector('input[name="passport"]').value;
 
-            let bookingAction;
-            switch(selectedPayment) {
-                case 'whatsapp':
-                    bookingAction = () => {
+                    message += `\n*Pasajero ${index + 1}:*\n` +
+                               `- Nombre: ${firstname} ${lastname}\n` +
+                               `- Nacionalidad: ${nationality}\n` +
+                               `- Documento: ${isForeigner ? 'Pasaporte ' + passport : 'C.I. ' + cedula}\n`;
+                });
+
+                // Ejecutar acción de pago
+                switch(selectedPayment) {
+                    case 'whatsapp':
                         const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
                         window.open(whatsappUrl, '_blank');
-                    };
-                    break;
-                case 'card':
-                    bookingAction = () => window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
-                    break;
-                case 'crypto':
-                    bookingAction = () => openCryptoCheckout({type: 'Vuelo', flight: currentFlightData, price: currentFlightData.finalPrice});
-                    break;
-            }
-            if (bookingAction) {
-                showDevelopmentPopup(bookingAction);
+                        break;
+                    case 'card':
+                        window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
+                        break;
+                    case 'crypto':
+                        openCryptoCheckout({type: 'Vuelo', flight: currentFlightData, price: currentFlightData.finalPrice});
+                        break;
+                }
             }
         });
         
@@ -2195,7 +2116,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if (details.type === 'Hotel') {
-                 summaryContainer.innerHTML = ` <p><strong>Hotel:</strong> ${details.name}</p> <p><strong>Check-in:</strong> ${details.checkin}</p> <p><strong>Check-out:</strong> ${details.checkout}</p> <p><strong>Huéspedes:</strong> ${details.adults} adulto(s), ${children} niño(s)</p> <p><strong>Cama:</strong> ${details.bedType}</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p> `;
+                 summaryContainer.innerHTML = ` <p><strong>Hotel:</strong> ${details.name}</p> <p><strong>Check-in:</strong> ${details.checkin}</p> <p><strong>Check-out:</strong> ${details.checkout}</p> <p><strong>Huéspedes:</strong> ${details.adults} adulto(s), ${details.children} niño(s)</p> <p><strong>Cama:</strong> ${details.bedType}</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p> `;
             } else if (details.type === 'Vuelo') {
                  const itinerary = details.flight.flight.itineraries[0];
                  const departureCode = itinerary.segments[0].departure.iataCode;
