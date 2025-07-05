@@ -88,8 +88,8 @@
         .counter-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #d1d5db; display: flex; align-items: center; justify-content: center; cursor: pointer; background-color: white; color: #4b5563; font-size: 1.25rem; }
         .counter-btn:disabled { cursor: not-allowed; background-color: #f3f4f6; color: #9ca3af; }
 
-        /* NUEVO: Estilos del Modal de Calendario Mejorado */
-        #calendar-modal .modal-container {
+        /* Estilos del Modal de Calendario Mejorado */
+        .calendar-modal .modal-container {
             padding: 0;
             max-height: 90vh;
             overflow: hidden;
@@ -244,8 +244,8 @@
     <div id="notification-container"></div>
     <div id="loader" class="loader-overlay"><i class="fas fa-plane loader-plane"></i></div>
     
-    <!-- Modal del Calendario (MODIFICADO) -->
-    <div id="calendar-modal" class="modal-overlay hidden">
+    <!-- Modal del Calendario Principal -->
+    <div id="calendar-modal" class="modal-overlay hidden calendar-modal">
         <div class="modal-container">
             <div class="calendar-modal-header">
                  <h3 class="font-semibold text-lg">Selecciona fechas</h3>
@@ -293,7 +293,7 @@
         </div>
     </div>
     
-    <!-- Modal de Reserva de Vuelo (MODIFICADO) -->
+    <!-- Modal de Reserva de Vuelo -->
     <div id="booking-modal" class="modal-overlay hidden">
         <div class="modal-container max-w-4xl max-h-[90vh] overflow-y-auto">
              <div class="flex justify-between items-center mb-6">
@@ -373,109 +373,71 @@
         </div>
     </div>
 
-    <!-- Modal de Reserva de Hotel desde Tarjeta (MODIFICADO) -->
-    <div id="hotel-card-booking-modal" class="modal-overlay hidden">
-        <div class="modal-container max-h-[90vh] overflow-y-auto">
-             <div class="flex justify-between items-center mb-4">
+    <!-- Modal de Reserva de Hotel desde Tarjeta -->
+    <div id="hotel-card-booking-modal" class="modal-overlay hidden calendar-modal">
+        <div class="modal-container">
+            <div class="calendar-modal-header">
                 <h3 id="hotel-modal-title" class="font-semibold text-lg">Reservar Hotel</h3>
                 <button id="close-hotel-modal-btn" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
             </div>
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-1/2">
-                    <img id="hotel-modal-img" src="" alt="Imagen del hotel" class="w-full h-48 object-cover rounded-lg mb-4">
-                    <div id="hotel-modal-calendar-container">
-                        <!-- El calendario del modal se renderizará aquí -->
+            <div id="hotel-calendar-top-info" class="calendar-modal-top-info">
+                <!-- Contenido se genera con JS -->
+            </div>
+            <div class="calendar-modal-body">
+                <div id="hotel-modal-calendar-container">
+                    <!-- El calendario del modal se renderizará aquí -->
+                </div>
+            </div>
+            <div id="hotel-modal-form-container" class="p-4 border-t overflow-y-auto" style="max-height: 35vh;">
+                 <form id="hotel-modal-form">
+                    <input type="hidden" id="hotel-modal-name">
+                    <h4 class="font-bold text-gray-700 mb-2">Datos del Titular</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="hotel-modal-firstname" class="block text-sm font-medium text-gray-700">Nombre</label>
+                            <input type="text" id="hotel-modal-firstname" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                        <div>
+                            <label for="hotel-modal-lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
+                            <input type="text" id="hotel-modal-lastname" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
                     </div>
-                </div>
-                <div class="md:w-1/2">
-                    <form id="hotel-modal-form">
-                        <input type="hidden" id="hotel-modal-name">
-                        <input type="hidden" id="hotel-modal-checkin">
-                        <input type="hidden" id="hotel-modal-checkout">
-                        
-                        <h4 class="font-bold text-gray-700 mb-2">Datos del Titular</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="hotel-modal-firstname" class="block text-sm font-medium text-gray-700">Nombre</label>
-                                <input type="text" id="hotel-modal-firstname" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
-                            </div>
-                            <div>
-                                <label for="hotel-modal-lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
-                                <input type="text" id="hotel-modal-lastname" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="hotel-modal-email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                            <input type="email" id="hotel-modal-email" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="hotel-modal-email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                                <input type="email" id="hotel-modal-email" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
-                            </div>
-                            <div>
-                                <label for="hotel-modal-phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                                <input type="tel" id="hotel-modal-phone" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
-                            </div>
+                        <div>
+                            <label for="hotel-modal-phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                            <input type="tel" id="hotel-modal-phone" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
                         </div>
-                        
-                        <div class="mb-4">
-                             <label class="block text-sm font-medium text-gray-700 mb-1">Huéspedes</label>
-                             <div class="flex items-center justify-between p-2 border rounded">
-                                 <span>Adultos</span>
-                                 <div class="flex items-center gap-4">
-                                    <button type="button" class="counter-btn" data-type="hotel-adults" data-action="decrement">-</button>
-                                    <span id="hotel-modal-adults-count" class="font-semibold text-lg">1</span>
-                                    <button type="button" class="counter-btn" data-type="hotel-adults" data-action="increment">+</button>
+                    </div>
+                    <div class="mt-6">
+                         <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
+                         <div class="space-y-3" id="payment-options-container">
+                            <div class="payment-option" data-payment="whatsapp">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Reservar por WhatsApp</span>
+                                    <i class="fab fa-whatsapp text-xl text-green-500"></i>
                                 </div>
-                             </div>
-                             <div class="flex items-center justify-between p-2 border rounded mt-2">
-                                 <span>Niños</span>
-                                 <div class="flex items-center gap-4">
-                                    <button type="button" class="counter-btn" data-type="hotel-children" data-action="decrement">-</button>
-                                    <span id="hotel-modal-children-count" class="font-semibold text-lg">0</span>
-                                    <button type="button" class="counter-btn" data-type="hotel-children" data-action="increment">+</button>
-                                </div>
-                             </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Cama</label>
-                            <div class="flex gap-4">
-                                <label class="flex items-center">
-                                    <input type="radio" name="bed-type" value="Individual" class="h-4 w-4 text-guacamayafly-orange focus:ring-guacamayafly-orange" checked>
-                                    <span class="ml-2 text-sm text-gray-700">Individual</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="bed-type" value="Matrimonial" class="h-4 w-4 text-guacamayafly-orange focus:ring-guacamayafly-orange">
-                                    <span class="ml-2 text-sm text-gray-700">Matrimonial</span>
-                                </label>
                             </div>
-                        </div>
-
-                        <div class="mt-6">
-                             <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
-                             <div class="space-y-3" id="payment-options-container">
-                                <div class="payment-option" data-payment="whatsapp">
-                                    <div class="flex items-center justify-between">
-                                        <span class="font-semibold text-sm">Reservar por WhatsApp</span>
-                                        <i class="fab fa-whatsapp text-xl text-green-500"></i>
+                            <div class="payment-option" data-payment="card">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
                                     </div>
                                 </div>
-                                <div class="payment-option" data-payment="card">
-                                    <div class="flex items-center justify-between">
-                                        <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
-                                        <div class="flex items-center gap-2">
-                                            <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="payment-option" data-payment="crypto">
+                                 <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
+                                    <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
                                 </div>
-                                <div class="payment-option" data-payment="crypto">
-                                     <div class="flex items-center justify-between">
-                                        <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
-                                        <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
-                                    </div>
-                                </div>
-                             </div>
-                        </div>
-                    </form>
-                </div>
+                            </div>
+                         </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -886,12 +848,49 @@
     
     // Función para iniciar reserva desde tarjetas de carrusel (no vuelos)
     function handleCardBooking(type, name, details) {
-        const message = `¡Hola! Estoy interesado en reservar la siguiente oferta:\n\n*Tipo:* ${type}\n*Nombre:* ${name}\n*Detalles:* ${details}`;
-        const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
+        showDevelopmentPopup(() => {
+            const message = `¡Hola! Estoy interesado en reservar la siguiente oferta:\n\n*Tipo:* ${type}\n*Nombre:* ${name}\n*Detalles:* ${details}`;
+            const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // --- Lógica del Pop-up de Desarrollo ---
+        const devPopupOverlay = document.getElementById('development-popup-overlay');
+        const devPopupCloseBtn = document.getElementById('development-popup-close');
+        let onPopupConfirmCallback = null;
+
+        function showDevelopmentPopup(callback) {
+            onPopupConfirmCallback = callback;
+            if (devPopupOverlay) {
+                devPopupOverlay.classList.remove('hidden');
+                setTimeout(() => devPopupOverlay.classList.add('visible'), 10);
+            }
+        }
+
+        if (devPopupCloseBtn) {
+            devPopupCloseBtn.addEventListener('click', () => {
+                if (devPopupOverlay) {
+                    devPopupOverlay.classList.remove('visible');
+                    devPopupOverlay.addEventListener('transitionend', () => {
+                        devPopupOverlay.classList.add('hidden');
+                    }, { once: true });
+                }
+                if (typeof onPopupConfirmCallback === 'function') {
+                    onPopupConfirmCallback();
+                    onPopupConfirmCallback = null;
+                }
+            });
+        }
+        
+        // --- Lógica para mostrar pop-up en la primera visita ---
+        if (!sessionStorage.getItem('initialPopupShown')) {
+            showDevelopmentPopup(() => {
+                sessionStorage.setItem('initialPopupShown', 'true');
+            });
+        }
+        
         // --- BASE DE DATOS LOCAL DE AEROPUERTOS Y NACIONALIDADES ---
         const airportsDb = [
             // Venezuela
@@ -1080,7 +1079,6 @@
 
 
         async function searchFlights(origin, destination, departureDate, returnDate, adults, children) {
-            console.log('Searching flights with params:', { origin, destination, departureDate, returnDate, adults, children }); // Log para depuración
             mainContent.classList.add('hidden');
             resultsContainer.classList.remove('hidden');
             searchLoader.classList.remove('hidden');
@@ -1102,8 +1100,6 @@
                 url += `&children=${children}`;
             }
             
-            console.log('Fetching Amadeus URL:', url); // Log para depuración
-
             try {
                 const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!response.ok) throw new Error(`Error en la búsqueda de vuelos: ${response.statusText}`);
@@ -1185,7 +1181,6 @@
             });
         }
 
-        // --- MODIFICADA: Lógica de Reserva de Vuelo ---
         function addPassengerForm() {
             passengerCount++;
             const passengerDiv = document.createElement('div');
@@ -1227,7 +1222,6 @@
             `;
             passengersContainer.appendChild(passengerDiv);
 
-            // Add event listener for the new checkbox
             const foreignerCheckbox = passengerDiv.querySelector('input[name="is-foreigner"]');
             const cedulaField = passengerDiv.querySelector('div[name="cedula-field"]');
             const passportField = passengerDiv.querySelector('div[name="passport-field"]');
@@ -1343,7 +1337,7 @@
             const formatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
             calendarCheckinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
             calendarCheckoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
-            calendarGuestsDisplay.textContent = `${adultsCount + childrenCount} Huéspedes`;
+            calendarGuestsDisplay.innerHTML = `<i class="fas fa-user-friends mr-1"></i> ${adultsCount + childrenCount}`;
             
             document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
                 day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
@@ -1837,10 +1831,7 @@
         const closeHotelModalBtn = document.getElementById('close-hotel-modal-btn');
         const hotelModalForm = document.getElementById('hotel-modal-form');
         const hotelModalTitle = document.getElementById('hotel-modal-title');
-        const hotelModalImg = document.getElementById('hotel-modal-img');
         const hotelModalNameInput = document.getElementById('hotel-modal-name');
-        const hotelModalAdultsCountSpan = document.getElementById('hotel-modal-adults-count');
-        const hotelModalChildrenCountSpan = document.getElementById('hotel-modal-children-count');
         const paymentPopup = document.getElementById('payment-info-popup');
         const closeCryptoCheckoutBtn = document.getElementById('close-crypto-checkout-btn');
         let hotelModalAdults = 1;
@@ -1852,16 +1843,9 @@
 
         window.openHotelBookingModal = (name, image) => {
             hotelModalTitle.textContent = `Reservar: ${name}`;
-            hotelModalImg.src = image;
             hotelModalNameInput.value = name;
             hotelModalAdults = 1;
             hotelModalChildren = 0;
-            hotelModalAdultsCountSpan.textContent = hotelModalAdults;
-            hotelModalChildrenCountSpan.textContent = hotelModalChildren;
-            const adultDecrementBtn = hotelModalForm.querySelector('[data-type="hotel-adults"][data-action="decrement"]');
-            if(adultDecrementBtn) adultDecrementBtn.disabled = true;
-            const childDecrementBtn = hotelModalForm.querySelector('[data-type="hotel-children"][data-action="decrement"]');
-            if(childDecrementBtn) childDecrementBtn.disabled = true;
             hotelModalCheckin = null;
             hotelModalCheckout = null;
             hotelModalCurrentDate = new Date();
@@ -1875,29 +1859,49 @@
         function renderHotelCalendar() {
             const container = document.getElementById('hotel-modal-calendar-container');
             if (!container) return;
-            container.innerHTML = '';
-            const calendarWrapper = document.createElement('div');
-            const header = document.createElement('div');
-            header.className = 'calendar-header';
-            header.innerHTML = ` <button id="hotel-prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button> <h4 class="font-semibold text-center">${hotelModalCurrentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4> <button id="hotel-next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button> `;
-            calendarWrapper.appendChild(header);
+            // Esta función ahora renderizará el calendario avanzado dentro del modal de hotel
+            // Es una réplica de la lógica de `renderCalendar` pero apuntando a los elementos del modal de hotel
+            container.innerHTML = `
+                <div class="calendar-header">
+                    <button id="hotel-prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
+                    <h4 id="hotel-calendar-month-year" class="font-semibold text-lg"></h4>
+                    <button id="hotel-next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-months" id="hotel-calendar-grid-container"></div>
+                <div class="price-legend">
+                    <div><div class="color-box" style="background-color: #d1fae5;"></div><span>Más barato</span></div>
+                    <div><div class="color-box" style="background-color: #fee2e2;"></div><span>Más caro</span></div>
+                </div>
+                <p class="text-center text-xs text-gray-500 mt-2">Según los precios promedio</p>
+            `;
+            
+            const gridContainer = document.getElementById('hotel-calendar-grid-container');
+            const monthYearDisplay = document.getElementById('hotel-calendar-month-year');
+            
+            monthYearDisplay.textContent = hotelModalCurrentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+            
             const gridEl = document.createElement('div');
             gridEl.className = 'calendar-grid';
             ['D', 'L', 'M', 'X', 'J', 'V', 'S'].forEach(day => gridEl.innerHTML += `<div class="calendar-day weekday">${day}</div>`);
+            
             const monthDate = new Date(hotelModalCurrentDate.getFullYear(), hotelModalCurrentDate.getMonth(), 1);
             let firstDayOfMonth = monthDate.getDay();
             for (let j = 0; j < firstDayOfMonth; j++) gridEl.appendChild(document.createElement('div'));
+
             const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
             const today = new Date();
             today.setHours(0,0,0,0);
+
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayEl = document.createElement('div');
                 const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
                 dayEl.className = 'calendar-day';
                 dayEl.textContent = day;
                 dayEl.dataset.date = dayDate.toISOString().split('T')[0];
+                
                 const rand = Math.random();
                 if (rand < 0.3) dayEl.classList.add('price-cheap'); else if (rand < 0.7) dayEl.classList.add('price-medium'); else dayEl.classList.add('price-expensive');
+                
                 if (dayDate < today) {
                     dayEl.classList.add('disabled');
                 } else {
@@ -1905,10 +1909,11 @@
                 }
                 gridEl.appendChild(dayEl);
             }
-            calendarWrapper.appendChild(gridEl);
-            container.appendChild(calendarWrapper);
+            gridContainer.appendChild(gridEl);
+            
             document.getElementById('hotel-prev-month').addEventListener('click', () => { hotelModalCurrentDate.setMonth(hotelModalCurrentDate.getMonth() - 1); renderHotelCalendar(); });
             document.getElementById('hotel-next-month').addEventListener('click', () => { hotelModalCurrentDate.setMonth(hotelModalCurrentDate.getMonth() + 1); renderHotelCalendar(); });
+            
             updateHotelCalendarSelection();
         }
 
@@ -1925,6 +1930,19 @@
         }
 
         function updateHotelCalendarSelection() {
+            const topInfoContainer = document.getElementById('hotel-calendar-top-info');
+            const formatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
+            topInfoContainer.innerHTML = `
+                <div class="info-box">
+                    <span class="label">Check-in</span>
+                    <span class="value">${hotelModalCheckin ? hotelModalCheckin.toLocaleDateString('es-ES', formatOptions) : '--'}</span>
+                </div>
+                <div class="info-box">
+                    <span class="label">Check-out</span>
+                    <span class="value">${hotelModalCheckout ? hotelModalCheckout.toLocaleDateString('es-ES', formatOptions) : '--'}</span>
+                </div>
+            `;
+
             document.querySelectorAll('#hotel-modal-calendar-container .calendar-day[data-date]').forEach(day => {
                 day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
                 const dayDate = new Date(day.dataset.date + 'T00:00:00');
@@ -1934,152 +1952,71 @@
             });
         }
 
-        if(hotelModalForm) {
-            hotelModalForm.addEventListener('click', (e) => {
-                const button = e.target.closest('.counter-btn');
-                if (button) {
-                    const type = button.dataset.type;
-                    const action = button.dataset.action;
-                    if(type === 'hotel-adults') {
-                        if (action === 'increment') hotelModalAdults++;
-                        else if (action === 'decrement' && hotelModalAdults > 1) hotelModalAdults--;
-                        hotelModalAdultsCountSpan.textContent = hotelModalAdults;
-                        button.parentElement.querySelector('[data-action="decrement"]').disabled = hotelModalAdults <= 1;
-                    }
-                    if(type === 'hotel-children') {
-                        if (action === 'increment') hotelModalChildren++;
-                        else if (action === 'decrement' && hotelModalChildren > 0) hotelModalChildren--;
-                        hotelModalChildrenCountSpan.textContent = hotelModalChildren;
-                        button.parentElement.querySelector('[data-action="decrement"]').disabled = hotelModalChildren <= 0;
-                    }
-                }
+        // --- Lógica de Validación y Pago ---
+        function validateAndPay(formId, paymentType) {
+            const form = document.getElementById(formId);
+            let isValid = true;
+
+            // Validar campos de titular
+            const titularInputs = form.querySelectorAll('input[required], select[required]');
+            titularInputs.forEach(input => {
+                if (!input.value) isValid = false;
             });
-        }
-        
-        document.getElementById('payment-options-container').addEventListener('click', (e) => {
-             const paymentOption = e.target.closest('.payment-option');
-             if(paymentOption) {
-                document.querySelectorAll('#payment-options-container .payment-option').forEach(opt => opt.classList.remove('selected'));
-                paymentOption.classList.add('selected');
-                hotelModalSelectedPayment = paymentOption.dataset.payment;
-                const hotelName = hotelModalNameInput.value;
-                const checkin = hotelModalCheckin ? hotelModalCheckin.toISOString().split('T')[0] : null;
-                const checkout = hotelModalCheckout ? hotelModalCheckout.toISOString().split('T')[0] : null;
-                const adults = hotelModalAdults;
-                const children = hotelModalChildren;
-                const bedType = hotelModalForm.querySelector('input[name="bed-type"]:checked').value;
-                const firstName = document.getElementById('hotel-modal-firstname').value;
-                const lastName = document.getElementById('hotel-modal-lastname').value;
-                const email = document.getElementById('hotel-modal-email').value;
-                const phone = document.getElementById('hotel-modal-phone').value;
-
-                if (!firstName || !lastName || !email || !phone) {
-                    showNotification('Por favor, completa todos los datos del titular.', 'error');
-                    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-                    return;
-                }
-                if (!checkin || !checkout) {
-                    showNotification('Por favor, selecciona las fechas de check-in y check-out.', 'error');
-                    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-                    return;
-                }
-
-                let message = ``;
-                switch(hotelModalSelectedPayment) {
-                    case 'whatsapp':
-                        message = `¡Hola! Quisiera solicitar una reserva para el siguiente hotel:\n\n` + `*Hotel:* ${hotelName}\n` + `*Check-in:* ${checkin}\n` + `*Check-out:* ${checkout}\n` + `*Huéspedes:* ${adults} adulto(s), ${children} niño(s)\n` + `*Tipo de Cama:* ${bedType}\n\n` + `*Datos del Titular:*\n` + `- Nombre: ${firstName} ${lastName}\n` + `- Correo: ${email}\n` + `- Teléfono: ${phone}\n\n` + `Por favor, confírmenme la disponibilidad y el precio final. ¡Gracias!`;
-                        const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
-                        window.open(whatsappUrl, '_blank');
-                        break;
-                    case 'card':
-                        window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
-                        break;
-                    case 'crypto':
-                        openCryptoCheckout({type: 'Hotel', name: hotelName, checkin, checkout, adults, children, bedType});
-                        break;
-                }
+            
+            if (!isValid) {
+                showNotification('Por favor, completa todos los datos del titular.', 'error');
+                return;
             }
-        });
 
-        // MODIFICADO: Event Listener para Pagos de Vuelo
-        document.getElementById('flight-payment-options-container').addEventListener('click', (e) => {
-            const paymentOption = e.target.closest('.payment-option');
-            if(paymentOption) {
-                document.querySelectorAll('#flight-payment-options-container .payment-option').forEach(opt => opt.classList.remove('selected'));
-                paymentOption.classList.add('selected');
-                const selectedPayment = paymentOption.dataset.payment;
-                
-                // Validar datos del titular
-                const contactEmail = document.getElementById('contact-email').value;
-                const contactPhone = document.getElementById('contact-phone').value;
-                if (!contactEmail || !contactPhone) {
-                    showNotification('Por favor, completa los datos del titular de la reserva.', 'error');
-                    paymentOption.classList.remove('selected');
-                    return;
+            // Validar campos de pasajeros (solo para vuelos)
+            if (formId === 'booking-form') {
+                const passengerForms = form.querySelectorAll('.passenger-form-group');
+                if (passengerForms.length === 0) {
+                    isValid = false;
                 }
-
-                // Validar datos de pasajeros
-                let allPassengersValid = true;
-                const passengerForms = document.querySelectorAll('#booking-form .passenger-form-group');
-                if (passengerForms.length === 0) allPassengersValid = false;
-                
-                passengerForms.forEach((form) => {
-                    const inputs = form.querySelectorAll('input[required], select[required]');
-                    inputs.forEach(input => {
-                        if (!input.value) {
-                            allPassengersValid = false;
+                passengerForms.forEach(pForm => {
+                    const visibleInputs = pForm.querySelectorAll('input[required], select[required]');
+                    visibleInputs.forEach(input => {
+                        // Solo validar si el input es visible
+                        if (input.offsetParent !== null && !input.value) {
+                            isValid = false;
                         }
                     });
                 });
 
-                if (!allPassengersValid) {
+                if (!isValid) {
                     showNotification('Por favor, completa los datos de todos los pasajeros.', 'error');
-                    paymentOption.classList.remove('selected');
                     return;
                 }
-
-                // Construir mensaje
-                const contactSource = document.getElementById('contact-source').value;
-                const itinerary = currentFlightData.flight.itineraries[0];
-                const departureCode = itinerary.segments[0].departure.iataCode;
-                const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
-                let message = `¡Hola! Quisiera concretar la reserva para el siguiente vuelo:\n\n` +
-                              `*Vuelo:* ${currentFlightData.carrier} (${departureCode} → ${arrivalCode})\n` +
-                              `*Precio Total:* ${currentFlightData.finalPrice.toFixed(2)} €\n\n` +
-                              `*Datos del Titular:*\n` +
-                              `- Correo: ${contactEmail}\n` +
-                              `- Teléfono: ${contactPhone}\n` +
-                              `- Nos conoció por: ${contactSource}\n\n` +
-                              `*Datos de los Pasajeros:*\n`;
-                
-                passengerForms.forEach((form, index) => {
-                    const firstname = form.querySelector('input[name="firstname"]').value;
-                    const lastname = form.querySelector('input[name="lastname"]').value;
-                    const nationality = form.querySelector('select[name="nationality"]').value;
-                    const isForeigner = form.querySelector('input[name="is-foreigner"]').checked;
-                    const cedula = form.querySelector('input[name="cedula"]').value;
-                    const passport = form.querySelector('input[name="passport"]').value;
-
-                    message += `\n*Pasajero ${index + 1}:*\n` +
-                               `- Nombre: ${firstname} ${lastname}\n` +
-                               `- Nacionalidad: ${nationality}\n` +
-                               `- Documento: ${isForeigner ? 'Pasaporte ' + passport : 'C.I. ' + cedula}\n`;
-                });
-
-                // Ejecutar acción de pago
-                switch(selectedPayment) {
-                    case 'whatsapp':
-                        const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
-                        window.open(whatsappUrl, '_blank');
-                        break;
-                    case 'card':
-                        window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
-                        break;
-                    case 'crypto':
-                        openCryptoCheckout({type: 'Vuelo', flight: currentFlightData, price: currentFlightData.finalPrice});
-                        break;
-                }
             }
+            
+            // Si todo es válido, mostrar pop-up de desarrollo y luego ejecutar pago
+            showDevelopmentPopup(() => {
+                // Aquí iría la lógica de pago real
+                console.log(`Procediendo con el pago a través de ${paymentType}`);
+                if (paymentType === 'whatsapp') {
+                     const whatsappUrl = `https://wa.me/5804243156057?text=Hola, quisiera proceder con mi reserva.`;
+                     window.open(whatsappUrl, '_blank');
+                } else if (paymentType === 'card') {
+                    window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
+                } else if (paymentType === 'crypto') {
+                    openCryptoCheckout({type: 'Genérico'});
+                }
+            });
+        }
+
+        document.getElementById('flight-payment-options-container').addEventListener('click', (e) => {
+            const paymentOption = e.target.closest('.payment-option');
+            if(paymentOption) {
+                validateAndPay('booking-form', paymentOption.dataset.payment);
+            }
+        });
+
+        document.getElementById('payment-options-container').addEventListener('click', (e) => {
+             const paymentOption = e.target.closest('.payment-option');
+             if(paymentOption) {
+                validateAndPay('hotel-modal-form', paymentOption.dataset.payment);
+             }
         });
         
         function showPaymentPopup(message) {
@@ -2116,12 +2053,14 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if (details.type === 'Hotel') {
-                 summaryContainer.innerHTML = ` <p><strong>Hotel:</strong> ${details.name}</p> <p><strong>Check-in:</strong> ${details.checkin}</p> <p><strong>Check-out:</strong> ${details.checkout}</p> <p><strong>Huéspedes:</strong> ${details.adults} adulto(s), ${details.children} niño(s)</p> <p><strong>Cama:</strong> ${details.bedType}</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p> `;
+                 summaryContainer.innerHTML = ` <p><strong>Hotel:</strong> ${details.name}</p> <p><strong>Check-in:</strong> ${details.checkin}</p> <p><strong>Check-out:</strong> ${details.checkout}</p> <p><strong>Huéspedes:</strong> ${details.adults} adulto(s), ${details.children} niño(s)</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p> `;
             } else if (details.type === 'Vuelo') {
                  const itinerary = details.flight.flight.itineraries[0];
                  const departureCode = itinerary.segments[0].departure.iataCode;
                  const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
                  summaryContainer.innerHTML = ` <p><strong>Vuelo:</strong> ${details.flight.carrier} (${departureCode} → ${arrivalCode})</p> <p><strong>Pasajeros:</strong> ${adultsCount + childrenCount}</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar: ${details.price.toFixed(2)} €</p> `;
+            } else {
+                summaryContainer.innerHTML = `<p class="font-bold mt-2 text-lg text-guacamayafly-orange">Procediendo con el pago en Criptomonedas.</p>`;
             }
 
             const wallets = [ { name: 'Bitcoin (BTC)', address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4' }, { name: 'Ethereum (ETH)', address: '0x1234567890123456789012345678901234567890', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/eth.svg?quality=63&format=avif&resize=width/50.4' }, { name: 'USDT (Tether)', address: '0xabcdef1234567890abcdef1234567890abcdef12', logo: 'https://www.bybit.com/bycsi-root/app/assets/token/f904fc2c215f7f86cea97f5b562217ad.svg' }, { name: 'Solana (SOL)', address: 'So11111111111111111111111111111111111111112', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/sol.svg?quality=63&format=avif&resize=width/50.4' }, { name: 'USD Coin (USDC)', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', logo: 'https://cryptoindex.com/pic/coins/usdc.svg' }, ];
