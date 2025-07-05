@@ -803,6 +803,14 @@
             });
         }
         
+        // --- NUEVO: Lógica para mostrar pop-up en la primera visita ---
+        if (!sessionStorage.getItem('initialPopupShown')) {
+            // Mostrar pop-up con un callback que establece la bandera en sessionStorage
+            showDevelopmentPopup(() => {
+                sessionStorage.setItem('initialPopupShown', 'true');
+            });
+        }
+        
         // --- BASE DE DATOS LOCAL DE AEROPUERTOS Y NACIONALIDADES ---
         const airportsDb = [
             // Venezuela
