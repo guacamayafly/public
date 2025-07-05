@@ -91,27 +91,85 @@
         /* NUEVO: Estilos del Modal de Calendario Mejorado */
         #calendar-modal .modal-container {
             padding: 0;
-            max-height: 85vh;
+            max-height: 90vh;
             overflow: hidden;
         }
         .calendar-modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
+            padding: 0.5rem 1rem;
             border-bottom: 1px solid #e5e7eb;
         }
-        .calendar-modal-body {
+        .calendar-modal-top-info {
             padding: 1rem;
+        }
+        .calendar-date-display {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .date-box {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        .date-box span {
+            display: block;
+        }
+        .date-box .label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .date-box .date-value {
+            font-weight: 600;
+        }
+        .calendar-modal-body {
+            padding: 0 1rem 1rem 1rem;
             overflow-y: auto;
+        }
+        .price-legend {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .legend-color-box {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.25rem;
         }
         .calendar-modal-footer {
             padding: 1rem;
             border-top: 1px solid #e5e7eb;
             background-color: white;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .quick-select-btn {
+            background-color: transparent;
+            border: 1px solid #4b5563;
+            color: #4b5563;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-select-btn:hover {
+            background-color: #f3f4f6;
         }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .calendar-months { display: grid; grid-template-columns: 1fr; gap: 2rem; }
@@ -199,17 +257,52 @@
     <div id="calendar-modal" class="modal-overlay hidden">
         <div class="modal-container">
             <div class="calendar-modal-header">
+                <h3 class="font-semibold text-lg flex-grow text-center">Selecciona tus fechas</h3>
                 <button id="close-calendar-modal-x" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
-                <h3 class="font-semibold text-lg">Selecciona tus fechas</h3>
-                <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
-                <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="calendar-modal-top-info">
+                <div class="calendar-date-display">
+                    <div class="date-box">
+                        <span class="label">Check-in</span>
+                        <span id="checkin-display" class="date-value">--</span>
+                    </div>
+                    <div class="date-box">
+                        <span class="label">Check-out</span>
+                        <span id="checkout-display" class="date-value">--</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 flex items-center gap-2">
+                    <i class="far fa-calendar-alt"></i>
+                    <span>Selecciona fechas para encontrar los mejores precios para tu viaje</span>
+                </p>
             </div>
             <div class="calendar-modal-body">
+                <div class="calendar-header">
+                    <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
+                    <div id="calendar-title-container" class="font-semibold text-center"></div>
+                    <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
+                </div>
                 <div class="calendar-months" id="calendar-months-container"></div>
+                <div class="price-legend">
+                    <div class="legend-item">
+                        <div class="legend-color-box bg-green-200"></div>
+                        <span>Más barato</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color-box bg-red-200"></div>
+                        <span>Más caro</span>
+                    </div>
+                </div>
             </div>
             <div class="calendar-modal-footer">
-                <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
-                <button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button>
+                <div>
+                    <button id="tonight-btn" class="quick-select-btn">Esta noche</button>
+                    <button id="weekend-btn" class="quick-select-btn">El próximo fin de semana</button>
+                </div>
+                <div>
+                    <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
+                    <button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -902,6 +995,11 @@
         const closeCalendarBtn = document.getElementById('close-calendar-btn');
         const clearDatesBtn = document.getElementById('clear-dates-btn');
         const closeCalendarModalX = document.getElementById('close-calendar-modal-x');
+        const checkinDisplay = document.getElementById('checkin-display');
+        const checkoutDisplay = document.getElementById('checkout-display');
+        const tonightBtn = document.getElementById('tonight-btn');
+        const weekendBtn = document.getElementById('weekend-btn');
+        const calendarTitleContainer = document.getElementById('calendar-title-container');
         
         const travelersPickerTrigger = document.getElementById('travelers-picker-trigger');
         const travelersModal = document.getElementById('travelers-modal');
@@ -1239,13 +1337,15 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            // Determinar cuántos meses mostrar según el tamaño de la pantalla
             const monthsToShow = window.innerWidth < 768 ? 1 : 2;
+            let titleHTML = '';
 
             for (let i = 0; i < monthsToShow; i++) {
                 const monthDate = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() + i, 1);
+                if(i > 0) titleHTML += ' - ';
+                titleHTML += monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+
                 const monthEl = document.createElement('div');
-                monthEl.innerHTML = `<h4 class="font-semibold text-center mb-2">${monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4>`;
                 const gridEl = document.createElement('div');
                 gridEl.className = 'calendar-grid';
                 ['D', 'L', 'M', 'X', 'J', 'V', 'S'].forEach(day => gridEl.innerHTML += `<div class="calendar-day weekday">${day}</div>`);
@@ -1274,6 +1374,7 @@
                 monthEl.appendChild(gridEl);
                 calendarMonthsContainer.appendChild(monthEl);
             }
+            calendarTitleContainer.innerHTML = titleHTML;
             updateCalendarSelection();
         }
 
@@ -1290,12 +1391,27 @@
         }
 
         function updateCalendarSelection() {
+            const formatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
+            if (checkinDisplay) {
+                checkinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
+            }
+            if (checkoutDisplay) {
+                checkoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
+            }
+
             document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
                 day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
                 const dayDate = new Date(day.dataset.date + 'T00:00:00');
-                if (selectedDeparture && day.dataset.date === selectedDeparture.toISOString().split('T')[0]) day.classList.add('selected', 'range-start');
-                if (selectedReturn && day.dataset.date === selectedReturn.toISOString().split('T')[0]) day.classList.add('selected', 'range-end');
-                if (selectedDeparture && selectedReturn && dayDate > selectedDeparture && dayDate < selectedReturn) day.classList.add('in-range');
+                if (selectedDeparture && day.dataset.date === selectedDeparture.toISOString().split('T')[0]) {
+                    day.classList.add('selected', 'range-start');
+                    if(!selectedReturn) day.classList.add('range-end');
+                }
+                if (selectedReturn && day.dataset.date === selectedReturn.toISOString().split('T')[0]) {
+                     day.classList.add('selected', 'range-end');
+                }
+                if (selectedDeparture && selectedReturn && dayDate > selectedDeparture && dayDate < selectedReturn) {
+                    day.classList.add('in-range');
+                }
             });
         }
 
@@ -1656,6 +1772,38 @@
         if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
         if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
         
+        if(tonightBtn) {
+            tonightBtn.addEventListener('click', () => {
+                const today = new Date();
+                const tomorrow = new Date();
+                tomorrow.setDate(today.getDate() + 1);
+                selectedDeparture = today;
+                selectedReturn = tomorrow;
+                currentMonthDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                renderCalendar();
+            });
+        }
+
+        if(weekendBtn) {
+            weekendBtn.addEventListener('click', () => {
+                let today = new Date();
+                let dayOfWeek = today.getDay(); // 0 (Sun) to 6 (Sat)
+                let daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+                if (daysUntilFriday === 0 && today.getHours() > 12) { // If it's Friday afternoon, get next Friday
+                    daysUntilFriday = 7;
+                }
+                let nextFriday = new Date();
+                nextFriday.setDate(today.getDate() + daysUntilFriday);
+                let nextSunday = new Date(nextFriday);
+                nextSunday.setDate(nextFriday.getDate() + 2);
+                
+                selectedDeparture = nextFriday;
+                selectedReturn = nextSunday;
+                currentMonthDate = new Date(nextFriday.getFullYear(), nextFriday.getMonth(), 1);
+                renderCalendar();
+            });
+        }
+
         if (travelersPickerTrigger) {
             travelersPickerTrigger.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1800,7 +1948,7 @@
             const calendarWrapper = document.createElement('div');
             const header = document.createElement('div');
             header.className = 'calendar-header';
-            header.innerHTML = ` <button id="hotel-prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button> <h4 class="font-semibold text-center">${hotelModalCurrentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4> <button id="hotel-next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button> `;
+            header.innerHTML = ` <button id="hotel-prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button><h4 class="font-semibold text-center">${hotelModalCurrentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4> <button id="hotel-next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button> `;
             calendarWrapper.appendChild(header);
             const gridEl = document.createElement('div');
             gridEl.className = 'calendar-grid';
