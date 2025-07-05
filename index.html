@@ -78,7 +78,7 @@
         .notification-popup.show { transform: translateX(0); }
         .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .modal-overlay.visible { opacity: 1; pointer-events: auto; }
-        .modal-container { background-color: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 800px; transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-container { background-color: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 800px; transform: scale(0.95); transition: transform 0.3s ease; display: flex; flex-direction: column; }
         .modal-overlay.visible .modal-container { transform: scale(1); }
         
         /* Popover (Viajeros y Equipaje) */
@@ -88,10 +88,34 @@
         .counter-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #d1d5db; display: flex; align-items: center; justify-content: center; cursor: pointer; background-color: white; color: #4b5563; font-size: 1.25rem; }
         .counter-btn:disabled { cursor: not-allowed; background-color: #f3f4f6; color: #9ca3af; }
 
-        /* Calendario */
+        /* NUEVO: Estilos del Modal de Calendario Mejorado */
+        #calendar-modal .modal-container {
+            padding: 0;
+            max-height: 85vh;
+            overflow: hidden;
+        }
+        .calendar-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .calendar-modal-body {
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        .calendar-modal-footer {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            background-color: white;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .calendar-months { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        @media (min-width: 640px) { .calendar-months { grid-template-columns: 1fr 1fr; } }
+        @media (min-width: 768px) { .calendar-months { grid-template-columns: 1fr 1fr; } }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; place-items: center; }
         .calendar-day { width: 38px; height: 38px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; transition: all 0.2s; }
         .calendar-day.weekday { font-weight: 600; font-size: 0.8rem; color: #4a5568; cursor: default; }
@@ -171,8 +195,24 @@
     <div id="notification-container"></div>
     <div id="loader" class="loader-overlay"><i class="fas fa-plane loader-plane"></i></div>
     
-    <!-- Modal del Calendario Principal -->
-    <div id="calendar-modal" class="modal-overlay hidden"><div class="modal-container"><div class="calendar-header"><button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button><h3 class="font-semibold text-lg">Selecciona tus fechas</h3><button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button></div><div class="calendar-months" id="calendar-months-container"></div><div class="flex justify-end mt-4 gap-4"><button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button><button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button></div></div></div>
+    <!-- Modal del Calendario (MODIFICADO) -->
+    <div id="calendar-modal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="calendar-modal-header">
+                <button id="close-calendar-modal-x" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+                <h3 class="font-semibold text-lg">Selecciona tus fechas</h3>
+                <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
+                <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="calendar-modal-body">
+                <div class="calendar-months" id="calendar-months-container"></div>
+            </div>
+            <div class="calendar-modal-footer">
+                <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
+                <button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button>
+            </div>
+        </div>
+    </div>
     
     <!-- Modal de Reserva de Vuelo (MODIFICADO) -->
     <div id="booking-modal" class="modal-overlay hidden">
@@ -794,6 +834,9 @@
                     devPopupOverlay.classList.remove('visible');
                     devPopupOverlay.addEventListener('transitionend', () => {
                         devPopupOverlay.classList.add('hidden');
+                        if (onPopupConfirmCallback) {
+                            sessionStorage.setItem('initialPopupShown', 'true');
+                        }
                     }, { once: true });
                 }
                 if (typeof onPopupConfirmCallback === 'function') {
@@ -803,9 +846,8 @@
             });
         }
         
-        // --- NUEVO: Lógica para mostrar pop-up en la primera visita ---
+        // --- Lógica para mostrar pop-up en la primera visita ---
         if (!sessionStorage.getItem('initialPopupShown')) {
-            // Mostrar pop-up con un callback que establece la bandera en sessionStorage
             showDevelopmentPopup(() => {
                 sessionStorage.setItem('initialPopupShown', 'true');
             });
@@ -859,6 +901,7 @@
         const nextMonthBtn = document.getElementById('next-month');
         const closeCalendarBtn = document.getElementById('close-calendar-btn');
         const clearDatesBtn = document.getElementById('clear-dates-btn');
+        const closeCalendarModalX = document.getElementById('close-calendar-modal-x');
         
         const travelersPickerTrigger = document.getElementById('travelers-picker-trigger');
         const travelersModal = document.getElementById('travelers-modal');
@@ -1190,11 +1233,16 @@
             bookingModal.classList.add('visible');
         }
 
+        // MODIFICADO: Lógica del Calendario
         function renderCalendar() {
             calendarMonthsContainer.innerHTML = '';
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            for (let i = 0; i < 2; i++) {
+
+            // Determinar cuántos meses mostrar según el tamaño de la pantalla
+            const monthsToShow = window.innerWidth < 768 ? 1 : 2;
+
+            for (let i = 0; i < monthsToShow; i++) {
                 const monthDate = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() + i, 1);
                 const monthEl = document.createElement('div');
                 monthEl.innerHTML = `<h4 class="font-semibold text-center mb-2">${monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4>`;
@@ -1603,6 +1651,7 @@
 
         if (datePickerTrigger) datePickerTrigger.addEventListener('click', () => { calendarModal.classList.remove('hidden'); calendarModal.classList.add('visible'); renderCalendar(); });
         if (closeCalendarBtn) closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); updateDateDisplay(); });
+        if (closeCalendarModalX) closeCalendarModalX.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); });
         if (clearDatesBtn) clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendar(); updateDateDisplay(); });
         if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
         if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
@@ -1998,7 +2047,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if (details.type === 'Hotel') {
-                 summaryContainer.innerHTML = ` <p><strong>Hotel:</strong> ${details.name}</p> <p><strong>Check-in:</strong> ${details.checkin}</p> <p><strong>Check-out:</strong> ${details.checkout}</p> <p><strong>Huéspedes:</strong> ${details.adults} adulto(s), ${details.children} niño(s)</p> <p><strong>Cama:</strong> ${details.bedType}</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p> `;
+                 summaryContainer.innerHTML = ` <p><strong>Hotel:</strong> ${details.name}</p> <p><strong>Check-in:</strong> ${details.checkin}</p> <p><strong>Check-out:</strong> ${details.checkout}</p> <p><strong>Huéspedes:</strong> ${details.adults} adulto(s), ${children} niño(s)</p> <p><strong>Cama:</strong> ${details.bedType}</p> <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar (aprox): 0.005 BTC</p> `;
             } else if (details.type === 'Vuelo') {
                  const itinerary = details.flight.flight.itineraries[0];
                  const departureCode = itinerary.segments[0].departure.iataCode;
