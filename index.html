@@ -864,6 +864,37 @@
             observer.observe(card);
         });
     }
+
+    // Function to start autoplay for carousels
+    function startAutoplay(carouselId, interval = 4000) {
+        const carousel = document.getElementById(carouselId);
+        if (!carousel || carousel.children.length < 2) return;
+
+        const playStep = () => {
+            // Check if the carousel is currently hovered over
+            if (carousel.matches(':hover')) return;
+
+            const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+            // If at the end or near the end, reset to beginning
+            if (carousel.scrollLeft >= maxScrollLeft - 10) { // -10 to account for potential sub-pixel rendering or rounding
+                carousel.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                // Scroll by the width of one card plus the gap
+                const cardWidth = carousel.children[0].offsetWidth;
+                const gap = parseInt(window.getComputedStyle(carousel).gap) || 16;
+                carousel.scrollBy({ left: cardWidth + gap, behavior: 'smooth' });
+            }
+        };
+
+        let intervalId = setInterval(playStep, interval);
+
+        // Pause on hover, resume on mouse leave
+        carousel.addEventListener('mouseenter', () => clearInterval(intervalId));
+        carousel.addEventListener('mouseleave', () => {
+            clearInterval(intervalId); // Clear any old interval just in case
+            intervalId = setInterval(playStep, interval);
+        });
+    }
     
     // Función para iniciar reserva desde tarjetas de carrusel (no vuelos)
     function handleCardBooking(type, name, details) {
@@ -1573,6 +1604,16 @@
                 hotelDealsCarousel.innerHTML = baseHotelDeals.map(h => `<a href="productdetails.html" class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col cursor-pointer"> <div class="relative"> <img src="${h.img}" alt="${h.name}" class="w-full h-36 object-cover"> ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''} <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button> </div> <div class="p-2 text-xs leading-tight flex-grow flex flex-col"> <div class="flex-grow"> <p class="text-[9px] font-semibold mb-0.5">${h.location}</p> <h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4> <div class="flex items-center space-x-1 mb-1"> <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span> <span class="text-[9px] font-normal">${h.reviewText}</span> <span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span> </div> <p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p> <p class="text-xs font-bold mb-0.5">${h.priceNew}</p> <p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p> <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div> <div class="member-price-tag mt-2">Precio para miembros disponible</div> </div> </div> </a>`).join('');
                 setupCarouselHopAnimation('hotel-deals-carousel');
             }
+
+            // Start autoplay for all carousels
+            startAutoplay('flight-carousel', 5000);
+            startAutoplay('accommodation-carousel', 4500);
+            startAutoplay('popular-accommodations-carousel', 5000);
+            startAutoplay('offers-carousel', 4000);
+            startAutoplay('vacation-packages-carousel', 5500);
+            startAutoplay('special-accommodations-carousel', 4800);
+            startAutoplay('hotel-deals-carousel', 4200);
+            startAutoplay('experiences-carousel', 4700);
         }
 
         // --- INICIALIZACIÓN Y EVENT LISTENERS ---
