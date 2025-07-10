@@ -484,7 +484,7 @@
 
     <header class="bg-white shadow-sm flex items-center justify-between px-4 sm:px-6 py-3 sticky top-0 z-40">
         <div class="flex items-center space-x-2">
-            <a href="#" class="back-button"><i class="fas fa-chevron-left"></i> <span id="back-button-text" class="hidden sm:block">Ver todos los hoteles</span></a>
+            <a href="./index.html" class="back-button"><i class="fas fa-chevron-left"></i> <span id="back-button-text" class="hidden sm:block">Ver todos los hoteles</span></a>
         </div>
         <div class="flex-1 max-w-xl hidden sm:block">
             <div class="relative">
@@ -609,10 +609,20 @@
             <div class="border-t my-4"></div>
             <div>
                 <h3 class="font-semibold text-md mb-3">Reservo directamente con el hotel</h3>
-                <div class="flex justify-between items-center border border-gray-200 p-3 rounded-lg">
-                    <div class="flex items-center gap-3"><i class="fas fa-globe text-gray-500"></i><div><p class="font-semibold text-sm">Sitio web oficial</p><p class="text-xs text-gray-500"><i class="fas fa-check text-brand-green mr-1"></i>Sin pago por adelantado</p></div></div>
-                    <div class="text-right"><p id="direct-booking-price" class="font-bold text-lg"></p></div>
-                    <button id="book-direct-btn" class="bg-guacamayafly-orange text-white font-bold py-2 px-4 rounded-lg hover:bg-guacamayafly-dark-orange heartbeat-animation">Reservar</button>
+                <!-- MODIFICACIÓN CLAVE AQUÍ: flex-col para móvil, flex-row para sm+ -->
+                <div class="flex flex-col sm:flex-row justify-between items-center border border-gray-200 p-3 rounded-lg gap-3">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-globe text-gray-500"></i>
+                        <div>
+                            <p class="font-semibold text-sm">Sitio web oficial</p>
+                            <p class="text-xs text-gray-500"><i class="fas fa-check text-brand-green mr-1"></i>Sin pago por adelantado</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p id="direct-booking-price" class="font-bold text-lg"></p>
+                    </div>
+                    <!-- Botón "Reservar" con w-full en móvil -->
+                    <button id="book-direct-btn" class="bg-guacamayafly-orange text-white font-bold py-2 px-4 rounded-lg hover:bg-guacamayafly-dark-orange heartbeat-animation w-full sm:w-auto">Reservar</button>
                 </div>
             </div>
             <div class="space-y-3 mt-6">
@@ -842,12 +852,14 @@
         </div>
     </footer>
 
-    <div id="sticky-footer-mobile" class="sticky-footer-mobile md:hidden flex items-center justify-between">
+    <!-- Barra de reserva sticky para móvil -->
+    <div id="sticky-footer-mobile" class="sticky-footer-mobile md:hidden flex items-center justify-between px-4">
         <div>
             <p id="sticky-footer-price" class="font-bold text-lg"></p>
             <a href="#" class="text-xs text-brand-green font-semibold hover:underline">Ver detalles</a>
         </div>
-        <a href="#" id="sticky-footer-offer-btn" class="bg-brand-green text-white font-bold py-2 px-6 rounded-full hover:opacity-90">Reservar</a>
+        <!-- Botón "Reservar" con w-full en móvil y padding ajustado -->
+        <a href="#" id="sticky-footer-offer-btn" class="bg-brand-green text-white font-bold py-2 px-4 rounded-full hover:opacity-90 w-auto">Reservar</a>
     </div>
 
     <!-- Barra de reserva sticky para desktop -->
