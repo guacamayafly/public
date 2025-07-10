@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalles del Hotel - Guacamayafly</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Custom Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'guacamayafly-green': '#00c897',
+                        'guacamayafly-dark-green': '#00b386',
+                        'guacamayafly-orange': '#FF7F00',
+                        'guacamayafly-dark-orange': '#E67300',
+                        'brand-green': '#00a680',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Favicon y Fonts -->
+    <link rel="shortcut icon" type="image/x-icon" href="https://storage.googleapis.com/a1aa/image/upload/v1719868571/logo-6.svg" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+    <!-- Estilos Globales y de Componentes -->
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; color: #1a203c; }
+        .interactive-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .interactive-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .rating-dots span { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #e0e0e0; margin-right: 2px; }
+        .rating-dots span.filled { background-color: #00a680; }
+        .carousel-container { position: relative; }
+        .carousel-nav-button { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(255, 255, 255, 0.9); border-radius: 9999px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #1a203c; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transition: all 0.2s ease-in-out; z-index: 10; cursor: pointer; }
+        .carousel-nav-button:hover { background-color: white; transform: translateY(-50%) scale(1.1); }
+        .carousel-nav-button.left { left: -22px; }
+        .carousel-nav-button.right { right: -22px; }
+        @media (max-width: 767px) { .carousel-nav-button { display: none; } }
+        .carousel-content-wrapper { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 1rem; }
+        .carousel-content-wrapper::-webkit-scrollbar { display: none; }
+        .carousel-content-wrapper > * { scroll-snap-align: start; flex-shrink: 0; }
+        .back-button { display: flex; align-items: center; gap: 0.5rem; color: #4a5568; font-weight: 500; transition: color 0.2s; }
+        .back-button:hover { color: #1a203c; }
+        .action-icon { background-color: rgba(255, 255, 255, 0.9); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: background-color 0.2s, transform 0.2s; }
+        .action-icon:hover { background-color: white; transform: scale(1.05); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
+        .accordion-content.open { max-height: 1000px; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        .heartbeat-animation { animation: heartbeat 1.5s infinite ease-in-out; }
+        
+        @keyframes hop {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-4px) scale(1.03); }
+        }
+        .hop-animation {
+            animation: hop 0.6s ease-out;
+        }
+        .initial-hop-animation {
+            animation: hop 1.2s ease-in-out 2; /* Un "hop-hop" más pronunciado */
+            animation-delay: 0.5s;
+        }
+
+        .sticky-nav {
+            position: sticky;
+            top: 60px;
+            z-index: 30;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .sticky-nav a {
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            color: #4a5568;
+            transition: color 0.2s, border-bottom-color 0.2s;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+        .sticky-nav a.active {
+            color: #1a203c;
+            border-bottom-color: #00a680;
+        }
+        .sticky-footer-mobile {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 0.75rem 1rem;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 40;
+        }
+        .faq-item-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-item-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        .faq-item-body.open {
+            max-height: 500px;
+        }
+        .faq-arrow {
+            transition: transform 0.4s ease;
+        }
+        .faq-arrow.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Popover (Viajeros y Equipaje) */
+        .popover-modal { position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); width: 320px; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 6000; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; }
+        .popover-modal.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+        .popover-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .counter-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #d1d5db; display: flex; align-items: center; justify-content: center; cursor: pointer; background-color: white; color: #4b5563; font-size: 1.25rem; }
+        .counter-btn:disabled { cursor: not-allowed; background-color: #f3f4f6; color: #9ca3af; }
+
+        /* Estilos del Modal de Calendario Mejorado */
+        .calendar-modal .modal-container {
+            padding: 0;
+            max-height: 90vh;
+            overflow: hidden;
+            max-width: 400px;
+        }
+        .calendar-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .calendar-modal-top-info {
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+        .info-box {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            flex: 1;
+        }
+        .info-box span {
+            display: block;
+        }
+        .info-box .label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .info-box .value {
+            font-weight: 600;
+        }
+        .calendar-modal-body {
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        .calendar-modal-footer {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            background-color: white;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        .price-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+        .price-legend > div { display: flex; align-items: center; gap: 0.5rem; }
+        .price-legend .color-box { width: 1rem; height: 1rem; border-radius: 0.25rem; }
+        .quick-select-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .quick-select-buttons button {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            background-color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .quick-select-buttons button:hover { background-color: #f3f4f6; }
+
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .calendar-months { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        @media (min-width: 768px) { .calendar-months { grid-template-columns: 1fr 1fr; } }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; place-items: center; }
+        .calendar-day { width: 38px; height: 38px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; transition: all 0.2s; }
+        .calendar-day.weekday { font-weight: 600; font-size: 0.8rem; color: #4a5568; cursor: default; }
+        .calendar-day.disabled { color: #cbd5e0; cursor: not-allowed; text-decoration: line-through; }
+        .calendar-day:not(.disabled):not(.weekday):hover { background-color: #f0f0f0; }
+        .calendar-day.price-cheap { background-color: #d1fae5; color: #065f46; }
+        .calendar-day.price-medium { background-color: #fef3c7; color: #92400e; }
+        .calendar-day.price-expensive { background-color: #fee2e2; color: #991b1b; }
+        .calendar-day.selected { background-color: #2563eb !important; color: white !important; font-weight: bold; }
+        .calendar-day.in-range { background-color: #dbeafe; border-radius: 0; }
+        .calendar-day.range-start { border-top-left-radius: 50%; border-bottom-left-radius: 50%; }
+        .calendar-day.range-end { border-top-right-radius: 50%; border-bottom-right-radius: 50%; }
+        
+        /* Modal de Pago (Este modal ya no se usará para iniciar la reserva, pero se mantiene por si se necesita en el futuro) */
+        .payment-option { border: 1px solid #e5e7eb; padding: 0.75rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s ease; }
+        .payment-option:hover { border-color: #FF7F00; background-color: #fff7ed; }
+        .payment-option.selected { border-color: #FF7F00; background-color: #fff7ed; box-shadow: 0 0 0 2px #FF7F00; }
+        .payment-logo { height: 24px; }
+        .payment-info-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2d3748; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 11000; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
+        .payment-info-popup.show { opacity: 1; transform: translateX(-50%) translateY(-10px); pointer-events: auto; }
+
+        /* Modales */
+        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
+        .notification-popup { background-color: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.5s ease-in-out; margin-top: 10px; }
+        .notification-popup.show { transform: translateX(0); }
+        .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+        .modal-container { background-color: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 800px; transform: scale(0.95); transition: transform 0.3s ease; display: flex; flex-direction: column; }
+        .modal-overlay.visible .modal-container { transform: scale(1); }
+
+        /* Loader */
+        .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 1s ease-out; }
+        .loader-overlay.hidden { opacity: 0; pointer-events: none; }
+        .loader-plane { font-size: 4rem; color: #FF7F00; animation: fly-across 3s infinite ease-in-out; }
+        @keyframes fly-across { 0% { transform: translateX(-100vw); } 50% { transform: translateX(0); } 100% { transform: translateX(100vw); } }
+
+        /* Saved Result Bar */
+        .saved-result-bar {
+            background-color: #e6f7f3; /* Light green background */
+            color: #00a680; /* Brand green text */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease-in-out;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .saved-result-bar.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .saved-result-bar i {
+            margin-right: 0.5rem;
+        }
+        .saved-result-bar button {
+            background-color: #00a680;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .saved-result-bar button:hover {
+            background-color: #008f6b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 pb-24 md:pb-0">
+
+    <!-- Pop-up de Sitio en Desarrollo -->
+    <div id="development-popup-overlay" class="modal-overlay hidden" style="z-index: 12000;">
+        <div class="modal-container bg-white p-8 rounded-lg shadow-xl max-w-sm w-full text-center">
+            <div class="text-yellow-500 mb-4">
+                <i class="fas fa-exclamation-triangle fa-3x"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-2 text-gray-800">Sitio Web en Desarrollo</h2>
+            <p class="text-gray-600 mb-6">
+                Los precios mostrados son de prueba y este sitio web está actualmente en desarrollo. Por favor, consulte con un agente antes de realizar cualquier pago o reserva.
+            </p>
+            <button id="development-popup-close" class="bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Entendido
+            </button>
+        </div>
+    </div>
+
+    <!-- Elementos de UI: Notificaciones, Loader, Modales -->
+    <div id="notification-container"></div>
+    <div id="loader" class="loader-overlay"><i class="fas fa-plane loader-plane"></i></div>
+
+    <!-- Modal del Calendario Principal (para selección de fechas de hotel) -->
+    <div id="calendar-modal" class="modal-overlay hidden calendar-modal">
+        <div class="modal-container">
+            <div class="calendar-modal-header">
+                 <h3 class="font-semibold text-lg">Selecciona fechas</h3>
+                 <button id="close-calendar-modal-x" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div class="calendar-modal-top-info">
+                <div class="info-box">
+                    <span class="label">Check-in</span>
+                    <span id="calendar-checkin-display" class="value">--</span>
+                </div>
+                <div class="info-box">
+                    <span class="label">Check-out</span>
+                    <span id="calendar-checkout-display" class="value">--</span>
+                </div>
+                <div class="info-box">
+                    <span class="label">Huéspedes</span>
+                    <span id="calendar-guests-display" class="value">--</span>
+                </div>
+            </div>
+            <div class="calendar-modal-body">
+                <div class="flex items-center gap-2 text-sm text-gray-700 mb-4">
+                    <i class="far fa-calendar-alt"></i>
+                    <p>Selecciona fechas para encontrar los mejores precios para tu viaje</p>
+                </div>
+                <div class="calendar-header">
+                    <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
+                    <h4 id="calendar-month-year" class="font-semibold text-lg"></h4>
+                    <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-months" id="calendar-months-container"></div>
+                <div class="price-legend">
+                    <div><div class="color-box" style="background-color: #d1fae5;"></div><span>Más barato</span></div>
+                    <div><div class="color-box" style="background-color: #fee2e2;"></div><span>Más caro</span></div>
+                </div>
+                <p class="text-center text-xs text-gray-500 mt-2">Según los precios promedio</p>
+                 <div class="quick-select-buttons">
+                    <button id="tonight-btn">Esta noche</button>
+                    <button id="next-weekend-btn">El próximo fin de semana</button>
+                </div>
+            </div>
+            <div class="calendar-modal-footer">
+                <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
+                <!-- Removed "Solicitar" button as per user request -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Selección de Viajeros (para hoteles) -->
+    <div id="travelers-modal" class="popover-modal hidden">
+        <div class="popover-row">
+            <div>
+                <p class="font-semibold">Adultos</p>
+                <p class="text-xs text-gray-500">18 años o más</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button type="button" class="counter-btn" data-type="adults" data-action="decrement">-</button>
+                <span id="adults-count" class="font-semibold text-lg">1</span>
+                <button type="button" class="counter-btn" data-type="adults" data-action="increment">+</button>
+            </div>
+        </div>
+        <div class="popover-row">
+             <div>
+                <p class="font-semibold">Niños</p>
+                <p class="text-xs text-gray-500">0 a 17 años</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button type="button" class="counter-btn" data-type="children" data-action="decrement">-</button>
+                <span id="children-count" class="font-semibold text-lg">0</span>
+                <button type="button" class="counter-btn" data-type="children" data-action="increment">+</button>
+            </div>
+        </div>
+        <!-- Removed "Aceptar" button as per user request -->
+    </div>
+
+    <!-- Modal de Reserva de Hotel (Este modal ya no se usa para iniciar la reserva, pero se mantiene por si se necesita) -->
+    <div id="hotel-card-booking-modal" class="modal-overlay hidden calendar-modal">
+        <div class="modal-container">
+            <div class="calendar-modal-header">
+                <h3 id="hotel-modal-title" class="font-semibold text-lg">Reservar Hotel</h3>
+                <button id="close-hotel-modal-btn" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div id="hotel-calendar-top-info" class="calendar-modal-top-info">
+                <!-- Contenido se genera con JS -->
+            </div>
+            <div class="calendar-modal-body">
+                <div id="hotel-modal-calendar-container">
+                    <!-- El calendario del modal se renderizará aquí -->
+                </div>
+            </div>
+            <div id="hotel-modal-form-container" class="p-4 border-t overflow-y-auto" style="max-height: 35vh;">
+                 <form id="hotel-modal-form">
+                    <input type="hidden" id="hotel-modal-name">
+                    <h4 class="font-bold text-gray-700 mb-2">Datos del Titular</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="hotel-modal-firstname" class="block text-sm font-medium text-gray-700">Nombre</label>
+                            <input type="text" id="hotel-modal-firstname" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                        <div>
+                            <label for="hotel-modal-lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
+                            <input type="text" id="hotel-modal-lastname" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="hotel-modal-email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                            <input type="email" id="hotel-modal-email" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                        <div>
+                            <label for="hotel-modal-phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                            <input type="tel" id="hotel-modal-phone" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                         <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
+                         <div class="space-y-3" id="payment-options-container">
+                            <div class="payment-option" data-payment="whatsapp">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Reservar por WhatsApp</span>
+                                    <i class="fab fa-whatsapp text-xl text-green-500"></i>
+                                </div>
+                            </div>
+                            <div class="payment-option" data-payment="card">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payment-option" data-payment="crypto">
+                                 <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
+                                    <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="payment-info-popup" class="payment-info-popup"></div>
+
+    <!-- NUEVO: Sección de Checkout para Criptomonedas -->
+    <div id="crypto-checkout-section" class="modal-overlay hidden">
+        <div class="modal-container max-w-4xl max-h-[90vh] overflow-y-auto">
+             <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Finalizar Pago</h2>
+                <button id="close-crypto-checkout-btn" class="text-gray-500 hover:text-gray-800">
+                    <i class="fas fa-times fa-lg"></i>&nbsp;Volver
+                </button>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-2/3">
+                        <h3 class="font-bold text-gray-700 mb-3 text-lg">Resumen de la Reserva</h3>
+                        <div id="crypto-summary-details" class="text-sm space-y-2 text-gray-600">
+                            <!-- El resumen se llenará dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 flex flex-col items-center">
+                        <p class="font-semibold text-gray-700 mb-2">Escanear para Pagar</p>
+                        <div class="p-3 border rounded-lg bg-white shadow-sm">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" alt="Código QR de pago" id="crypto-qr-code-img" class="w-40 h-40">
+                        </div>
+                         <p class="text-xs text-gray-500 mt-2">Use su billetera para escanear</p>
+                    </div>
+                </div>
+                <div class="mt-6 border-t pt-6">
+                    <h3 class="font-bold text-gray-700 mb-3 text-lg">O Pagar a la Siguiente Dirección</h3>
+                    <div id="crypto-wallets-list" class="space-y-3">
+                        <!-- Las billeteras se llenarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <header class="bg-white shadow-sm flex items-center justify-between px-4 sm:px-6 py-3 sticky top-0 z-40">
+        <div class="flex items-center space-x-2">
+            <a href="#" class="back-button"><i class="fas fa-chevron-left"></i> <span id="back-button-text" class="hidden sm:block">Ver todos los hoteles</span></a>
+        </div>
+        <div class="flex-1 max-w-xl hidden sm:block">
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="search" placeholder="Buscar hoteles, vuelos, etc." class="w-full pl-10 p-2 border border-gray-300 rounded-full bg-gray-100 focus:bg-white focus:ring-2 focus:ring-guacamayafly-orange focus:border-transparent transition">
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+             <button class="action-icon hidden sm:flex"><i class="fas fa-share-alt"></i></button>
+             <button class="action-icon hidden sm:flex"><i class="far fa-heart"></i></button>
+             <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-1.5 text-sm font-semibold" type="button">Iniciar sesión</button>
+        </div>
+    </header>
+
+    <nav id="section-nav" class="sticky-nav hidden md:block">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8">
+            <a href="#photo-gallery-section" class="active">Fotos</a>
+            <a href="#booking-section">Reservar</a>
+            <a href="#information">Información</a>
+            <a href="#location">Ubicación</a>
+            <a href="#reviews">Opiniones</a>
+            <a href="#faq">Preguntas</a>
+        </div>
+    </nav>
+
+    <nav id="section-nav-mobile" class="sticky-nav md:hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 overflow-x-auto">
+            <a href="#photo-gallery-section" class="active">Fotos</a>
+            <a href="#booking-section">Reservar</a>
+            <a href="#information">Información</a>
+            <a href="#location">Ubicación</a>
+            <a href="#reviews">Opiniones</a>
+            <a href="#faq">Preguntas</a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="md:hidden">
+            <h1 id="mobile-hotel-name" class="text-2xl font-bold text-gray-900 mb-1"></h1>
+            <a href="#reviews" id="mobile-reviews-link" class="text-sm text-gray-600 hover:underline"></a>
+             <div class="relative w-full h-64 rounded-lg overflow-hidden my-4 cursor-pointer">
+                <img id="mobile-main-image" src="" alt="Fachada del hotel" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Imagen+no+disponible';"/>
+            </div>
+        </div>
+
+        <div class="hidden md:block">
+            <h1 id="desktop-hotel-name" class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1"></h1>
+            <div class="flex flex-wrap items-center text-sm text-gray-600 gap-x-3 gap-y-1 mb-4">
+                <a href="#reviews" id="desktop-reviews-link" class="text-guacamayafly-orange hover:underline"></a>
+                <span>·</span>
+                <span id="desktop-hotel-location"></span>
+            </div>
+        </div>
+
+        <section id="photo-gallery-section" class="mb-8 hidden md:grid grid-cols-3 gap-2 h-96">
+            <div class="col-span-2 row-span-2 rounded-lg overflow-hidden cursor-pointer">
+                <img id="desktop-main-image" src="" alt="Habitación de hotel con vistas a la ciudad" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/800x600/cccccc/ffffff?text=Imagen+Principal';"/>
+            </div>
+            <div class="rounded-lg overflow-hidden cursor-pointer"><img id="desktop-sub-image1" src="" alt="Viajero en el hotel" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Imagen+2';"/></div>
+            <div class="rounded-lg overflow-hidden cursor-pointer"><img id="desktop-sub-image2" src="" alt="Suite del hotel" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Imagen+3';"/></div>
+        </section>
+        
+        <section id="booking-section" class="bg-white p-4 md:p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="font-bold text-lg md:text-xl mb-3 md:mb-4">Consulte los precios para las fechas de su viaje</h2>
+            <!-- Modified section to match the image layout -->
+            <div class="flex flex-col sm:flex-row border border-gray-200 rounded-lg mb-4">
+                <!-- Left side: Llegada and Salida -->
+                <div id="checkin-checkout-trigger" class="w-full sm:w-1/2 flex justify-between items-center p-3 text-left hover:bg-gray-50 cursor-pointer">
+                    <div class="flex-1">
+                        <span class="text-xs font-semibold text-gray-500">Llegada</span>
+                        <p id="main-checkin-display" class="font-semibold text-gray-900">Añadir fecha</p>
+                    </div>
+                    <div class="flex-1 text-right">
+                        <span class="text-xs font-semibold text-gray-500">Salida</span>
+                        <p id="main-checkout-display" class="font-semibold text-gray-900">Añadir fecha</p>
+                    </div>
+                </div>
+                <!-- Right side: Habitaciones/Huéspedes -->
+                <div id="guests-trigger" class="w-full sm:w-1/2 flex items-center justify-between p-3 text-left hover:bg-gray-50 relative border-t sm:border-t-0 sm:border-l border-gray-200 cursor-pointer">
+                    <div>
+                        <span class="text-xs font-semibold text-gray-500">Habitaciones/Huéspedes</span>
+                        <p id="main-guests-display" class="font-semibold text-gray-900">1 habitación, 2 adultos</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-gray-500 text-sm"></i>
+                    <!-- Popover de viajeros se insertará aquí -->
+                    <div id="hotel-travelers-modal" class="popover-modal hidden">
+                        <div class="popover-row">
+                            <div>
+                                <p class="font-semibold">Adultos</p>
+                                <p class="text-xs text-gray-500">18 años o más</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button type="button" class="counter-btn" data-type="hotel-adults" data-action="decrement">-</button>
+                                <span id="hotel-adults-count" class="font-semibold text-lg">1</span>
+                                <button type="button" class="counter-btn" data-type="hotel-adults" data-action="increment">+</button>
+                            </div>
+                        </div>
+                        <div class="popover-row">
+                             <div>
+                                <p class="font-semibold">Niños</p>
+                                <p class="text-xs text-gray-500">0 a 17 años</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button type="button" class="counter-btn" data-type="hotel-children" data-action="decrement">-</button>
+                                <span id="hotel-children-count" class="font-semibold text-lg">0</span>
+                                <button type="button" class="counter-btn" data-type="hotel-children" data-action="increment">+</button>
+                            </div>
+                        </div>
+                        <!-- Removed "Aceptar" button as per user request -->
+                    </div>
+                </div>
+            </div>
+            <!-- Saved Result Bar -->
+            <div id="saved-result-bar" class="saved-result-bar hidden">
+                <div>
+                    <i class="fas fa-check-circle"></i>
+                    <span id="saved-dates-guests"></span>
+                </div>
+                <button id="edit-selection-btn">Editar</button>
+            </div>
+            <div class="border-t my-4"></div>
+            <div>
+                <h3 class="font-semibold text-md mb-3">Reservo directamente con el hotel</h3>
+                <div class="flex justify-between items-center border border-gray-200 p-3 rounded-lg">
+                    <div class="flex items-center gap-3"><i class="fas fa-globe text-gray-500"></i><div><p class="font-semibold text-sm">Sitio web oficial</p><p class="text-xs text-gray-500"><i class="fas fa-check text-brand-green mr-1"></i>Sin pago por adelantado</p></div></div>
+                    <div class="text-right"><p id="direct-booking-price" class="font-bold text-lg"></p></div>
+                    <button id="book-direct-btn" class="bg-guacamayafly-orange text-white font-bold py-2 px-4 rounded-lg hover:bg-guacamayafly-dark-orange heartbeat-animation">Reservar</button>
+                </div>
+            </div>
+            <div class="space-y-3 mt-6">
+                <h3 class="font-semibold text-md">Ofertas destacadas</h3>
+                <div class="flex justify-between items-center border border-gray-200 p-3 rounded-lg">
+                    <div><img src="https://www.expedia.es/_dms/header/logo.svg?locale=es_ES&siteid=9&2&6f9ec7db" alt="Booking.com" class="h-4"></div>
+                    <div class="text-right"><p class="font-bold text-lg">168 €</p></div>
+                    <a href="#" class="bg-brand-green text-white font-bold py-2 px-4 rounded-lg hover:opacity-90">Ver oferta</a>
+                </div>
+                <div id="hidden-offers" class="accordion-content space-y-3 pt-3">
+                     <div class="flex justify-between items-center border border-gray-200 p-3 rounded-lg">
+                        <div><img src="https://www.expedia.es/_dms/header/logo.svg?locale=es_ES&siteid=9&2&6f9ec7db" alt="Expedia" class="h-5"></div>
+                        <div class="text-right"><p class="font-bold text-lg">190 €</p></div>
+                        <a href="#" class="bg-brand-green text-white font-bold py-2 px-4 rounded-lg hover:opacity-90">Ver oferta</a>
+                    </div>
+                </div>
+                <button id="toggle-offers-btn" class="text-sm text-gray-700 font-semibold w-full text-left hover:text-black">Ver todas las ofertas <i class="accordion-arrow fas fa-chevron-down ml-1 text-xs"></i></button>
+            </div>
+        </section>
+
+        <section id="popular-nearby-hotels" class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Populares cercanos</h2>
+            <div id="popular-nearby-hotels-container" class="carousel-container">
+                <div id="popular-nearby-hotels-carousel" class="carousel-content-wrapper flex space-x-4">
+                </div>
+                <button class="carousel-nav-button left" data-carousel-id="popular-nearby-hotels-carousel" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-nav-button right" data-carousel-id="popular-nearby-hotels-carousel" data-direction="1"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+
+        <section id="similar-sponsored-establishments" class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Establecimientos patrocinados similares</h2>
+            <div id="similar-sponsored-establishments-container" class="carousel-container">
+                 <div id="similar-sponsored-establishments-carousel" class="carousel-content-wrapper flex space-x-4">
+                </div>
+                <button class="carousel-nav-button left" data-carousel-id="similar-sponsored-establishments-carousel" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-nav-button right" data-carousel-id="similar-hotels-carousel" data-direction="1"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+
+        <section id="information" class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Información</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <div class="flex items-start mb-6">
+                        <div class="text-center mr-6">
+                            <p id="info-rating-value" class="text-5xl font-bold text-brand-green"></p>
+                            <p class="font-semibold">Bueno</p>
+                            <div id="info-rating-dots" class="rating-dots mt-1"></div>
+                            <p id="info-reviews-count" class="text-sm text-gray-500 mt-1"></p>
+                        </div>
+                        <div class="w-full flex-1 grid grid-cols-1 gap-y-2">
+                            <div><p class="font-semibold text-sm">Ubicación</p><div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-brand-green h-1.5 rounded-full" style="width: 98%"></div></div></div>
+                            <div><p class="font-semibold text-sm">Limpieza</p><div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-brand-green h-1.5 rounded-full" style="width: 94%"></div></div></div>
+                            <div><p class="font-semibold text-sm">Servicio</p><div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-brand-green h-1.5 rounded-full" style="width: 80%"></div></div></div>
+                            <div><p class="font-semibold text-sm">Calidad/precio</p><div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-brand-green h-1.5 rounded-full" style="width: 88%"></div></div></div>
+                        </div>
+                    </div>
+                    <p id="hotel-description" class="text-gray-700 leading-relaxed text-sm"></p>
+                    <button id="toggle-description" class="text-sm font-semibold mt-4 hover:underline">Leer más <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 mb-4">Servicios de la propiedad</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                        <div class="flex items-center gap-3"><i class="fas fa-parking text-brand-green w-5 text-center"></i><span>Aparcamiento</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-wifi text-brand-green w-5 text-center"></i><span>Wifi gratis</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-dumbbell text-brand-green w-5 text-center"></i><span>Gimnasio</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-utensils text-brand-green w-5 text-center"></i><span>Restaurante</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-child text-brand-green w-5 text-center"></i><span>Ideal para niños</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-paw text-brand-green w-5 text-center"></i><span>Admite mascotas</span></div>
+                    </div>
+                    <button class="text-sm font-semibold mt-4 hover:underline">Mostrar más <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                    
+                    <h3 class="font-semibold text-gray-800 mb-4 mt-6">Servicios de habitación</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                        <div class="flex items-center gap-3"><i class="fas fa-moon text-brand-green w-5 text-center"></i><span>Cortinas opacas</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-desktop text-brand-green w-5 text-center"></i><span>Mesa de escritorio</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-snowflake text-brand-green w-5 text-center"></i><span>Aire acondicionado</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-concierge-bell text-brand-green w-5 text-center"></i><span>Servicio de habitaciones</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-tv text-brand-green w-5 text-center"></i><span>Televisor de pantalla plana</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-bath text-brand-green w-5 text-center"></i><span>Bañera/ducha</span></div>
+                    </div>
+                    <button class="text-sm font-semibold mt-4 hover:underline">Mostrar más <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+
+                    <h3 class="font-semibold text-gray-800 mb-4 mt-6">Tipos de habitación</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                        <div class="flex items-center gap-3"><i class="fas fa-city text-brand-green w-5 text-center"></i><span>Vistas a la ciudad</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-bed text-brand-green w-5 text-center"></i><span>Suites</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-ban smoking-icon text-brand-green w-5 text-center"></i><span>Habitaciones de no fumadores</span></div>
+                        <div class="flex items-center gap-3"><i class="fas fa-users text-brand-green w-5 text-center"></i><span>Habitaciones para familias</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="location" class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Ubicación</h2>
+            <p id="location-address" class="text-sm text-gray-600 mb-4 flex items-center gap-2"><i class="fas fa-map-marker-alt"></i><span></span></p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-1 h-96 rounded-lg overflow-hidden relative">
+                    <!-- Se ha actualizado la imagen del mapa para una mejor visualización en desktop -->
+                    <img id="location-map-image" src="" alt="Mapa de ubicación" class="w-full h-full object-cover object-center" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Mapa+no+disponible';"/>
+                    <div class="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow-md">
+                        <h4 id="map-hotel-name" class="font-bold text-sm"></h4>
+                        <div id="map-hotel-rating" class="flex items-center text-xs"></div>
+                    </div>
+                </div>
+                <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold mb-3">Cómo llegar</h3>
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-16 h-16 rounded-full border-4 border-brand-green flex items-center justify-center text-2xl font-bold text-brand-green">100</div>
+                            <p class="text-sm font-semibold">Fantástico para moverse a pie</p>
+                        </div>
+                        <div class="text-sm space-y-3">
+                            <p><i class="fas fa-plane w-5 text-center mr-2 text-gray-500"></i>Aeropuerto de Madrid-Barajas (14.3 km)</p>
+                            <p><i class="fas fa-train w-5 text-center mr-2 text-gray-500"></i>Vodafone Sol (3 min)</p>
+                            <p><i class="fas fa-train w-5 text-center mr-2 text-gray-500"></i>Sevilla (4 min)</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-3">Qué hay cerca</h3>
+                        <div id="nearby-places" class="text-sm space-y-3">
+                            <div class="flex items-center gap-2"><img width="20" height="20" src="https://static.tacdn.com/img2/hsx/icons/Restaurants.svg"> <span id="nearby-restaurants"></span></div>
+                            <div class="flex items-center gap-2"><img width="20" height="20" src="https://static.tacdn.com/img2/hsx/icons/Attractions.svg"> <span id="nearby-attractions"></span></div>
+                        </div>
+                        <button class="text-sm font-semibold mt-4 hover:underline">Ver todos los restaurantes cercanos <i class="fas fa-chevron-right ml-1 text-xs"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="reviews" class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Opiniones</h2>
+             <div class="space-y-6">
+                <div class="border-b pb-4">
+                    <div class="flex items-center mb-2">
+                        <div class="rating-dots mr-2"><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span></div>
+                        <span class="font-semibold text-sm">Excelente</span>
+                    </div>
+                    <p class="text-gray-700 text-sm mb-2">"¡Una estancia maravillosa! El personal fue increíblemente amable y las habitaciones estaban impecables. La ubicación es perfecta para explorar Sídney."</p>
+                    <p class="text-xs text-gray-500">Por Juan P. - 12 de Junio, 2025</p>
+                </div>
+                <div class="border-b pb-4">
+                    <div class="flex items-center mb-2">
+                        <div class="rating-dots mr-2"><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span></span></div>
+                        <span class="font-semibold text-sm">Muy Bueno</span>
+                    </div>
+                    <p class="text-gray-700 text-sm mb-2">"El hotel es muy cómodo y bien ubicado. El desayuno buffet es excelente. Solo un pequeño detalle con el wifi que a veces fallaba en la habitación."</p>
+                    <p class="text-xs text-gray-500">Por María G. - 28 de Mayo, 2025</p>
+                </div>
+                <button class="text-sm font-semibold mt-4 hover:underline">Ver todas las opiniones <i class="fas fa-chevron-right ml-1 text-xs"></i></button>
+            </div>
+        </section>
+
+        <section id="similar-hotels" class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Quizá también te guste</h2>
+            <div class="carousel-container">
+                <div id="similar-hotels-carousel" class="carousel-content-wrapper flex space-x-4">
+                </div>
+                <button class="carousel-nav-button left" data-carousel-id="similar-hotels-carousel" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
+                <button class="carousel-nav-button right" data-carousel-id="similar-hotels-carousel" data-direction="1"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+        
+        <section id="faq" class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Preguntas frecuentes</h2>
+            <div id="faq-container" class="space-y-4">
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-100 mt-12 py-10 text-xs text-blue-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-y-6 gap-x-8">
+                <div>
+                    <div class="mb-3 font-semibold">Empresa</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Quiénes somos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Empleo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Anuncia tu alojamiento</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Publicidad</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Prensa</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Búsquedas</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Viajes a España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Hoteles en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Alquileres vacacionales España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Paquetes de vacaciones baratos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Vuelos baratos en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Alquiler de coches en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Todos los alojamientos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Guacamayafly Explore</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Políticas</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Términos y condiciones generales (excepto para reservas de Vrbo)</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Términos y condiciones de Vrbo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Privacidad</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cookies</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Condiciones de uso</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Información legal/contacto</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Pautas sobre el contenido y cómo denunciar contenido</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Ayuda</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Ayuda</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cancelar un vuelo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cancelar una reserva de hotel o de un alquiler vacacional</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Plazos de reembolso</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Utilizar un cupón de Guacamayafly</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Documentos para viajes internacionales</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-[9px] text-gray-600">
+                El sitio web de Guacamayafly.es permite pagar con American Express, Diner's Club International, MasterCard, Visa, Visa Electron, CartSsi, Carte Bleue y PayPal.
+            </div>
+        </div>
+    </footer>
+
+    <div id="sticky-footer-mobile" class="sticky-footer-mobile md:hidden flex items-center justify-between">
+        <div>
+            <p id="sticky-footer-price" class="font-bold text-lg"></p>
+            <a href="#" class="text-xs text-brand-green font-semibold hover:underline">Ver detalles</a>
+        </div>
+        <a href="#" id="sticky-footer-offer-btn" class="bg-brand-green text-white font-bold py-2 px-6 rounded-full hover:opacity-90">Reservar</a>
+    </div>
+
+    <!-- Barra de reserva sticky para desktop -->
+    <div id="sticky-footer-desktop" class="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 shadow-lg z-40 hidden md:flex items-center justify-center">
+        <div class="max-w-7xl w-full flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600">Precio por noche</p>
+                <p id="sticky-footer-price-desktop" class="font-bold text-2xl text-gray-900"></p>
+                <a href="#" class="text-sm text-brand-green font-semibold hover:underline">Ver detalles de precios</a>
+            </div>
+            <button id="book-now-desktop-btn" class="bg-brand-green text-white font-bold py-3 px-8 rounded-full hover:opacity-90 text-lg">Reservar ahora</button>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- UPDATED DATABASE WITH VALID IMAGE URLs ---
+        const hotelsDB = [
+            { id: 1, name: 'Amora Hotel Jamison Sydney', price: 211, rating: 4.3, reviews: 11514, location: 'Sydney, Australia', address: '11 Jamison Street, Sydney, Nueva Gales del Sur 2000 Australia', img: 'https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg', description: "La búsqueda del hotel boutique ideal en Sídney no tiene por qué ser complicada. Bienvenido a Amora Hotel Jamison Sydney, una fantástica opción para viajeros como tú...", mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 1.2, sponsored: true, faq: [] },
+            { id: 2, name: 'The Naha Terrace', price: 587, rating: 4.6, reviews: 1000, location: 'Naha, Japan', address: '2-14-1 Omoromachi, Naha, Okinawa 900-0006, Japan', img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg', description: 'Un oasis de lujo en el corazón de Naha.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/e3/45/cf/hotel-exterior.jpg?w=1000&h=-1&s=1', 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg'], distance: 0.5, sponsored: false, faq: [] },
+            { id: 3, name: 'Prince Smart Inn Naha', price: 311, rating: 4.6, reviews: 752, location: 'Naha, Japan', address: '3-chōme-2-23 Asahimachi, Naha, Okinawa 900-0029, Japan', img: 'https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg', description: 'Un hotel moderno y funcional.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 2.1, sponsored: true, faq: [] },
+            { id: 4, name: 'HOTEL ANTEROOM Naha', price: 360, rating: 4.6, reviews: 497, location: 'Naha, Japan', address: '3-chōme-27-11 Maejima, Naha, Okinawa 900-0016, Japan', img: 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg', description: 'Un hotel que fusiona arte y cultura.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/95/d4/04/hotel-indigo-sydney.jpg?w=1000&h=-1&s=1'], distance: 3.5, sponsored: false, faq: [] },
+            { id: 5, name: 'Hotel Mirador Puerta del Sol', price: 137, rating: 4.3, reviews: 353, location: 'Madrid, España', address: 'Calle Mayor 1, 28013 Madrid, España', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=600&s=1', description: 'Un hotel acogedor y céntrico.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/62/39/1c/hostal-providencia.jpg?w=1000&h=-1&s=1', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/95/d4/04/hotel-indigo-sydney.jpg?w=1000&h=-1&s=1'], distance: 0.1, sponsored: true, faq: [] },
+            { id: 6, name: 'Hotel Eurobuilding Caracas', price: 212, rating: 4.5, reviews: 2500, location: 'Caracas, Venezuela', address: 'Final Calle La Guairita, Chuao, Caracas', img: 'https://storage.googleapis.com/a1aa/image/image_0f4854.jpg-50873270-28bc-4dd8-9be4-bd7433517505', description: 'Lujo y confort en el corazón financiero de Caracas.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://storage.googleapis.com/a1aa/image/image_0f4854.jpg-50873270-28bc-4dd8-9be4-bd7433517505', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 4.5, sponsored: false, faq: [] },
+            { id: 7, name: 'Hesperia WTC Valencia', price: 160, rating: 4.4, reviews: 950, location: 'Valencia, Venezuela', address: 'Avenida Salvador Feo La Cruz, Naguanagua', img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/656975661.jpg?k=d4594331cf38698eca36c082de6a38a94ebabe4f979b26198c1bf3fdbe43f6f5&o=', description: 'El hotel más grande de Venezuela, ideal para negocios y eventos.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://cf.bstatic.com/xdata/images/hotel/max1024x768/656975661.jpg?k=d4594331cf38698eca36c082de6a38a94ebabe4f979b26198c1bf3fdbe43f6f5&o=', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 8.2, sponsored: true, faq: [] },
+            { id: 8, name: 'Tibu Hotel Boutique', price: 120, rating: 4.7, reviews: 250, location: 'Margarita, Venezuela', address: 'Playa El Agua, Isla de Margarita', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/d2/05/7e/20180420-192822-largejpg.jpg?w=800&h=-1&s=1', description: 'Un escape encantador con atención personalizada en la perla del Caribe.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/d2/05/7e/20180420-192822-largejpg.jpg?w=800&h=-1&s=1', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 1.8, sponsored: false, faq: [] },
+            { id: 9, name: 'Marriott Maracay Golf Resort', price: 220, rating: 4.6, reviews: 1100, location: 'Maracay, Venezuela', address: 'Av. Las Delicias, Maracay', img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/463619762.jpg?k=c1376a0487065ae390385ca04f15336b8d9d2318c7b7961f519d1d8505c25261&o=', description: 'Un ícono arquitectónico renovado que ofrece una experiencia de lujo.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://cf.bstatic.com/xdata/images/hotel/max1024x768/463619762.jpg?k=c1376a0487065ae390385ca04f15336b8d9d2318c7b7961f519d1d8505c25261&o=', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 2.5, sponsored: true, faq: [] },
+            { id: 10, name: 'The Ritz-Carlton, Tokyo', price: 1200, rating: 4.8, reviews: 1500, location: 'Tokyo, Japan', address: 'Tokyo Midtown 9-7-1 Akasaka, Minato-ku, Tokyo', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1', description: 'Vistas panorámicas y lujo incomparable en el corazón de Tokio.', mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be', galleryImages: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 0.8, sponsored: false, faq: [] },
+            { 
+              id: 11, 
+              name: 'Hotel Victoria 4 Puerta del Sol', 
+              price: 150, 
+              rating: 3.9, 
+              reviews: 1034, 
+              location: 'Madrid, España', 
+              address: 'Calle de Victoria 4, 28012 Madrid España', 
+              img: 'https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg', 
+              description: "DESPIÉRTATE EN LA PUERTA DEL SOL. Dormir junto a la Puerta del Sol, una de las plazas más populares del mundo, es uno de los muchos lujos que te ofrece el Hotel Victoria 4...", 
+              mapImage: 'https://storage.googleapis.com/a1aa/image/image_1a30c6.jpg-cf57d1b0-857a-477c-be4a-50e70ef0e9be',
+              galleryImages: [
+                  'https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg', 
+                  'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 
+                  'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'
+              ], 
+              distance: 0.2, 
+              sponsored: false,
+              faq: [
+                { q: "¿Qué atracciones populares hay cerca de Hotel Victoria 4 Puerta del Sol?", a: "Algunas atracciones cercanas son Calle 365 (0,2 km), The PubCrawl Company (0,3 km) y Madrid Urban Vibes Experiences (0,1 km)." },
+                { q: "¿Cuáles son algunos de los servicios del alojamiento Hotel Victoria 4 Puerta del Sol?", a: "Algunos de los servicios más populares que se ofrecen son wifi gratuito, restaurante y bar." },
+                { q: "¿Se admiten mascotas en Hotel Victoria 4 Puerta del Sol?", a: "Sí, normalmente se permiten mascotas, pero siempre es mejor llamar antes para confirmar." }
+              ]
+            }
+        ];
+        
+        let currentDisplayedHotel = null;
+        const autoplayIntervals = new Map();
+
+        function startAutoplay(carouselId, interval = 4000) {
+            const carousel = document.getElementById(carouselId);
+            if (!carousel || carousel.children.length < 2) return;
+
+            const playStep = () => {
+                if (carousel.matches(':hover')) return;
+                const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+                if (carousel.scrollLeft >= maxScrollLeft - 10) {
+                    carousel.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    carousel.scrollBy({ left: carousel.querySelector('.interactive-card').offsetWidth + 16, behavior: 'smooth' });
+                }
+            };
+
+            let intervalId = setInterval(playStep, interval);
+            autoplayIntervals.set(carouselId, intervalId);
+
+            carousel.addEventListener('mouseenter', () => clearInterval(autoplayIntervals.get(carouselId)));
+            carousel.addEventListener('mouseleave', () => {
+                clearInterval(autoplayIntervals.get(carouselId));
+                intervalId = setInterval(playStep, interval);
+                autoplayIntervals.set(carouselId, intervalId);
+            });
+        }
+
+        function setupCarouselObserver(carouselId) {
+            const carousel = document.getElementById(carouselId);
+            if (!carousel) return;
+            let lastAnimatedCard = null;
+
+            const observer = new IntersectionObserver((entries) => {
+                    let mostVisibleEntry = null;
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            if (!mostVisibleEntry || entry.intersectionRatio > mostVisibleEntry.intersectionRatio) {
+                                mostVisibleEntry = entry;
+                            }
+                        }
+                    });
+
+                    if (mostVisibleEntry && mostVisibleEntry.target !== lastAnimatedCard) {
+                        const card = mostVisibleEntry.target;
+                        lastAnimatedCard = card;
+
+                        if (!card.classList.contains('initial-hop-animation') && !card.classList.contains('hop-animation')) {
+                            card.classList.add('hop-animation');
+                            card.addEventListener('animationend', () => card.classList.remove('hop-animation'), { once: true });
+                        }
+                    }
+                },
+                { root: carousel, threshold: [0.75] }
+            );
+
+            carousel.querySelectorAll('.interactive-card').forEach((card) => {
+                observer.observe(card);
+            });
+        }
+        
+        function populateFAQ(faqData) {
+            const container = document.getElementById('faq-container');
+            const faqSection = document.getElementById('faq');
+            if (!container || !faqSection) return;
+
+            if (!faqData || faqData.length === 0) {
+                faqSection.style.display = 'none';
+                return;
+            }
+            
+            faqSection.style.display = 'block';
+            container.innerHTML = '';
+
+            faqData.forEach((item, index) => {
+                const faqItem = document.createElement('div');
+                faqItem.className = 'border-b';
+                faqItem.innerHTML = `
+                    <div class="faq-item-header py-4">
+                        <h3 class="font-semibold text-gray-800">${item.q}</h3>
+                        <i class="fas fa-chevron-down faq-arrow text-gray-500"></i>
+                    </div>
+                    <div class="faq-item-body pb-4">
+                        <p class="text-gray-600 text-sm">${item.a}</p>
+                    </div>
+                `;
+                container.appendChild(faqItem);
+            });
+
+            container.querySelectorAll('.faq-item-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const body = header.nextElementSibling;
+                    const arrow = header.querySelector('.faq-arrow');
+                    const allBodies = container.querySelectorAll('.faq-item-body');
+                    const allArrows = container.querySelectorAll('.faq-arrow');
+                    
+                    const wasOpen = body.classList.contains('open');
+
+                    allBodies.forEach(b => b.classList.remove('open'));
+                    allArrows.forEach(a => a.classList.remove('rotated'));
+
+                    if (!wasOpen) {
+                        body.classList.add('open');
+                        arrow.classList.add('rotated');
+                    }
+                });
+            });
+        }
+
+
+        function updateMainHotelContent(hotel) {
+            currentDisplayedHotel = hotel;
+            const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+            const setSrc = (id, src) => { const el = document.getElementById(id); if (el) el.src = src; };
+            const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+
+            setText('mobile-hotel-name', hotel.name);
+            setText('desktop-hotel-name', hotel.name);
+            setText('desktop-hotel-location', hotel.location);
+            setText('info-rating-value', hotel.rating.toFixed(1));
+            
+            const reviewsText = `(${hotel.reviews.toLocaleString('es-ES')} opiniones)`;
+            setText('info-reviews-count', reviewsText);
+            setText('mobile-reviews-link', reviewsText);
+            setText('desktop-reviews-link', reviewsText);
+
+            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating)) + '<span></span>'.repeat(5 - Math.round(hotel.rating));
+            setHTML('info-rating-dots', ratingDotsHtml);
+
+            setText('hotel-description', hotel.description);
+            
+            const locationAddressSpan = document.querySelector('#location-address span');
+            if (locationAddressSpan) locationAddressSpan.textContent = hotel.address;
+            setText('map-hotel-name', hotel.name);
+            const mapRatingHtml = `<div class="rating-dots mr-2">${ratingDotsHtml}</div> <span>(${hotel.reviews})</span>`;
+            setHTML('map-hotel-rating', mapRatingHtml);
+            setText('nearby-restaurants', '893 restaurantes en 0,5 km');
+            setText('nearby-attractions', '328 atracciones en 0,5 km');
+            
+            setText('direct-booking-price', `${hotel.price} €`);
+            setText('sticky-footer-price', `${hotel.price} €`); 
+            setText('sticky-footer-price-desktop', `${hotel.price} €`); 
+            
+            setSrc('mobile-main-image', hotel.galleryImages[0]);
+            setSrc('desktop-main-image', hotel.galleryImages[0]);
+            setSrc('desktop-sub-image1', hotel.galleryImages[1] || hotel.galleryImages[0]);
+            setSrc('desktop-sub-image2', hotel.galleryImages[2] || hotel.galleryImages[0]);
+            setSrc('location-map-image', hotel.mapImage);
+            
+            populateFAQ(hotel.faq);
+
+            selectedDeparture = null;
+            selectedReturn = null;
+            hotelAdultsCount = 1;
+            hotelChildrenCount = 0;
+            updateMainBookingDisplays();
+        }
+        
+        function createHotelListCard(hotel) {
+            const hotelCard = document.createElement('div');
+            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating)) + '<span></span>'.repeat(5 - Math.round(hotel.rating));
+            
+            hotelCard.className = 'bg-white rounded-lg shadow-sm border interactive-card flex items-center gap-4 p-3 cursor-pointer flex-shrink-0 w-[90%] sm:w-auto';
+            
+            hotelCard.innerHTML = `
+                <img alt="Imagen de ${hotel.name}" src="${hotel.img}" class="w-28 h-28 object-cover rounded-md flex-shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/112x112/cccccc/ffffff?text=Hotel';"/>
+                <div class="flex flex-col justify-between self-stretch flex-grow">
+                    <div>
+                        ${hotel.sponsored ? '<p class="text-xs text-gray-500 font-medium">Patrocinado <i class="fas fa-info-circle text-gray-400 fa-xs"></i></p>' : ''}
+                        <h4 class="font-semibold text-gray-900 text-base leading-tight mt-1">${hotel.name}</h4>
+                        <div class="flex items-center text-xs text-gray-600 mt-1">
+                            <span class="font-bold text-sm mr-1">${hotel.rating.toFixed(1)}</span>
+                            <div class="rating-dots mr-2">${ratingDotsHtml}</div>
+                            <span>(${hotel.reviews})</span>
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1"><i class="fas fa-map-marker-alt fa-xs mr-1"></i>a ${hotel.distance} km del centro</p>
+                    </div>
+                    <div class="flex items-end justify-between mt-2">
+                        <p class="text-xl font-bold text-gray-800">${hotel.price} €</p>
+                        <button class="bg-brand-green text-white font-bold py-2 px-4 rounded-full hover:opacity-90 text-sm view-hotel-btn">Ver hotel</button>
+                    </div>
+                </div>
+            `;
+            hotelCard.addEventListener('click', () => updateMainHotelContent(hotel));
+            return hotelCard;
+        }
+
+        function createCompactHotelCard(hotel) {
+            const hotelCard = document.createElement('div');
+            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating)) + '<span></span>'.repeat(5 - Math.round(hotel.rating));
+            hotelCard.className = 'flex-shrink-0 w-48 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card';
+            hotelCard.innerHTML = `
+                <img alt="Imagen de ${hotel.name}" src="${hotel.img}" class="w-full h-28 object-cover rounded-t-lg" onerror="this.onerror=null;this.src='https://placehold.co/192x112/cccccc/ffffff?text=Hotel';"/>
+                <div class="p-2 text-left">
+                    <h4 class="text-xs font-semibold text-gray-900 mb-0.5 truncate">${hotel.name}</h4>
+                    <div class="flex items-center text-xs mb-1">
+                        <div class="rating-dots mr-1">${ratingDotsHtml}</div>
+                        <span class="text-gray-500">(${hotel.reviews})</span>
+                    </div>
+                    <p class="text-sm font-bold text-gray-800">desde ${hotel.price} €</p>
+                </div>`;
+            hotelCard.addEventListener('click', () => updateMainHotelContent(hotel));
+            return hotelCard;
+        }
+
+        function populateCarousels() {
+            const listSections = [
+                { id: 'popular-nearby-hotels-carousel', data: [...hotelsDB].sort((a,b) => b.reviews - a.reviews).slice(0, 10) },
+                { id: 'similar-sponsored-establishments-carousel', data: [...hotelsDB].filter(h => h.sponsored).sort(() => 0.5 - Math.random()).slice(0, 10) },
+            ];
+
+            listSections.forEach(sectionConfig => {
+                const container = document.getElementById(sectionConfig.id);
+                if (container) {
+                    container.innerHTML = '';
+                    sectionConfig.data.forEach(hotel => container.appendChild(createHotelListCard(hotel)));
+                    if (container.firstChild) {
+                        container.firstChild.classList.add('initial-hop-animation');
+                    }
+                    startAutoplay(sectionConfig.id, 5000);
+                    setupCarouselObserver(sectionConfig.id);
+                }
+            });
+
+            const carouselSections = [
+                { id: 'similar-hotels-carousel', data: [...hotelsDB].sort(() => 0.5 - Math.random()).slice(0, 10) },
+            ];
+
+            carouselSections.forEach(config => {
+                const container = document.getElementById(config.id);
+                if (container) {
+                    container.innerHTML = '';
+                    config.data.forEach(hotel => container.appendChild(createCompactHotelCard(hotel)));
+                    if (container.firstChild) {
+                        container.firstChild.classList.add('initial-hop-animation');
+                    }
+                    startAutoplay(config.id, 4500);
+                    setupCarouselObserver(config.id);
+                }
+            });
+        }
+        
+        const sections = document.querySelectorAll('main section[id]');
+        const navLinks = document.querySelectorAll('#section-nav a, #section-nav-mobile a');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        document.querySelectorAll('.carousel-nav-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const carouselId = button.dataset.carouselId;
+                const direction = parseInt(button.dataset.direction, 10);
+                const carousel = document.getElementById(carouselId);
+                if (carousel) {
+                    const scrollAmount = carousel.offsetWidth * 0.8 * direction;
+                    carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            });
+        });
+
+        const toggleBtn = document.getElementById('toggle-offers-btn');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                document.getElementById('hidden-offers').classList.toggle('open');
+            });
+        }
+        
+        const toggleDescriptionBtn = document.getElementById('toggle-description');
+        if (toggleDescriptionBtn) {
+            const description = document.getElementById('hotel-description');
+            const originalText = description.textContent;
+            const limit = 300; // Character limit
+            if (originalText.length > limit) {
+                const shortText = originalText.substring(0, limit) + '...';
+                description.textContent = shortText;
+                
+                toggleDescriptionBtn.addEventListener('click', (e) => {
+                    if (description.textContent === shortText) {
+                        description.textContent = originalText;
+                        e.target.innerHTML = 'Leer menos <i class="fas fa-chevron-up ml-1 text-xs"></i>';
+                    } else {
+                        description.textContent = shortText;
+                        e.target.innerHTML = 'Leer más <i class="fas fa-chevron-down ml-1 text-xs"></i>';
+                    }
+                });
+            } else {
+                 toggleDescriptionBtn.style.display = 'none';
+            }
+        }
+
+        // --- NEW INTEGRATED LOGIC FROM NUEVOINDEX.HTML ---
+        const nationalities = ["Afgana", "Alemana", "Árabe", "Argentina", "Australiana", "Belga", "Boliviana", "Brasileña", "Camboyana", "Canadiense", "Chilena", "China", "Colombiana", "Coreana", "Costarricense", "Cubana", "Danesa", "Ecuatoriana", "Egipcia", "Salvadoreña", "Escocesa", "Española", "Estadounidense", "Estonia", "Etiope", "Filipina", "Finlandesa", "Francesa", "Galesa", "Griega", "Guatemalteca", "Haitiana", "Holandesa", "Hondureña", "Indonesa", "Inglesa", "Iraquí", "Iraní", "Irlandesa", "Israelí", "Italiana", "Japonesa", "Jordana", "Laosiana", "Letona", "Lituana", "Malaya", "Marroquí", "Mexicana", "Nicaragüense", "Noruega", "Neozelandesa", "Panameña", "Paraguaya", "Peruana", "Polaca", "Portuguesa", "Puertorriqueña", "Dominicana", "Rumana", "Rusa", "Sueca", "Suiza", "Tailandesa", "Taiwanesa", "Turca", "Ucraniana", "Uruguaya", "Venezolana", "Vietnamita"];
+
+        const loader = document.getElementById('loader');
+        const notificationContainer = document.getElementById('notification-container');
+        const developmentPopupOverlay = document.getElementById('development-popup-overlay');
+        const developmentPopupCloseBtn = document.getElementById('development-popup-close');
+        let onPopupConfirmCallback = null;
+
+        function showDevelopmentPopup(callback) {
+            onPopupConfirmCallback = callback;
+            if (developmentPopupOverlay) {
+                developmentPopupOverlay.classList.remove('hidden');
+                setTimeout(() => developmentPopupOverlay.classList.add('visible'), 10);
+            }
+        }
+
+        if (developmentPopupCloseBtn) {
+            developmentPopupCloseBtn.addEventListener('click', () => {
+                if (developmentPopupOverlay) {
+                    developmentPopupOverlay.classList.remove('visible');
+                    developmentPopupOverlay.addEventListener('transitionend', () => {
+                        developmentPopupOverlay.classList.add('hidden');
+                    }, { once: true });
+                }
+                if (typeof onPopupConfirmCallback === 'function') {
+                    onPopupConfirmCallback();
+                    onPopupConfirmCallback = null;
+                }
+            });
+        }
+        
+        if (!sessionStorage.getItem('initialPopupShown')) {
+            showDevelopmentPopup(() => {
+                sessionStorage.setItem('initialPopupShown', 'true');
+            });
+        }
+
+        function showNotification(message, type = 'error') {
+            const popup = document.createElement('div');
+            popup.className = `notification-popup ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
+            popup.textContent = message;
+            notificationContainer.appendChild(popup);
+            requestAnimationFrame(() => popup.classList.add('show'));
+            setTimeout(() => {
+                popup.classList.remove('show');
+                popup.addEventListener('transitionend', () => popup.remove());
+            }, 3000);
+        }
+
+        if (loader) {
+            loader.classList.add('hidden');
+            loader.addEventListener('transitionend', () => loader.remove());
+        }
+
+        // --- Calendar & Traveler Logic for Hotel Booking Section ---
+        const checkinCheckoutTrigger = document.getElementById('checkin-checkout-trigger');
+        const guestsTrigger = document.getElementById('guests-trigger');
+        const mainCheckinDisplay = document.getElementById('main-checkin-display');
+        const mainCheckoutDisplay = document.getElementById('main-checkout-display');
+        const mainGuestsDisplay = document.getElementById('main-guests-display');
+        const savedResultBar = document.getElementById('saved-result-bar');
+        const savedDatesGuestsSpan = document.getElementById('saved-dates-guests');
+        const editSelectionBtn = document.getElementById('edit-selection-btn');
+
+
+        const calendarModal = document.getElementById('calendar-modal');
+        const calendarMonthsContainer = document.getElementById('calendar-months-container');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month'); 
+        const closeCalendarBtn = document.getElementById('close-calendar-btn');
+        const clearDatesBtn = document.getElementById('clear-dates-btn');
+        const closeCalendarModalX = document.getElementById('close-calendar-modal-x');
+        const calendarCheckinDisplay = document.getElementById('calendar-checkin-display');
+        const calendarCheckoutDisplay = document.getElementById('calendar-checkout-display');
+        const calendarGuestsDisplay = document.getElementById('calendar-guests-display');
+        const calendarMonthYear = document.getElementById('calendar-month-year');
+        const tonightBtn = document.getElementById('tonight-btn');
+        const nextWeekendBtn = document.getElementById('next-weekend-btn');
+
+        const hotelTravelersModal = document.getElementById('hotel-travelers-modal');
+        const hotelAdultsCountSpan = document.getElementById('hotel-adults-count');
+        const hotelChildrenCountSpan = document.getElementById('hotel-children-count');
+
+        let selectedDeparture = null;
+        let selectedReturn = null;
+        let hotelAdultsCount = 1;
+        let hotelChildrenCount = 0;
+        let currentMonthDate = new Date();
+
+        function updateMainBookingDisplays() {
+            const formatOptions = { day: '2-digit', month: 'short' };
+            mainCheckinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : 'Añadir fecha';
+            mainCheckinDisplay.classList.toggle('text-gray-500', !selectedDeparture);
+            mainCheckinDisplay.classList.toggle('text-gray-900', !!selectedDeparture);
+
+            mainCheckoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : 'Añadir fecha';
+            mainCheckoutDisplay.classList.toggle('text-gray-500', !selectedReturn);
+            mainCheckoutDisplay.classList.toggle('text-gray-900', !!selectedReturn);
+
+            const totalGuests = hotelAdultsCount + hotelChildrenCount;
+            let guestsText = `${hotelAdultsCount} adulto${hotelAdultsCount > 1 ? 's' : ''}`;
+            if (hotelChildrenCount > 0) {
+                guestsText += `, ${hotelChildrenCount} niño${hotelChildrenCount > 1 ? 's' : ''}`;
+            }
+            mainGuestsDisplay.textContent = `1 habitación, ${guestsText}`;
+            mainGuestsDisplay.classList.toggle('text-gray-500', totalGuests === 0);
+            mainGuestsDisplay.classList.toggle('text-gray-900', totalGuests > 0);
+
+            if (selectedDeparture && selectedReturn) {
+                const depStr = selectedDeparture.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+                const retStr = selectedReturn.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+                savedDatesGuestsSpan.innerHTML = `Fechas: ${depStr} - ${retStr} &bull; Huéspedes: ${totalGuests}`;
+                savedResultBar.classList.add('show');
+                savedResultBar.classList.remove('hidden');
+            } else {
+                savedResultBar.classList.remove('show');
+                savedResultBar.classList.add('hidden');
+            }
+        }
+
+        function renderCalendarModal() {
+            calendarMonthsContainer.innerHTML = '';
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            calendarMonthYear.textContent = currentMonthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+            
+            const monthsToShow = window.innerWidth < 768 ? 1 : 2;
+
+            for (let i = 0; i < monthsToShow; i++) {
+                const monthDate = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() + i, 1);
+                const monthEl = document.createElement('div');
+                if (monthsToShow > 1) {
+                    monthEl.innerHTML = `<h4 class="font-semibold text-center mb-2">${monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4>`;
+                }
+                const gridEl = document.createElement('div');
+                gridEl.className = 'calendar-grid';
+                ['D', 'L', 'M', 'X', 'J', 'V', 'S'].forEach(day => gridEl.innerHTML += `<div class="calendar-day weekday">${day}</div>`);
+                
+                let firstDayOfMonth = monthDate.getDay();
+                for (let j = 0; j < firstDayOfMonth; j++) gridEl.appendChild(document.createElement('div'));
+
+                const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayEl = document.createElement('div');
+                    const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
+                    dayEl.className = 'calendar-day';
+                    dayEl.textContent = day;
+                    dayEl.dataset.date = dayDate.toISOString().split('T')[0];
+                    
+                    const rand = Math.random(); 
+                    if (rand < 0.3) dayEl.classList.add('price-cheap'); else if (rand < 0.7) dayEl.classList.add('price-medium'); else dayEl.classList.add('price-expensive');
+                    
+                    if (dayDate < today) {
+                        dayEl.classList.add('disabled');
+                    } else {
+                        dayEl.addEventListener('click', () => handleDateClick(dayDate));
+                    }
+                    gridEl.appendChild(dayEl);
+                }
+                monthEl.appendChild(gridEl);
+                calendarMonthsContainer.appendChild(monthEl);
+            }
+            updateCalendarSelection();
+        }
+
+        function handleDateClick(date) {
+            if (!selectedDeparture || (selectedDeparture && selectedReturn)) {
+                selectedDeparture = date; 
+                selectedReturn = null;
+            } else if (date < selectedDeparture) {
+                selectedDeparture = date;
+            } else {
+                selectedReturn = date;
+            }
+            updateCalendarSelection();
+            if (selectedDeparture && selectedReturn) {
+                calendarModal.classList.remove('visible');
+                calendarModal.classList.add('hidden');
+                updateMainBookingDisplays();
+            }
+        }
+
+        function updateCalendarSelection() {
+            const formatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
+            calendarCheckinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
+            calendarCheckoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
+            calendarGuestsDisplay.innerHTML = `<i class="fas fa-user-friends mr-1"></i> ${hotelAdultsCount + hotelChildrenCount}`;
+            
+            document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
+                day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
+                const dayDate = new Date(day.dataset.date + 'T00:00:00');
+                if (selectedDeparture && day.dataset.date === selectedDeparture.toISOString().split('T')[0]) day.classList.add('selected', 'range-start');
+                if (selectedReturn && day.dataset.date === selectedReturn.toISOString().split('T')[0]) day.classList.add('selected', 'range-end');
+                if (selectedDeparture && selectedReturn && dayDate > selectedDeparture && dayDate < selectedReturn) day.classList.add('in-range');
+            });
+        }
+
+        function handleHotelCounterClick(e) {
+            const button = e.target.closest('.counter-btn');
+            if (!button) return;
+
+            const type = button.dataset.type;
+            const action = button.dataset.action;
+
+            if (type === 'hotel-adults') {
+                if (action === 'increment') hotelAdultsCount++;
+                else if (action === 'decrement' && hotelAdultsCount > 1) hotelAdultsCount--;
+                hotelAdultsCountSpan.textContent = hotelAdultsCount;
+                document.querySelector('[data-type="hotel-adults"][data-action="decrement"]').disabled = hotelAdultsCount <= 1;
+            } else if (type === 'hotel-children') {
+                if (action === 'increment') hotelChildrenCount++;
+                else if (action === 'decrement' && hotelChildrenCount > 0) hotelChildrenCount--;
+                hotelChildrenCountSpan.textContent = hotelChildrenCount;
+                document.querySelector('[data-type="hotel-children"][data-action="decrement"]').disabled = hotelChildrenCount <= 0;
+            }
+            updateMainBookingDisplays();
+            updateCalendarSelection();
+        }
+
+        if (checkinCheckoutTrigger) {
+            checkinCheckoutTrigger.addEventListener('click', () => {
+                calendarModal.classList.remove('hidden');
+                calendarModal.classList.add('visible');
+                renderCalendarModal();
+            });
+        }
+
+        if (guestsTrigger) {
+            guestsTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                hotelTravelersModal.classList.toggle('hidden');
+                hotelTravelersModal.classList.toggle('visible');
+                document.querySelector('[data-type="hotel-adults"][data-action="decrement"]').disabled = hotelAdultsCount <= 1;
+                document.querySelector('[data-type="hotel-children"][data-action="decrement"]').disabled = hotelChildrenCount <= 0;
+            });
+        }
+
+        if (closeCalendarBtn) closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); updateMainBookingDisplays(); });
+        if (closeCalendarModalX) closeCalendarModalX.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); });
+        if (clearDatesBtn) clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendarModal(); updateMainBookingDisplays(); });
+        if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendarModal(); });
+        if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendarModal(); }); 
+        if (tonightBtn) tonightBtn.addEventListener('click', () => {
+            const today = new Date();
+            const tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1);
+            selectedDeparture = today;
+            selectedReturn = tomorrow;
+            updateMainBookingDisplays();
+            calendarModal.classList.remove('visible');
+            calendarModal.classList.add('hidden');
+        });
+        if (nextWeekendBtn) nextWeekendBtn.addEventListener('click', () => {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+            const nextFriday = new Date(today);
+            nextFriday.setDate(today.getDate() + daysUntilFriday);
+            const nextSunday = new Date(nextFriday);
+            nextSunday.setDate(nextFriday.getDate() + 2);
+            selectedDeparture = nextFriday;
+            selectedReturn = nextSunday;
+            updateMainBookingDisplays();
+            calendarModal.classList.remove('visible');
+            calendarModal.classList.add('hidden');
+        });
+
+        if (hotelTravelersModal) hotelTravelersModal.addEventListener('click', handleHotelCounterClick);
+
+        document.addEventListener('click', function(event) {
+            if (guestsTrigger && !guestsTrigger.contains(event.target) && hotelTravelersModal && !hotelTravelersModal.contains(event.target)) {
+                hotelTravelersModal.classList.add('hidden');
+                hotelTravelersModal.classList.remove('visible');
+                updateMainBookingDisplays();
+            }
+        });
+
+        if (editSelectionBtn) {
+            editSelectionBtn.addEventListener('click', () => {
+                checkinCheckoutTrigger.click();
+            });
+        }
+
+        // --- Lógica de redirección a Checkout ---
+        function redirectToCheckout(event) {
+            // Prevenir la acción por defecto si es un enlace
+            if (event) {
+                event.preventDefault();
+            }
+
+            // Validar que las fechas han sido seleccionadas
+            if (!selectedDeparture || !selectedReturn) {
+                showNotification('Por favor, selecciona las fechas de llegada y salida.', 'error');
+                // Abrir el calendario para que el usuario seleccione las fechas
+                if(checkinCheckoutTrigger) {
+                    checkinCheckoutTrigger.click();
+                }
+                return;
+            }
+
+            // Validar que hay un hotel seleccionado
+            if (!currentDisplayedHotel) {
+                showNotification('Error: No se ha seleccionado ningún hotel.', 'error');
+                return;
+            }
+
+            // Construir los parámetros para la URL
+            const params = new URLSearchParams();
+            params.append('hotelId', currentDisplayedHotel.id);
+            params.append('checkin', selectedDeparture.toISOString().split('T')[0]);
+            params.append('checkout', selectedReturn.toISOString().split('T')[0]);
+            params.append('adults', hotelAdultsCount);
+            params.append('children', hotelChildrenCount);
+            params.append('hotelName', currentDisplayedHotel.name);
+            params.append('price', currentDisplayedHotel.price);
+
+            // Redirigir a la página de checkout
+            window.location.href = `pagocheckout.html?${params.toString()}`;
+        }
+
+        // --- Lógica del botón principal "Reservar" ---
+        const bookDirectBtn = document.getElementById('book-direct-btn');
+        const bookNowDesktopBtn = document.getElementById('book-now-desktop-btn');
+        const stickyFooterOfferBtn = document.getElementById('sticky-footer-offer-btn');
+
+        if (bookDirectBtn) {
+            bookDirectBtn.addEventListener('click', redirectToCheckout);
+        }
+
+        if (bookNowDesktopBtn) {
+            bookNowDesktopBtn.addEventListener('click', redirectToCheckout);
+        }
+        
+        if (stickyFooterOfferBtn) {
+            // Cambiar el comportamiento para que redirija en lugar de solo hacer scroll
+            stickyFooterOfferBtn.href = '#'; // Prevenir navegación
+            stickyFooterOfferBtn.addEventListener('click', redirectToCheckout);
+        }
+
+
+        // --- Initial setup ---
+        if (hotelsDB.length > 0) {
+            const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0];
+            updateMainHotelContent(initialHotel);
+        }
+        populateCarousels();
+        updateMainBookingDisplays();
+    });
+    </script>
+</body>
+</html>

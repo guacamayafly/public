@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Viajes baratos: Ofertas Viajes, vuelos, hoteles | Guacamayafly</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'guacamayafly-green': '#00c897',
+                        'guacamayafly-dark-green': '#00b386',
+                        'guacamayafly-orange': '#FF7F00',
+                        'guacamayafly-dark-orange': '#E67300',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://storage.googleapis.com/a1aa/image/upload/v1719868571/logo-6.svg" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    
+    <style>
+        /* Estilos Globales y de Componentes */
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: white; color: #1a202c; margin: 0; min-height: 100vh; position: relative; overflow-x: hidden; z-index: 0; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        a { text-decoration: none; color: inherit; } /* Estilo global para enlaces */
+        
+        /* Loader */
+        .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 1s ease-out; }
+        .loader-overlay.hidden { opacity: 0; pointer-events: none; }
+        .loader-plane { font-size: 4rem; color: #FF7F00; animation: fly-across 3s infinite ease-in-out; }
+        @keyframes fly-across { 0% { transform: translateX(-100vw); } 50% { transform: translateX(0); } 100% { transform: translateX(100vw); } }
+        
+        /* Barra de Búsqueda */
+        .search-form-container { display: flex; flex-direction: column; gap: 0.75rem; max-width: 1100px; margin: 0 auto; transition: background-color: 0.3s ease; }
+        @media (min-width: 1024px) { .search-form-container { flex-direction: row; align-items: center; background-color: white; border-radius: 9999px; padding: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); } }
+        .search-form-container.flights-active { background-color: #f2f2f2; } /* Color gris claro para vuelos */
+        .search-input-group { position: relative; flex: 1; display: flex; align-items: center; padding: 0.75rem 1rem; background-color: white; border-radius: 9999px; border: 1px solid #d1d5db; }
+        @media (min-width: 1024px) { .search-input-group { border: none; background-color: transparent; } .search-input-group:not(:last-of-type) { border-right: 1px solid #e5e7eb; } }
+        .search-input-group i { color: #6b7280; margin-right: 0.75rem; }
+        .search-input-group input, .search-input-group span { border: none; outline: none; background: transparent; width: 100%; }
+        .search-main-button { background-color: #FF7F00; color: white; border-radius: 9999px; padding: 0.8rem; display: flex; align-items: center; justify-content: center; font-weight: 600; transition: background-color 0.2s, transform 0.1s ease; }
+        .search-main-button:hover { background-color: #E67300; }
+        .search-main-button:active { transform: scale(0.95); }
+
+        /* Autocomplete Suggestions */
+        .autocomplete-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; max-height: 250px; overflow-y: auto; }
+        .suggestion-item { padding: 0.75rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; }
+        .suggestion-item:hover { background-color: #f3f4f6; }
+        .suggestion-item .iata-code { font-weight: 600; color: #4b5563; }
+
+        /* Carrusel UI/UX Mejorado */
+        .carousel-container { position: relative; }
+        .carousel-nav-button { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(255, 255, 255, 0.9); border-radius: 9999px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #1a202c; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transition: all 0.2s ease-in-out; z-index: 10; cursor: pointer; }
+        .carousel-nav-button:hover { background-color: white; transform: translateY(-50%) scale(1.1); }
+        .carousel-nav-button.left { left: -22px; }
+        .carousel-nav-button.right { right: -22px; }
+        @media (max-width: 767px) { .carousel-nav-button { display: none; } }
+        .carousel-content-wrapper { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .carousel-content-wrapper::-webkit-scrollbar { display: none; }
+        .carousel-content-wrapper > * { scroll-snap-align: start; flex-shrink: 0; }
+
+        /* Tarjeta Interactiva UI/UX */
+        .interactive-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .interactive-card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.08); }
+
+        /* Modales */
+        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
+        .notification-popup { background-color: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.5s ease-in-out; margin-top: 10px; }
+        .notification-popup.show { transform: translateX(0); }
+        .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+        .modal-container { background-color: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 800px; transform: scale(0.95); transition: transform 0.3s ease; display: flex; flex-direction: column; }
+        .modal-overlay.visible .modal-container { transform: scale(1); }
+        
+        /* Popover (Viajeros y Equipaje) */
+        .popover-modal { position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); width: 320px; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 6000; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; }
+        .popover-modal.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+        .popover-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .counter-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #d1d5db; display: flex; align-items: center; justify-content: center; cursor: pointer; background-color: white; color: #4b5563; font-size: 1.25rem; }
+        .counter-btn:disabled { cursor: not-allowed; background-color: #f3f4f6; color: #9ca3af; }
+
+        /* Estilos del Modal de Calendario Mejorado */
+        .calendar-modal .modal-container {
+            padding: 0;
+            max-height: 90vh;
+            overflow: hidden;
+            max-width: 400px;
+        }
+        .calendar-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .calendar-modal-top-info {
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+        .info-box {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            flex: 1;
+        }
+        .info-box span {
+            display: block;
+        }
+        .info-box .label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .info-box .value {
+            font-weight: 600;
+        }
+        .calendar-modal-body {
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        .calendar-modal-footer {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            background-color: white;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        .price-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+        }
+        .price-legend > div { display: flex; align-items: center; gap: 0.5rem; }
+        .price-legend .color-box { width: 1rem; height: 1rem; border-radius: 0.25rem; }
+        .quick-select-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .quick-select-buttons button {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            background-color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .quick-select-buttons button:hover { background-color: #f3f4f6; }
+
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .calendar-months { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        @media (min-width: 768px) { .calendar-months { grid-template-columns: 1fr 1fr; } }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; place-items: center; }
+        .calendar-day { width: 38px; height: 38px; display: flex; justify-content: center; align-items: center; border-radius: 50%; cursor: pointer; transition: all 0.2s; }
+        .calendar-day.weekday { font-weight: 600; font-size: 0.8rem; color: #4a5568; cursor: default; }
+        .calendar-day.disabled { color: #cbd5e0; cursor: not-allowed; text-decoration: line-through; }
+        .calendar-day:not(.disabled):not(.weekday):hover { background-color: #f0f0f0; }
+        .calendar-day.price-cheap { background-color: #d1fae5; color: #065f46; }
+        .calendar-day.price-medium { background-color: #fef3c7; color: #92400e; }
+        .calendar-day.price-expensive { background-color: #fee2e2; color: #991b1b; }
+        .calendar-day.selected { background-color: #2563eb !important; color: white !important; font-weight: bold; }
+        .calendar-day.in-range { background-color: #dbeafe; border-radius: 0; }
+        .calendar-day.range-start { border-top-left-radius: 50%; border-bottom-left-radius: 50%; }
+        .calendar-day.range-end { border-top-right-radius: 50%; border-bottom-right-radius: 50%; }
+        
+        /* Hero Slider */
+        .section-hero-image { height: 288px; overflow: hidden; position: relative; }
+        @media (min-width: 640px) { .section-hero-image { height: 400px; } }
+        #hero-slider-container { display: flex; height: 100%; transition: transform 0.5s ease-in-out; }
+        .hero-slide { min-width: 100%; height: 100%; position: relative; }
+        .hero-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-text-overlay { background-color: rgba(0, 0, 0, 0.5); padding: 1.5rem; border-radius: 0.5rem; position: absolute; bottom: 1.5rem; left: 1.5rem; max-width: 90%; color: white; }
+        @media (min-width: 640px) { .hero-text-overlay { max-width: 50%; } }
+        #hero-slider-dots { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; }
+        .slider-dot { width: 10px; height: 10px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); cursor: pointer; transition: background-color 0.3s; }
+        .slider-dot.active { background-color: white; }
+        
+        /* Modal de Pago */
+        .payment-option { border: 1px solid #e5e7eb; padding: 0.75rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s ease; }
+        .payment-option:hover { border-color: #FF7F00; background-color: #fff7ed; }
+        .payment-option.selected { border-color: #FF7F00; background-color: #fff7ed; box-shadow: 0 0 0 2px #FF7F00; }
+        .payment-logo { height: 24px; }
+        .payment-info-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2d3748; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 11000; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
+        .payment-info-popup.show { opacity: 1; transform: translateX(-50%) translateY(-10px); pointer-events: auto; }
+
+        /* Animación de Tarjetas */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .flight-card-article {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Estilo para la sección de ofertas con overlay */
+        .offers-text-overlay {
+            background-color: rgba(255, 127, 0, 0.7); /* Naranja semitransparente */
+            color: white;
+        }
+        .offers-text-overlay h3, .offers-text-overlay p {
+            color: white;
+        }
+        .offer-card {
+            background-color: white;
+            color: #1a202c;
+        }
+
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <div id="development-popup-overlay" class="modal-overlay hidden" style="z-index: 12000;">
+        <div class="modal-container bg-white p-8 rounded-lg shadow-xl max-w-sm w-full text-center">
+            <div class="text-yellow-500 mb-4">
+                <i class="fas fa-exclamation-triangle fa-3x"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-2 text-gray-800">Sitio Web en Desarrollo</h2>
+            <p class="text-gray-600 mb-6">
+                Los precios mostrados son de prueba y este sitio web está actualmente en desarrollo. Por favor, consulte con un agente antes de realizar cualquier pago o reserva.
+            </p>
+            <button id="development-popup-close" class="bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Entendido
+            </button>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+    <div id="loader" class="loader-overlay"><i class="fas fa-plane loader-plane"></i></div>
+    
+    <div id="calendar-modal" class="modal-overlay hidden calendar-modal">
+        <div class="modal-container">
+            <div class="calendar-modal-header">
+                 <h3 class="font-semibold text-lg">Selecciona fechas</h3>
+                 <button id="close-calendar-modal-x" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div class="calendar-modal-top-info">
+                <div class="info-box">
+                    <span class="label">Check-in</span>
+                    <span id="calendar-checkin-display" class="value">--</span>
+                </div>
+                <div class="info-box">
+                    <span class="label">Check-out</span>
+                    <span id="calendar-checkout-display" class="value">--</span>
+                </div>
+                <div class="info-box">
+                    <span class="label">Huéspedes</span>
+                    <span id="calendar-guests-display" class="value">--</span>
+                </div>
+            </div>
+            <div class="calendar-modal-body">
+                <div class="flex items-center gap-2 text-sm text-gray-700 mb-4">
+                    <i class="far fa-calendar-alt"></i>
+                    <p>Selecciona fechas para encontrar los mejores precios para tu viaje</p>
+                </div>
+                <div class="calendar-header">
+                    <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
+                    <h4 id="calendar-month-year" class="font-semibold text-lg"></h4>
+                    <button id="next-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-months" id="calendar-months-container"></div>
+                <div class="price-legend">
+                    <div><div class="color-box" style="background-color: #d1fae5;"></div><span>Más barato</span></div>
+                    <div><div class="color-box" style="background-color: #fee2e2;"></div><span>Más caro</span></div>
+                </div>
+                <p class="text-center text-xs text-gray-500 mt-2">Según los precios promedio</p>
+                 <div class="quick-select-buttons">
+                    <button id="tonight-btn">Esta noche</button>
+                    <button id="next-weekend-btn">El próximo fin de semana</button>
+                </div>
+            </div>
+            <div class="calendar-modal-footer">
+                <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
+                <button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Solicitar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="booking-modal" class="modal-overlay hidden">
+        <div class="modal-container max-w-4xl max-h-[90vh] overflow-y-auto">
+             <div class="flex justify-between items-center mb-6">
+                <h3 class="font-semibold text-xl">Confirmar Reserva de Vuelo</h3>
+                <button id="close-booking-modal" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-3/5">
+                    <form id="booking-form">
+                        <div class="mb-6">
+                            <h4 class="font-bold text-gray-800 mb-3 text-lg">Datos del Titular de la Reserva</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="contact-email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                                    <input type="email" id="contact-email" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                                </div>
+                                <div>
+                                    <label for="contact-phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                                    <input type="tel" id="contact-phone" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                                </div>
+                                <div class="sm:col-span-2">
+                                     <label for="contact-source" class="block text-sm font-medium text-gray-700">¿Dónde nos conoció?</label>
+                                     <select id="contact-source" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                                        <option>Redes Sociales (Instagram, Facebook, etc.)</option>
+                                        <option>Recomendación de un amigo o familiar</option>
+                                        <option>Buscador (Google, etc.)</option>
+                                        <option>Publicidad online</option>
+                                        <option>Otro</option>
+                                     </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-3 text-lg">Pasajeros</h4>
+                            <div id="passengers-container" class="space-y-6">
+                                </div>
+                            <button type="button" id="add-passenger-btn" class="w-full text-sm text-blue-600 hover:text-blue-800 font-semibold py-2 mt-4">+ Añadir otro viajero</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="md:w-2/5">
+                    <h4 class="font-bold text-gray-800 mb-3 text-lg">Resumen y Pago</h4>
+                    <div id="booking-flight-summary" class="mb-6 p-4 bg-gray-100 rounded-lg text-sm"></div>
+                    <div>
+                         <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
+                         <div class="space-y-3" id="flight-payment-options-container">
+                            <div class="payment-option" data-payment="whatsapp">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Reservar por WhatsApp</span>
+                                    <i class="fab fa-whatsapp text-xl text-green-500"></i>
+                                </div>
+                            </div>
+                            <div class="payment-option" data-payment="card">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payment-option" data-payment="crypto">
+                                 <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
+                                    <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="hotel-card-booking-modal" class="modal-overlay hidden calendar-modal">
+        <div class="modal-container">
+            <div class="calendar-modal-header">
+                <h3 id="hotel-modal-title" class="font-semibold text-lg">Reservar Hotel</h3>
+                <button id="close-hotel-modal-btn" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
+            </div>
+            <div id="hotel-calendar-top-info" class="calendar-modal-top-info">
+                </div>
+            <div class="calendar-modal-body">
+                <div id="hotel-modal-calendar-container">
+                    </div>
+            </div>
+            <div id="hotel-modal-form-container" class="p-4 border-t overflow-y-auto" style="max-height: 35vh;">
+                 <form id="hotel-modal-form">
+                    <input type="hidden" id="hotel-modal-name">
+                    <h4 class="font-bold text-gray-700 mb-2">Datos del Titular</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="hotel-modal-firstname" class="block text-sm font-medium text-gray-700">Nombre</label>
+                            <input type="text" id="hotel-modal-firstname" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                        <div>
+                            <label for="hotel-modal-lastname" class="block text-sm font-medium text-gray-700">Apellido</label>
+                            <input type="text" id="hotel-modal-lastname" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="hotel-modal-email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                            <input type="email" id="hotel-modal-email" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                        <div>
+                            <label for="hotel-modal-phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
+                            <input type="tel" id="hotel-modal-phone" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                         <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
+                         <div class="space-y-3" id="payment-options-container">
+                            <div class="payment-option" data-payment="whatsapp">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Reservar por WhatsApp</span>
+                                    <i class="fab fa-whatsapp text-xl text-green-500"></i>
+                                </div>
+                            </div>
+                            <div class="payment-option" data-payment="card">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
+                                    <div class="flex items-center gap-2">
+                                        <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payment-option" data-payment="crypto">
+                                 <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
+                                    <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="payment-info-popup" class="payment-info-popup"></div>
+
+    <header class="flex items-center justify-between px-6 py-4 max-w-[1200px] mx-auto">
+        <div class="flex items-center space-x-2">
+            <img alt="Logo UACAMAYAFLY" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
+            <span class="font-extrabold text-lg select-none text-guacamayafly-orange">UACAMAYA</span>
+        </div>
+        <nav class="hidden sm:flex space-x-6 text-sm font-normal text-black">
+            <a class="hover:underline" href="https://wa.me/5804243156057">Descubrir</a>
+            <a class="hover:underline" href="https://wa.me/5804243156057">Viajes</a>
+            <a class="hover:underline" href="https://wa.me/5804243156057">Opinión</a>
+            <a class="hover:underline" href="https://wa.me/5804243156057">Más</a>
+            <a class="hover:underline" href="pagos2.html">Pagos</a> 
+        </nav>
+        <div class="flex items-center space-x-4 text-sm">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-1 text-sm font-semibold" type="button">Iniciar sesión</button>
+        </div>
+    </header>
+
+    <main id="main-container" class="max-w-[1200px] mx-auto px-6">
+        <div id="main-content">
+             <section class="text-center my-12">
+                <h1 id="search-title" class="font-extrabold text-2xl sm:text-3xl md:text-4xl mt-6 mb-6">Encuentra el mejor vuelo</h1>
+                <nav id="search-nav" class="flex flex-wrap justify-center gap-4 text-xs sm:text-sm font-normal text-gray-700 mb-4">
+                     <button data-mode="all" class="search-nav-button flex items-center gap-1 border border-gray-700 rounded px-2 py-1 font-semibold"> <i class="fas fa-home"></i> Buscar todo </button>
+                     <button data-mode="hotels" class="search-nav-button flex items-center gap-1"> <i class="fas fa-bed"></i> Hoteles </button>
+                     <button data-mode="flights" class="search-nav-button flex items-center gap-1 border border-black rounded px-2 py-1 font-semibold active"> <i class="fas fa-plane"></i> Vuelos </button>
+                     <button data-mode="tours" class="search-nav-button flex items-center gap-1"> <i class="fas fa-camera"></i> Cosas que hacer </button>
+                     <button data-mode="restaurants" class="search-nav-button flex items-center gap-1"> <i class="fas fa-utensils"></i> Restaurantes </button>
+                     <button data-mode="rentals" class="search-nav-button flex items-center gap-1"> <i class="fas fa-key"></i> Alquileres vacacionales </button>
+                </nav>
+                <form id="search-form" aria-label="Buscar vuelos" class="search-form-container mb-12" role="search" novalidate>
+                    <div id="origin-container" class="search-input-group">
+                        <i id="origin-icon" class="fas fa-plane-departure"></i>
+                        <input id="origin-input" placeholder="Origen" type="text" required autocomplete="off"/>
+                        <div id="origin-suggestions" class="autocomplete-suggestions hidden"></div>
+                    </div>
+                    <div id="destination-container" class="search-input-group">
+                        <i id="destination-icon" class="fas fa-plane-arrival"></i>
+                        <input id="destination-input" placeholder="Destino" type="text" required autocomplete="off"/>
+                         <div id="destination-suggestions" class="autocomplete-suggestions hidden"></div>
+                    </div>
+                    <div id="date-picker-trigger" class="search-input-group cursor-pointer">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="date-range-display" class="text-gray-500">Fechas</span>
+                    </div>
+                    <div id="travelers-picker-trigger" class="search-input-group cursor-pointer">
+                        <i class="fas fa-user"></i>
+                        <span id="travelers-display">1 viajero</span>
+                        <div id="travelers-modal" class="popover-modal hidden">
+                            <div class="popover-row">
+                                <div>
+                                    <p class="font-semibold">Adultos</p>
+                                    <p class="text-xs text-gray-500">18 años o más</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="counter-btn" data-type="adults" data-action="decrement">-</button>
+                                    <span id="adults-count" class="font-semibold text-lg">1</span>
+                                    <button type="button" class="counter-btn" data-type="adults" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <div class="popover-row">
+                                 <div>
+                                    <p class="font-semibold">Niños</p>
+                                    <p class="text-xs text-gray-500">0 a 17 años</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="counter-btn" data-type="children" data-action="decrement">-</button>
+                                    <span id="children-count" class="font-semibold text-lg">0</span>
+                                    <button type="button" class="counter-btn" data-type="children" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <button type="button" id="close-travelers-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
+                        </div>
+                    </div>
+                     <div id="baggage-picker-trigger" class="search-input-group cursor-pointer">
+                        <i class="fas fa-suitcase-rolling"></i>
+                        <span id="baggage-display">Equipaje</span>
+                        <div id="baggage-modal" class="popover-modal hidden">
+                            <div class="popover-row">
+                                <div>
+                                    <p class="font-semibold">Equipaje de mano (10kg)</p>
+                                    <p class="text-xs text-gray-500">Costo: 45.00 € por pieza</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="counter-btn" data-type="baggage-10kg" data-action="decrement">-</button>
+                                    <span id="baggage-10kg-count" class="font-semibold text-lg">0</span>
+                                    <button type="button" class="counter-btn" data-type="baggage-10kg" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <div class="popover-row">
+                                 <div>
+                                    <p class="font-semibold">Equipaje facturado (23kg)</p>
+                                    <p class="text-xs text-gray-500">Costo: 85.00 € por pieza</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button type="button" class="counter-btn" data-type="baggage-23kg" data-action="decrement">-</button>
+                                    <span id="baggage-23kg-count" class="font-semibold text-lg">0</span>
+                                    <button type="button" class="counter-btn" data-type="baggage-23kg" data-action="increment">+</button>
+                                </div>
+                            </div>
+                            <button type="button" id="close-baggage-btn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold mt-2">Aceptar</button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="origin-iata">
+                    <input type="hidden" id="destination-iata">
+                    <input type="hidden" id="departure-date">
+                    <input type="hidden" id="return-date">
+                    <button class="search-main-button" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </section>
+            
+            <section id="hero-section" aria-label="Los mejores hoteles del mundo, elegidos por ti" class="relative rounded-lg overflow-hidden mb-12 max-w-[1200px] mx-auto section-hero-image">
+                <div id="hero-slider-container" class="h-full">
+                    </div>
+                <div id="hero-slider-dots"></div>
+            </section>
+            
+            <section aria-label="Recent searches" class="mb-12">
+                <h2 class="text-lg font-semibold mb-3"> Tus búsquedas recientes </h2>
+                <a href="productdetails.html" class="flex items-center bg-gray-100 rounded-lg p-3 max-w-xs text-xs text-gray-700 font-semibold cursor-pointer interactive-card">
+                    <i class="fas fa-suitcase-rolling mr-3 text-gray-600 text-lg"> </i>
+                    <div>
+                        <p class="font-bold leading-tight"> Paquetes de Tokio, Japón (HND-Haneda) a Naha </p>
+                        <p class="leading-tight font-normal text-[11px] mt-0.5"> Del lun, 18 ago al jue, 21 ago </p>
+                        <p class="leading-tight font-normal text-[11px] mt-0.5"> Hotel + vuelo </p>
+                    </div>
+                </a>
+            </section>
+
+            <section aria-label="Guía para visitar Roma por segunda vez" class="bg-[#f3eaff] rounded-lg p-6 max-w-[1200px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12 interactive-card">
+                <img alt="Ruinas romanas con cielo azul y árboles verdes" class="rounded-lg w-full sm:w-[120px] h-auto object-cover flex-shrink-0" height="80" src="https://storage.googleapis.com/a1aa/image/bb820f8e-70a1-43a4-4538-bd88d493f019.jpg" width="120"/>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="font-semibold text-sm mb-1">Guía para visitar Roma por segunda vez</h3>
+                    <p class="text-xs text-gray-700 mb-2 max-w-lg">Descubre otra perspectiva de la historia, el arte y la gastronomía de la ciudad.</p>
+                </div>
+                <button class="border border-black rounded-full px-4 py-1 text-xs font-semibold whitespace-nowrap hover:bg-gray-100" type="button">Leer ahora</button>
+            </section>
+    
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+                <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                    <p class="text-sm font-semibold text-gray-900 leading-tight max-w-4xl">Es posible que los residentes en las islas Canarias, Ceuta, Melilla y las islas Baleares, así como los miembros de familias numerosas, puedan obtener un descuento en las tarifas aéreas.</p>
+                    <a class="text-sm font-semibold text-blue-900 underline mt-1 inline-block" href="https://wa.me/5804243156057">Información sobre el descuento en tarifas aéreas</a>
+                </div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-1 max-w-4xl">Descubre vuelos a destinos populares</h2>
+                <p class="text-xs text-gray-700 mb-4 max-w-4xl">Se muestran vuelos de ida y vuelta para estas fechas: <span class="font-semibold">05 Ago - 10 Ago</span></p>
+                <nav class="border-b border-gray-200 max-w-4xl mb-4">
+                    <ul class="flex space-x-6 text-sm font-semibold text-blue-700"><li class="border-b-2 border-blue-600 pb-2 cursor-pointer">Naha</li></ul>
+                </nav>
+                 <div class="carousel-container max-w-4xl mx-auto">
+                    <div id="flight-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        </div>
+                    <button aria-label="Desplazar vuelos a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('flight-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                    <button aria-label="Desplazar vuelos a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('flight-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="text-center mb-12">
+                <h2 class="text-xl font-semibold text-gray-900 mb-3">Descubre tu nuevo alojamiento favorito</h2>
+                <div class="carousel-container max-w-[1200px] mx-auto">
+                    <div id="accommodation-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        </div>
+                    <button aria-label="Desplazar alojamientos a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('accommodation-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                    <button aria-label="Desplazar alojamientos a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('accommodation-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="text-center mb-12">
+                <h3 class="text-xl font-semibold text-gray-900 mb-1">Echa un vistazo a alojamientos en destinos populares</h3>
+                <p class="text-sm text-gray-500 mb-3">La media de precios corresponde al mes natural actual.</p>
+                <nav class="flex space-x-4 border-b border-gray-200 mb-4 text-sm font-semibold text-blue-700 justify-center">
+                    <button class="border-b-2 border-blue-700 pb-1">Playa</button>
+                    <button class="pb-1 opacity-70 hover:opacity-100">Cultura</button>
+                    <button class="pb-1 opacity-70 hover:opacity-100">Esquí</button>
+                    <button class="pb-1 opacity-70 hover:opacity-100">Familia</button>
+                    <button class="pb-1 opacity-70 hover:opacity-100">Bienestar y relajación</button>
+                </nav>
+                <div class="carousel-container max-w-[1200px] mx-auto">
+                    <div id="popular-accommodations-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        </div>
+                    <button aria-label="Desplazar destinos a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('popular-accommodations-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                    <button aria-label="Desplazar destinos a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('popular-accommodations-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="relative mt-8 rounded-2xl overflow-hidden mb-12">
+                <img alt="Fondo de oferta con paisaje playero" class="absolute inset-0 w-full h-full object-cover" src="https://storage.googleapis.com/a1aa/image/1ab494ab-7725-4800-b387-862b1cf98652.jpg"/>
+                <div class="relative p-6 sm:p-8 lg:p-10 offers-text-overlay">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-lg font-semibold leading-tight max-w-xl">Las principales ofertas para ti a partir de tu búsqueda reciente</h3>
+                            <p class="text-xs font-normal mt-1">Se muestran ofertas para estas fechas: <span class="font-semibold">18 Ago - 21 Ago</span></p>
+                        </div>
+                        <button class="bg-white text-blue-600 text-xs font-semibold rounded-md px-3 py-1 whitespace-nowrap hover:bg-blue-50 transition" onclick="window.location.href='https://wa.me/5804243156057'">Abrir todas las ofertas</button>
+                    </div>
+                    <div class="carousel-container">
+                        <div id="offers-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                           </div>
+                        <button aria-label="Desplazar ofertas a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('offers-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                        <button aria-label="Desplazar ofertas a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('offers-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="max-w-[1200px] mx-auto my-12">
+               <h1 class="text-xl font-semibold leading-tight mb-1">Echa un vistazo a paquetes de vacaciones en destinos populares</h1>
+                <p class="text-sm text-gray-600 mb-3 max-w-[700px]">Precios encontrados en las últimas 48 horas para dos adultos. Los precios y la disponibilidad están sujetos a cambios. <span class="font-semibold cursor-pointer hover:underline">Haz clic para actualizar los precios.</span></p>
+               <div class="carousel-container">
+                    <div id="vacation-packages-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        </div>
+                    <button aria-label="Siguiente" class="carousel-nav-button right" onclick="scrollCarousel('vacation-packages-carousel', 1)"><i class="fas fa-chevron-right fa-lg"></i></button>
+                    <button aria-label="Anterior" class="carousel-nav-button left" onclick="scrollCarousel('vacation-packages-carousel', -1)"><i class="fas fa-chevron-left fa-lg"></i></button>
+                </div>
+               <button class="mt-6 bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded shadow hover:bg-blue-800 transition" type="button" onclick="window.location.href='https://wa.me/5804243156057'">Ver paquetes</button>
+            </section>
+
+            <section class="max-w-[1200px] mx-auto my-12 text-center">
+                <h2 class="text-lg sm:text-xl md:text-2xl font-semibold leading-tight mb-1">
+                    Echa un vistazo a estos alojamientos muy especiales
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-600 mb-3 max-w-[700px] mx-auto">
+                    Se muestran ofertas para estas fechas:
+                    <span class="font-semibold">20 Ago - 22 Ago</span>
+                </p>
+                <div class="carousel-container">
+                    <div id="special-accommodations-carousel" class="flex space-x-3 scrollbar-hide pb-2 carousel-content-wrapper">
+                        </div>
+                    <button aria-label="Desplazar alojamientos especiales a la izquierda" class="carousel-nav-button left" onclick="scrollCarousel('special-accommodations-carousel', -1)"><i class="fas fa-chevron-left"></i></button>
+                    <button aria-label="Desplazar alojamientos especiales a la derecha" class="carousel-nav-button right" onclick="scrollCarousel('special-accommodations-carousel', 1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+             <section aria-label="Members discount banner" class="flex items-center space-x-4 bg-guacamayafly-orange text-white rounded-lg px-4 py-3 my-12 max-w-full">
+                <i class="fas fa-gift fa-2x flex-shrink-0"></i>
+                <p class="text-sm font-semibold flex-1 leading-tight">Los miembros ahorran al menos un 10 % en más de 100 000 hoteles de todo el mundo tras iniciar sesión.</p>
+                <button class="bg-blue-600 hover:bg-blue-700 text-xs font-semibold rounded-full px-4 py-1 whitespace-nowrap" type="button" onclick="window.location.href='https://wa.me/5804243156057'">Iniciar sesión</button>
+            </section>
+
+            <section class="my-12 text-center">
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Ofertas de hoteles</h3>
+                 <p class="text-xs text-gray-500 mb-3">Precios por noche, impuestos y tasas incluidos.</p>
+                <div class="carousel-container max-w-[1200px] mx-auto">
+                    <div id="hotel-deals-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        </div>
+                     <button aria-label="Siguiente" class="carousel-nav-button right" onclick="scrollCarousel('hotel-deals-carousel', 1)"><i class="fas fa-chevron-right fa-lg"></i></button>
+                    <button aria-label="Anterior" class="carousel-nav-button left" onclick="scrollCarousel('hotel-deals-carousel', -1)"><i class="fas fa-chevron-left fa-lg"></i></button>
+                </div>
+            </section>
+            
+            <section class="my-12 text-center">
+                <h3 class="text-sm font-semibold text-gray-900 mb-0.5">Las mejores experiencias en Guacamayafly</h3>
+                <p class="text-xs text-gray-500 mb-4">Los mejores tours, actividades y entradas</p>
+                <div class="carousel-container max-w-[1200px] mx-auto">
+                    <div id="experiences-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
+                        </div>
+                    <button aria-label="Siguiente" class="carousel-nav-button right" onclick="scrollCarousel('experiences-carousel', 1)"><i class="fas fa-chevron-right fa-lg"></i></button>
+                    <button aria-label="Anterior" class="carousel-nav-button left" onclick="scrollCarousel('experiences-carousel', -1)"><i class="fas fa-chevron-left fa-lg"></i></button>
+                </div>
+            </section>
+            
+            <section class="max-w-5xl mx-auto my-12 border border-gray-300 rounded-md flex flex-col sm:flex-row overflow-hidden interactive-card">
+                <img alt="Mujer usando la app de Guacamayafly en su teléfono" class="w-full sm:w-80 object-cover" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/e0/e7/df/caption.jpg?w=900&h=500&s=1" width="320"/>
+                <div class="p-4 flex flex-col justify-center flex-1">
+                    <div>
+                        <h3 class="text-base font-bold text-gray-900 mb-1">Con la app de Guacamayafly llegarás aún más lejos</h3>
+                        <p class="text-xs text-gray-700 mb-2 leading-tight">Ahorra en una selección de hoteles y llévate el doble de puntos por reservar en la app. Con las ofertas de la app, podrás ahorrar y viajar más mientras gestionas todo tu itinerario estés donde estés.</p>
+                        <p class="text-xs font-bold text-gray-900">Escanea el código QR con la cámara de tu dispositivo y descarga nuestra app.</p>
+                    </div>
+                    <div class="mt-4 sm:mt-0 flex justify-end">
+                        <img alt="Código QR para descargar la app" class="w-20 h-20" src="https://storage.googleapis.com/a1aa/image/upload/v1719868571/QRCode.svg" width="80"/>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div id="results-container" class="hidden max-w-6xl mx-auto mt-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="results-title" class="text-2xl font-bold"></h2>
+                <button id="clear-search-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar Búsqueda</button>
+            </div>
+            <div id="search-loader" class="flight-search-loader hidden"><i class="fas fa-spinner fa-spin"></i><p>Buscando las mejores ofertas...</p></div>
+            <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    
+        <div id="crypto-checkout-section" class="hidden max-w-4xl mx-auto py-12">
+             <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Finalizar Pago</h2>
+                <button id="close-crypto-checkout-btn" class="text-gray-500 hover:text-gray-800">
+                    <i class="fas fa-times fa-lg"></i>&nbsp;Volver
+                </button>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-2/3">
+                        <h3 class="font-bold text-gray-700 mb-3 text-lg">Resumen de la Reserva</h3>
+                        <div id="crypto-summary-details" class="text-sm space-y-2 text-gray-600">
+                            </div>
+                    </div>
+                    <div class="md:w-1/2 flex flex-col items-center">
+                        <p class="font-semibold text-gray-700 mb-2">Escanear para Pagar</p>
+                        <div class="p-3 border rounded-lg bg-white shadow-sm">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" alt="Código QR de pago" id="crypto-qr-code-img" class="w-40 h-40">
+                        </div>
+                         <p class="text-xs text-gray-500 mt-2">Use su billetera para escanear</p>
+                    </div>
+                </div>
+                <div class="mt-6 border-t pt-6">
+                    <h3 class="font-bold text-gray-700 mb-3 text-lg">O Pagar a la Siguiente Dirección</h3>
+                    <div id="crypto-wallets-list" class="space-y-3">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-100 mt-12 py-10 text-xs text-blue-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-y-6 gap-x-8">
+                <div>
+                    <div class="mb-3 font-semibold">Empresa</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Quiénes somos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Empleo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Anuncia tu alojamiento</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Publicidad</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Prensa</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Búsquedas</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Viajes a España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Hoteles en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Alquileres vacacionales España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Paquetes de vacaciones baratos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Vuelos baratos en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Alquiler de coches en España</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Todos los alojamientos</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Guacamayafly Explore</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Políticas</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Términos y condiciones generales (excepto para reservas de Vrbo)</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Términos y condiciones de Vrbo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Privacidad</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cookies</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Condiciones de uso</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Información legal/contacto</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Pautas sobre el contenido y cómo denunciar contenido</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="mb-3 font-semibold">Ayuda</div>
+                    <ul class="space-y-1">
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Ayuda</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cancelar un vuelo</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Cancelar una reserva de hotel o de un alquiler vacacional</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Plazos de reembolso</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Utilizar un cupón de Guacamayafly</a></li>
+                        <li><a class="hover:underline" href="https://wa.me/5804243156057">Documentos para viajes internacionales</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 text-center text-[9px] text-gray-600">
+                El sitio web de Guacamayafly.es permite pagar con American Express, Diner's Club International, MasterCard, Visa, Visa Electron, CartSsi, Carte Bleue y PayPal.
+            </div>
+        </div>
+    </footer>
+    
+    <button aria-label="Ayuda" class="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-full px-3 py-1 text-xs text-gray-700 shadow-md hover:bg-gray-50 flex items-center space-x-1" onclick="window.location.href='https://wa.me/5804243156057'">
+        <span>Ayuda</span>
+        <i class="fas fa-question-circle"></i>
+    </button>
+
+    <script>
+    // --- Función para controlar los carruseles ---
+    function scrollCarousel(carouselId, direction) {
+        const carousel = document.getElementById(carouselId);
+        if (!carousel) return;
+
+        const cards = Array.from(carousel.children);
+        if (cards.length === 0) return;
+
+        // Ancho de una tarjeta + el espacio (gap) para calcular el desplazamiento
+        const cardWidth = cards[0].offsetWidth;
+        const gap = parseInt(window.getComputedStyle(carousel).gap) || 16; // 16px es el space-x-4
+        const scrollAmount = (cardWidth + gap) * direction;
+
+        carousel.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Lógica del Pop-up de Desarrollo ---
+        const devPopupOverlay = document.getElementById('development-popup-overlay');
+        const devPopupCloseBtn = document.getElementById('development-popup-close');
+        let onPopupConfirmCallback = null;
+
+        function showDevelopmentPopup(callback) {
+            onPopupConfirmCallback = callback;
+            if (devPopupOverlay) {
+                devPopupOverlay.classList.remove('hidden');
+                setTimeout(() => devPopupOverlay.classList.add('visible'), 10);
+            }
+        }
+
+        if (devPopupCloseBtn) {
+            devPopupCloseBtn.addEventListener('click', () => {
+                if (devPopupOverlay) {
+                    devPopupOverlay.classList.remove('visible');
+                    devPopupOverlay.addEventListener('transitionend', () => {
+                        devPopupOverlay.classList.add('hidden');
+                    }, { once: true });
+                }
+                if (typeof onPopupConfirmCallback === 'function') {
+                    onPopupConfirmCallback();
+                    onPopupConfirmCallback = null;
+                }
+            });
+        }
+        
+        // --- Lógica para mostrar pop-up en la primera visita ---
+        if (!sessionStorage.getItem('initialPopupShown')) {
+            showDevelopmentPopup(() => {
+                sessionStorage.setItem('initialPopupShown', 'true');
+            });
+        }
+        
+        // --- BASE DE DATOS LOCAL DE AEROPUERTOS Y NACIONALIDADES ---
+        const airportsDb = [
+            // Venezuela
+            { name: 'Aeropuerto Internacional de Maiquetía Simón Bolívar', city: 'Caracas', country: 'Venezuela', iata: 'CCS', searchTerms: 'caracas venezuela ccs maiquetia' },
+            { name: 'Aeropuerto Internacional La Chinita', city: 'Maracaibo', country: 'Venezuela', iata: 'MAR', searchTerms: 'maracaibo venezuela mar la chinita' },
+            { name: 'Aeropuerto Internacional Arturo Michelena', city: 'Valencia', country: 'Venezuela', iata: 'VLN', searchTerms: 'valencia venezuela vln arturo michelena' },
+            { name: 'Aeropuerto Internacional General José Antonio Anzoátegui', city: 'Barcelona', country: 'Venezuela', iata: 'BLA', searchTerms: 'barcelona venezuela bla jose antonio anzoategui' },
+            { name: 'Aeropuerto Internacional Del Caribe Santiago Mariño', city: 'Porlamar', country: 'Venezuela', iata: 'PMV', searchTerms: 'porlamar venezuela pmv santiago marino margarita' },
+            // Colombia
+            { name: 'Aeropuerto Internacional El Dorado', city: 'Bogotá', country: 'Colombia', iata: 'BOG', searchTerms: 'bogota colombia bog el dorado' },
+            { name: 'Aeropuerto Internacional José María Córdova', city: 'Medellín', country: 'Colombia', iata: 'MDE', searchTerms: 'medellin colombia mde jose maria cordova' },
+            // Chile
+            { name: 'Aeropuerto Internacional Arturo Merino Benítez', city: 'Santiago de Chile', country: 'Chile', iata: 'SCL', searchTerms: 'santiago de chile chile scl arturo merino benitez' },
+            // Argentina
+            { name: 'Aeropuerto Internacional Ministro Pistarini', city: 'Buenos Aires', country: 'Argentina', iata: 'EZE', searchTerms: 'buenos aires argentina eze ministro pistarini ezeiza' },
+            // España
+            { name: 'Aeropuerto Adolfo Suárez Madrid-Barajas', city: 'Madrid', country: 'España', iata: 'MAD', searchTerms: 'madrid españa mad adolfo suarez barajas' },
+            // Otros
+            { name: 'Aeropuerto Internacional de Estambul', city: 'Estambul', country: 'Turquía', iata: 'IST', searchTerms: 'estambul turquia turkey ist' },
+        ];
+
+        const nationalities = ["Afgana", "Alemana", "Árabe", "Argentina", "Australiana", "Belga", "Boliviana", "Brasileña", "Camboyana", "Canadiense", "Chilena", "China", "Colombiana", "Coreana", "Costarricense", "Cubana", "Danesa", "Ecuatoriana", "Egipcia", "Salvadoreña", "Escocesa", "Española", "Estadounidense", "Estonia", "Etiope", "Filipina", "Finlandesa", "Francesa", "Galesa", "Griega", "Guatemalteca", "Haitiana", "Holandesa", "Hondureña", "Indonesa", "Inglesa", "Iraquí", "Iraní", "Irlandesa", "Israelí", "Italiana", "Japonesa", "Jordana", "Laosiana", "Letona", "Lituana", "Malaya", "Marroquí", "Mexicana", "Nicaragüense", "Noruega", "Neozelandesa", "Panameña", "Paraguaya", "Peruana", "Polaca", "Portuguesa", "Puertorriqueña", "Dominicana", "Rumana", "Rusa", "Sueca", "Suiza", "Tailandesa", "Taiwanesa", "Turca", "Ucraniana", "Uruguaya", "Venezolana", "Vietnamita"];
+
+
+        // --- CONSTANTES Y VARIABLES ---
+        const loader = document.getElementById('loader');
+        const searchForm = document.getElementById('search-form');
+        const originInput = document.getElementById('origin-input');
+        const destinationInput = document.getElementById('destination-input');
+        const datePickerTrigger = document.getElementById('date-picker-trigger');
+        const dateRangeDisplay = document.getElementById('date-range-display');
+        const departureDateInput = document.getElementById('departure-date');
+        const returnDateInput = document.getElementById('return-date');
+        const mainContent = document.getElementById('main-content');
+        const mainContainer = document.getElementById('main-container');
+        const resultsContainer = document.getElementById('results-container');
+        const cardsContainer = document.getElementById('cards-container');
+        const searchLoader = document.getElementById('search-loader');
+        const resultsTitle = document.getElementById('results-title');
+        const clearSearchBtn = document.getElementById('clear-search-btn');
+        const cryptoCheckoutSection = document.getElementById('crypto-checkout-section');
+        
+        const calendarModal = document.getElementById('calendar-modal');
+        const calendarMonthsContainer = document.getElementById('calendar-months-container');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+        const closeCalendarBtn = document.getElementById('close-calendar-btn');
+        const clearDatesBtn = document.getElementById('clear-dates-btn');
+        const closeCalendarModalX = document.getElementById('close-calendar-modal-x');
+        const calendarCheckinDisplay = document.getElementById('calendar-checkin-display');
+        const calendarCheckoutDisplay = document.getElementById('calendar-checkout-display');
+        const calendarGuestsDisplay = document.getElementById('calendar-guests-display');
+        const calendarMonthYear = document.getElementById('calendar-month-year');
+        const tonightBtn = document.getElementById('tonight-btn');
+        const nextWeekendBtn = document.getElementById('next-weekend-btn');
+        
+        const travelersPickerTrigger = document.getElementById('travelers-picker-trigger');
+        const travelersModal = document.getElementById('travelers-modal');
+        const closeTravelersBtn = document.getElementById('close-travelers-btn');
+        const adultsCountSpan = document.getElementById('adults-count');
+        const childrenCountSpan = document.getElementById('children-count');
+        const travelersDisplay = document.getElementById('travelers-display');
+
+        const baggagePickerTrigger = document.getElementById('baggage-picker-trigger');
+        const baggageModal = document.getElementById('baggage-modal');
+        const closeBaggageBtn = document.getElementById('close-baggage-btn');
+        const baggage10kgCountSpan = document.getElementById('baggage-10kg-count');
+        const baggage23kgCountSpan = document.getElementById('baggage-23kg-count');
+        const baggageDisplay = document.getElementById('baggage-display');
+
+        const bookingModal = document.getElementById('booking-modal');
+        const closeBookingModalBtn = document.getElementById('close-booking-modal');
+        const bookingForm = document.getElementById('booking-form');
+        const passengersContainer = document.getElementById('passengers-container');
+        const addPassengerBtn = document.getElementById('add-passenger-btn');
+        const bookingFlightSummary = document.getElementById('booking-flight-summary');
+        
+        const originIataInput = document.getElementById('origin-iata');
+        const destinationIataInput = document.getElementById('destination-iata');
+
+        const AMADEUS_API_KEY = "RR8nKQAhAjGmKY1KHLeYpzodpPZM7z0U";
+        const AMADEUS_API_SECRET = "6UwcFznbkfFC06Ct";
+        let amadeusToken = null;
+        let tokenExpiry = null;
+        let currentFlightData = null;
+        let currentSearchMode = 'flights';
+
+        let currentMonthDate = new Date();
+        let selectedDeparture = null;
+        let selectedReturn = null;
+        
+        let adultsCount = 1;
+        let childrenCount = 0;
+        let baggage10kgCount = 0;
+        let baggage23kgCount = 0;
+        let passengerCount = 0;
+
+        const BAGGAGE_10KG_PRICE = 45.00;
+        const BAGGAGE_23KG_PRICE = 85.00;
+        
+        // --- FUNCIONES ---
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const popup = document.createElement('div');
+            popup.className = `notification-popup ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
+            popup.textContent = message;
+            container.appendChild(popup);
+            requestAnimationFrame(() => popup.classList.add('show'));
+            setTimeout(() => {
+                popup.classList.remove('show');
+                popup.addEventListener('transitionend', () => popup.remove());
+            }, 3000);
+        }
+
+        async function getAmadeusToken() {
+            if (amadeusToken && tokenExpiry && new Date() < tokenExpiry) return amadeusToken;
+            const url = 'https://test.api.amadeus.com/v1/security/oauth2/token';
+            const body = `grant_type=client_credentials&client_id=${AMADEUS_API_KEY}&client_secret=${AMADEUS_API_SECRET}`;
+            try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body });
+                if (!response.ok) throw new Error('No se pudo obtener el token de Amadeus.');
+                const data = await response.json();
+                amadeusToken = data.access_token;
+                tokenExpiry = new Date(new Date().getTime() + (data.expires_in * 1000));
+                return amadeusToken;
+            } catch (error) {
+                console.error("Error obteniendo token:", error);
+                showNotification("Error de autenticación con el proveedor de servicios.", 'error');
+                return null;
+            }
+        }
+
+        function searchLocations(keyword, inputElement, suggestionsContainer) {
+            if (keyword.length < 2) {
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.classList.add('hidden');
+                return;
+            }
+            
+            const lowerKeyword = keyword.toLowerCase();
+            const results = airportsDb.filter(airport => 
+                airport.searchTerms.toLowerCase().includes(lowerKeyword)
+            );
+            
+            displaySuggestions(results, inputElement, suggestionsContainer);
+        }
+
+        function displaySuggestions(suggestions, inputElement, suggestionsContainer) {
+            suggestionsContainer.innerHTML = '';
+            if (suggestions && suggestions.length > 0) {
+                suggestions.forEach(suggestion => {
+                    const item = document.createElement('div');
+                    item.className = 'suggestion-item';
+                    item.innerHTML = `
+                        <i class="fas fa-plane text-gray-400"></i>
+                        <div>
+                            <p>${suggestion.city} <span class="iata-code">${suggestion.iata}</span></p>
+                            <p class="text-xs text-gray-500">${suggestion.country}</p>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        inputElement.value = `${suggestion.city} (${suggestion.iata})`;
+                        if (inputElement.id === 'origin-input') {
+                            originIataInput.value = suggestion.iata;
+                        } else {
+                            destinationIataInput.value = suggestion.iata;
+                        }
+                        suggestionsContainer.innerHTML = '';
+                        suggestionsContainer.classList.add('hidden');
+                    });
+                    suggestionsContainer.appendChild(item);
+                });
+                suggestionsContainer.classList.remove('hidden');
+            } else {
+                suggestionsContainer.classList.add('hidden');
+            }
+        }
+        
+        originInput.addEventListener('input', () => searchLocations(originInput.value, originInput, document.getElementById('origin-suggestions')));
+        destinationInput.addEventListener('input', () => searchLocations(destinationInput.value, destinationInput, document.getElementById('destination-suggestions')));
+        document.addEventListener('click', (e) => {
+            if (!originInput.parentElement.contains(e.target)) document.getElementById('origin-suggestions').classList.add('hidden');
+            if (!destinationInput.parentElement.contains(e.target)) document.getElementById('destination-suggestions').classList.add('hidden');
+        });
+
+
+        async function searchFlights(origin, destination, departureDate, returnDate, adults, children) {
+            mainContent.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            searchLoader.classList.remove('hidden');
+            cardsContainer.innerHTML = '';
+            resultsTitle.textContent = `Vuelos de ${origin} a ${destination}`;
+            searchLoader.querySelector('p').textContent = `Buscando vuelos de ${origin} a ${destination}...`
+
+            const token = await getAmadeusToken();
+            if (!token) {
+                searchLoader.classList.add('hidden');
+                return;
+            }
+
+            let url = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${departureDate}&adults=${adults}&nonStop=false&max=20`;
+            if (returnDate) {
+                url += `&returnDate=${returnDate}`;
+            }
+            if (children > 0) {
+                url += `&children=${children}`;
+            }
+            
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!response.ok) throw new Error(`Error en la búsqueda de vuelos: ${response.statusText}`);
+                const data = await response.json();
+                renderFlightResults(data.data, data.dictionaries);
+            } catch (error) {
+                console.error("Error en la búsqueda de vuelos:", error);
+                showNotification("No se encontraron vuelos para esta ruta o hubo un error.", 'error');
+                cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron vuelos. Por favor, revisa tus fechas o intenta con otros destinos.</p>`;
+            } finally {
+                searchLoader.classList.add('hidden');
+            }
+        }
+        
+        function calculateFinalPrice(basePrice) {
+            const markupPrice = basePrice * 1.11;
+            const baggageCost = (baggage10kgCount * BAGGAGE_10KG_PRICE) + (baggage23kgCount * BAGGAGE_23KG_PRICE);
+            return markupPrice + baggageCost;
+        }
+
+        function renderFlightResults(flights, dictionaries) {
+            cardsContainer.innerHTML = '';
+            if (!flights || flights.length === 0) {
+                cardsContainer.innerHTML = `<p class="text-center text-gray-500 col-span-full">No se encontraron vuelos. Por favor, revisa tus fechas o intenta con otros destinos.</p>`;
+                return;
+            }
+
+            flights.forEach((flight, index) => {
+                const basePrice = parseFloat(flight.price.total);
+                const finalPrice = calculateFinalPrice(basePrice);
+                const itinerary = flight.itineraries[0];
+                const outbound = itinerary.segments[0];
+                const carrier = dictionaries.carriers[outbound.carrierCode];
+
+                const cardLink = document.createElement('a');
+                cardLink.href = 'productdetails.html';
+                cardLink.className = 'flight-card-article border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
+                cardLink.style.opacity = 0;
+                cardLink.style.animationDelay = `${index * 0.1}s`;
+                cardLink.dataset.basePrice = basePrice;
+                cardLink.dataset.flightData = JSON.stringify({ flight, carrier });
+
+                cardLink.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-2">
+                            <img alt="Logo ${carrier}" class="w-6 h-6" src="https://images.kiwi.com/airlines/64/${outbound.carrierCode}.png" onerror="this.style.display='none'">
+                            <span class="text-sm font-semibold">${carrier}</span>
+                        </div>
+                        <span class="flight-price font-bold text-lg text-guacamayafly-orange">${finalPrice.toFixed(2)} €</span>
+                    </div>
+                    <div class="flex-grow my-3">
+                        <div class="flex items-center justify-between text-gray-800">
+                            <div><p class="font-bold">${new Date(outbound.departure.at).toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</p><p class="text-xs">${outbound.departure.iataCode}</p></div>
+                            <div class="text-center text-xs text-gray-500 flex-grow px-2">
+                                <p>${itinerary.duration.replace('PT','').replace('H','h ').replace('M','m')}</p>
+                                <div class="w-full h-px bg-gray-300 my-1"></div>
+                                <p>${itinerary.segments.length - 1} escala(s)</p>
+                            </div>
+                            <div><p class="font-bold text-right">${new Date(itinerary.segments[itinerary.segments.length - 1].arrival.at).toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</p><p class="text-xs text-right">${itinerary.segments[itinerary.segments.length - 1].arrival.iataCode}</p></div>
+                        </div>
+                    </div>
+                    <button class="select-flight-btn w-full mt-4 bg-guacamayafly-green text-white font-semibold py-2 rounded-full hover:bg-guacamayafly-dark-green transition">Seleccionar</button>
+                `;
+                // Prevenir la navegación del enlace si se hace clic en el botón, para permitir abrir el modal.
+                cardLink.querySelector('.select-flight-btn').addEventListener('click', (e) => {
+                    e.preventDefault(); // Detener la navegación del enlace <a>
+                    const flightData = JSON.parse(cardLink.dataset.flightData);
+                    const currentFinalPrice = calculateFinalPrice(parseFloat(cardLink.dataset.basePrice));
+                    openBookingModal({ ...flightData, finalPrice: currentFinalPrice });
+                });
+                cardsContainer.appendChild(cardLink);
+            });
+        }
+        
+        function updateAllFlightPrices() {
+            document.querySelectorAll('#cards-container .flight-card-article').forEach(card => {
+                const basePrice = parseFloat(card.dataset.basePrice);
+                if (!isNaN(basePrice)) {
+                    const newFinalPrice = calculateFinalPrice(basePrice);
+                    card.querySelector('.flight-price').textContent = `${newFinalPrice.toFixed(2)} €`;
+                }
+            });
+        }
+
+        function addPassengerForm() {
+            passengerCount++;
+            const passengerDiv = document.createElement('div');
+            passengerDiv.className = 'passenger-form-group border-t pt-6';
+            passengerDiv.id = `passenger-group-${passengerCount}`;
+
+            const nationalityOptions = nationalities.map(n => `<option value="${n}">${n}</option>`).join('');
+
+            passengerDiv.innerHTML = `
+                <h5 class="font-semibold mb-3 text-md">Pasajero ${passengerCount}</h5>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                        <input type="text" name="firstname" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Apellido</label>
+                        <input type="text" name="lastname" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Nacionalidad</label>
+                        <select name="nationality" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                            ${nationalityOptions}
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2 flex items-center">
+                        <input type="checkbox" name="is-foreigner" class="h-4 w-4 text-guacamayafly-orange border-gray-300 rounded focus:ring-guacamayafly-orange">
+                        <label class="ml-2 block text-sm text-gray-900">Soy Extranjero</label>
+                    </div>
+                    <div name="cedula-field" class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Cédula Venezolana</label>
+                        <input type="text" name="cedula" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm" required>
+                    </div>
+                    <div name="passport-field" class="sm:col-span-2 hidden">
+                        <label class="block text-sm font-medium text-gray-700">Número de Pasaporte</label>
+                        <input type="text" name="passport" class="mt-1 passenger-input block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-guacamayafly-orange focus:border-guacamayafly-orange sm:text-sm">
+                    </div>
+                </div>
+            `;
+            passengersContainer.appendChild(passengerDiv);
+
+            const foreignerCheckbox = passengerDiv.querySelector('input[name="is-foreigner"]');
+            const cedulaField = passengerDiv.querySelector('div[name="cedula-field"]');
+            const passportField = passengerDiv.querySelector('div[name="passport-field"]');
+            const cedulaInput = cedulaField.querySelector('input');
+            const passportInput = passportField.querySelector('input');
+
+            foreignerCheckbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    cedulaField.classList.add('hidden');
+                    cedulaInput.required = false;
+                    passportField.classList.remove('hidden');
+                    passportInput.required = true;
+                } else {
+                    cedulaField.classList.remove('hidden');
+                    cedulaInput.required = true;
+                    passportField.classList.add('hidden');
+                    passportInput.required = false;
+                }
+            });
+        }
+
+        function openBookingModal(flightData) {
+            currentFlightData = flightData;
+            passengersContainer.innerHTML = ''; 
+            passengerCount = 0;
+            const totalTravelers = adultsCount + childrenCount;
+            for(let i = 0; i < totalTravelers; i++) {
+                addPassengerForm();
+            }
+            
+            const itinerary = flightData.flight.itineraries[0];
+            const departureCode = itinerary.segments[0].departure.iataCode;
+            const arrivalCode = itinerary.segments[itinerary.segments.length - 1].arrival.iataCode;
+
+            let baggageSummary = 'Sin equipaje adicional.';
+            if (baggage10kgCount > 0 || baggage23kgCount > 0) {
+                baggageSummary = '';
+                if (baggage10kgCount > 0) baggageSummary += `${baggage10kgCount} x 10kg `;
+                if (baggage23kgCount > 0) baggageSummary += `${baggage23kgCount} x 23kg`;
+            }
+
+            bookingFlightSummary.innerHTML = `
+                <strong>Vuelo:</strong> ${flightData.carrier} (${departureCode} → ${arrivalCode})<br>
+                <strong>Equipaje Adicional:</strong> ${baggageSummary}<br>
+                <strong class="text-lg">Precio Final: ${flightData.finalPrice.toFixed(2)} €</strong>
+            `;
+            bookingModal.classList.remove('hidden');
+            bookingModal.classList.add('visible');
+        }
+
+        function renderCalendar() {
+            calendarMonthsContainer.innerHTML = '';
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            calendarMonthYear.textContent = currentMonthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+            
+            const monthsToShow = window.innerWidth < 768 ? 1 : 2;
+
+            for (let i = 0; i < monthsToShow; i++) {
+                const monthDate = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() + i, 1);
+                if (monthsToShow === 1) {
+                     calendarMonthYear.textContent = monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                }
+                const monthEl = document.createElement('div');
+                if (monthsToShow > 1) {
+                    monthEl.innerHTML = `<h4 class="font-semibold text-center mb-2">${monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}</h4>`;
+                }
+                const gridEl = document.createElement('div');
+                gridEl.className = 'calendar-grid';
+                ['D', 'L', 'M', 'X', 'J', 'V', 'S'].forEach(day => gridEl.innerHTML += `<div class="calendar-day weekday">${day}</div>`);
+                
+                let firstDayOfMonth = monthDate.getDay();
+                for (let j = 0; j < firstDayOfMonth; j++) gridEl.appendChild(document.createElement('div'));
+
+                const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayEl = document.createElement('div');
+                    const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), day);
+                    dayEl.className = 'calendar-day';
+                    dayEl.textContent = day;
+                    dayEl.dataset.date = dayDate.toISOString().split('T')[0];
+                    
+                    const rand = Math.random();
+                    if (rand < 0.3) dayEl.classList.add('price-cheap'); else if (rand < 0.7) dayEl.classList.add('price-medium'); else dayEl.classList.add('price-expensive');
+                    
+                    if (dayDate < today) {
+                        dayEl.classList.add('disabled');
+                    } else {
+                        dayEl.addEventListener('click', () => handleDateClick(dayDate));
+                    }
+                    gridEl.appendChild(dayEl);
+                }
+                monthEl.appendChild(gridEl);
+                calendarMonthsContainer.appendChild(monthEl);
+            }
+            updateCalendarSelection();
+        }
+
+        function handleDateClick(date) {
+            if (!selectedDeparture || (selectedDeparture && selectedReturn)) {
+                selectedDeparture = date; 
+                selectedReturn = null;
+            } else if (date < selectedDeparture) {
+                selectedDeparture = date;
+            } else {
+                selectedReturn = date;
+            }
+            updateCalendarSelection();
+        }
+
+        function updateCalendarSelection() {
+            const formatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
+            calendarCheckinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
+            calendarCheckoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
+            calendarGuestsDisplay.innerHTML = `<i class="fas fa-user-friends mr-1"></i> ${adultsCount + childrenCount}`;
+            
+            document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
+                day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
+                const dayDate = new Date(day.dataset.date + 'T00:00:00');
+                if (selectedDeparture && day.dataset.date === selectedDeparture.toISOString().split('T')[0]) day.classList.add('selected', 'range-start');
+                if (selectedReturn && day.dataset.date === selectedReturn.toISOString().split('T')[0]) day.classList.add('selected', 'range-end');
+                if (selectedDeparture && selectedReturn && dayDate > selectedDeparture && dayDate < selectedReturn) day.classList.add('in-range');
+            });
+        }
+
+        function updateDateDisplay() {
+            if (selectedDeparture && selectedReturn) {
+                const depStr = selectedDeparture.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                const retStr = selectedReturn.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                dateRangeDisplay.textContent = `${depStr} → ${retStr}`;
+                dateRangeDisplay.classList.remove('text-gray-500');
+                departureDateInput.value = selectedDeparture.toISOString().split('T')[0];
+                returnDateInput.value = selectedReturn.toISOString().split('T')[0];
+            } else if (selectedDeparture) {
+                dateRangeDisplay.textContent = `Ida: ${selectedDeparture.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`;
+                dateRangeDisplay.classList.remove('text-gray-500');
+                departureDateInput.value = selectedDeparture.toISOString().split('T')[0]; 
+                returnDateInput.value = '';
+            } else {
+                dateRangeDisplay.textContent = 'Fechas'; 
+                dateRangeDisplay.classList.add('text-gray-500');
+                departureDateInput.value = ''; 
+                returnDateInput.value = '';
+            }
+        }
+        
+        function updateTravelersDisplay() {
+            const total = adultsCount + childrenCount;
+            let text = `${total} viajero`;
+            if (total > 1) text += 's';
+            
+            let details = `${adultsCount} adulto${adultsCount > 1 ? 's' : ''}`;
+            if (childrenCount > 0) {
+                details += `, ${childrenCount} niño${childrenCount > 1 ? 's' : ''}`;
+            }
+            travelersDisplay.textContent = details;
+        }
+        
+        function updateBaggageDisplay() {
+            let text = 'Equipaje';
+            const parts = [];
+            if (baggage10kgCount > 0) parts.push(`${baggage10kgCount}x10kg`);
+            if (baggage23kgCount > 0) parts.push(`${baggage23kgCount}x23kg`);
+
+            if (parts.length > 0) {
+                text = parts.join(', ');
+            }
+            baggageDisplay.textContent = text;
+        }
+
+        function handleCounterClick(e) {
+            const button = e.target.closest('.counter-btn');
+            if (!button) return;
+
+            const type = button.dataset.type;
+            const action = button.dataset.action;
+
+            switch(type) {
+                case 'adults':
+                    if (action === 'increment') adultsCount++;
+                    else if (action === 'decrement' && adultsCount > 1) adultsCount--;
+                    adultsCountSpan.textContent = adultsCount;
+                    document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = adultsCount <= 1;
+                    updateTravelersDisplay();
+                    break;
+                case 'children':
+                    if (action === 'increment') childrenCount++;
+                    else if (action === 'decrement' && childrenCount > 0) childrenCount--;
+                    childrenCountSpan.textContent = childrenCount;
+                    document.querySelector('[data-type="children"][data-action="decrement"]').disabled = childrenCount <= 0;
+                    updateTravelersDisplay();
+                    break;
+                case 'baggage-10kg':
+                    if (action === 'increment') baggage10kgCount++;
+                    else if (action === 'decrement' && baggage10kgCount > 0) baggage10kgCount--;
+                    baggage10kgCountSpan.textContent = baggage10kgCount;
+                    document.querySelector('[data-type="baggage-10kg"][data-action="decrement"]').disabled = baggage10kgCount <= 0;
+                    updateBaggageDisplay();
+                    updateAllFlightPrices();
+                    break;
+                case 'baggage-23kg':
+                    if (action === 'increment') baggage23kgCount++;
+                    else if (action === 'decrement' && baggage23kgCount > 0) baggage23kgCount--;
+                    baggage23kgCountSpan.textContent = baggage23kgCount;
+                    document.querySelector('[data-type="baggage-23kg"][data-action="decrement"]').disabled = baggage23kgCount <= 0;
+                    updateBaggageDisplay();
+                    updateAllFlightPrices();
+                    break;
+            }
+        }
+
+        function updateSearchFormUI(mode) {
+            const destinationContainer = document.getElementById('destination-container');
+            const originIcon = document.getElementById('origin-icon');
+            const searchTitle = document.getElementById('search-title');
+            const searchFormContainer = document.getElementById('search-form');
+
+            if (mode === 'hotels') {
+                searchTitle.textContent = 'Encuentra el mejor hotel';
+                originInput.placeholder = 'Ciudad o destino';
+                originIcon.className = 'fas fa-map-marker-alt';
+                destinationContainer.classList.add('hidden');
+                baggagePickerTrigger.classList.add('hidden');
+                searchFormContainer.classList.remove('flights-active');
+            } else { 
+                searchTitle.textContent = 'Encuentra el mejor vuelo';
+                originInput.placeholder = 'Origen';
+                originIcon.className = 'fas fa-plane-departure';
+                destinationContainer.classList.remove('hidden');
+                baggagePickerTrigger.classList.remove('hidden');
+                if (mode === 'flights') {
+                    searchFormContainer.classList.add('flights-active');
+                } else {
+                    searchFormContainer.classList.remove('flights-active');
+                }
+            }
+        }
+
+        function populateCarousels() {
+            const flightCarousel = document.getElementById('flight-carousel');
+            const accommodationCarousel = document.getElementById('accommodation-carousel');
+            const popularAccommodationsCarousel = document.getElementById('popular-accommodations-carousel');
+            const offersCarousel = document.getElementById('offers-carousel');
+            const vacationPackagesCarousel = document.getElementById('vacation-packages-carousel');
+            const specialAccommodationsCarousel = document.getElementById('special-accommodations-carousel');
+            const hotelDealsCarousel = document.getElementById('hotel-deals-carousel');
+            const experiencesCarousel = document.getElementById('experiences-carousel');
+            
+            const baseFlights = [ { airline: 'Iberia', stops: 'Sin escalas', from: 'Madrid (MAD)', to: 'Caracas (CCS)', fromIata: 'MAD', toIata: 'CCS', time1: '11:50 - 15:35', time2: '17:50 - 08:25', price: '950 €' }, { airline: 'Air Europa', stops: 'Sin escalas', from: 'Madrid (MAD)', to: 'Caracas (CCS)', fromIata: 'MAD', toIata: 'CCS', time1: '15:10 - 18:55', time2: '20:55 - 11:30', price: '980 €' }, { airline: 'Copa Airlines', stops: '1 escala', from: 'Santiago (SCL)', to: 'Caracas (CCS)', fromIata: 'SCL', toIata: 'CCS', time1: '01:30 - 11:00', time2: '15:00 - 00:45', price: '820 €' }, { airline: 'LATAM', stops: '1 escala', from: 'Bogotá (BOG)', to: 'Caracas (CCS)', fromIata: 'BOG', toIata: 'CCS', time1: '07:00 - 10:30', time2: '18:00 - 21:30', price: '450 €' }, { airline: 'Avianca', stops: '1 escala', from: 'Buenos Aires (EZE)', to: 'Caracas (CCS)', fromIata: 'EZE', toIata: 'CCS', time1: '06:00 - 15:00', time2: '17:00 - 02:00', price: '1100 €' }, { airline: 'Turkish Airlines', stops: '1 escala', from: 'Estambul (IST)', to: 'Caracas (CCS)', fromIata: 'IST', toIata: 'CCS', time1: '02:20 - 14:00', time2: '10:00 - 07:00', price: '1300 €' }, { airline: 'Plus Ultra', stops: 'Sin escalas', from: 'Madrid (MAD)', to: 'Caracas (CCS)', fromIata: 'MAD', toIata: 'CCS', time1: '13:00 - 16:45', time2: '18:45 - 09:15', price: '890 €' }, { airline: 'Wingo', stops: '1 escala', from: 'Medellín (MDE)', to: 'Caracas (CCS)', fromIata: 'MDE', toIata: 'CCS', time1: '05:30 - 09:00', time2: '16:00 - 19:30', price: '380 €' }, { airline: 'Sky High', stops: '1 escala', from: 'Miami (MIA)', to: 'Caracas (CCS)', fromIata: 'MIA', toIata: 'CCS', time1: '08:00 - 13:00', time2: '15:00 - 20:00', price: '650 €' }, { airline: 'Caribbean Airlines', stops: '1 escala', from: 'Puerto España (POS)', to: 'Caracas (CCS)', fromIata: 'POS', toIata: 'CCS', time1: '09:00 - 10:30', time2: '17:00 - 18:30', price: '320 €' }, { airline: 'Aerolíneas Argentinas', stops: '1 escala', from: 'Buenos Aires (AEP)', to: 'Caracas (CCS)', fromIata: 'AEP', toIata: 'CCS', time1: '09:00 - 17:00', time2: '19:00 - 03:00', price: '1150 €' }, { airline: 'Conviasa', stops: 'Sin escalas', from: 'La Habana (HAV)', to: 'Caracas (CCS)', fromIata: 'HAV', toIata: 'CCS', time1: '10:00 - 13:00', time2: '15:00 - 18:00', price: '550 €' }, { airline: 'Estelar', stops: 'Sin escalas', from: 'Santo Domingo (SDQ)', to: 'Caracas (CCS)', fromIata: 'SDQ', toIata: 'CCS', time1: '11:00 - 12:30', time2: '14:00 - 15:30', price: '410 €' }, { airline: 'Air France', stops: '1 escala', from: 'París (CDG)', to: 'Caracas (CCS)', fromIata: 'CDG', toIata: 'CCS', time1: '10:40 - 15:10', time2: '21:00 - 14:00', price: '1250 €' }, { airline: 'LATAM', stops: '1 escala', from: 'Lima (LIM)', to: 'Caracas (CCS)', fromIata: 'LIM', toIata: 'CCS', time1: '08:30 - 13:30', time2: '16:00 - 21:00', price: '600 €' } ];
+            const baseAccommodations = [ { name: 'Spa', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/34/b0/15/masaje-sultan-el-mitico.jpg?w=1000&h=-1&s=1' }, { name: 'Igloo', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1' }, { name: 'Bungalow', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/11/8c/6f/caption.jpg?w=900&h=-1&s=1' }, { name: 'Chalet', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' }, { name: 'Apartotel', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' }, { name: 'Casa barco', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/22/03/4d/09/exterior-at-dusk.jpg?w=1000&h=-1&s=1' }, { name: 'Granja', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/c9/9c/ce/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Cabaña', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/25/04/82/a7/hotel-huinid-bustillo.jpg?w=1000&h=-1&s=1' }, { name: 'Castillo', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/12/74/70/c6.jpg' }, { name: 'Villa', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/52/5d/8b/villa-lucia-principal.jpg?w=1000&h=-1&s=1' }, { name: 'Hostal', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/62/39/1c/hostal-providencia.jpg?w=1000&h=-1&s=1' }, { name: 'Ryokan', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ba/0c/1b/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Lodge', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' }, { name: 'Tienda de Lujo', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/6a/2f/f7/the-rolex-learning-center.jpg?w=1000&h=-1&s=1' }, { name: 'Casa Rural', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/60/3f/98/fondation-de-l-hermitage.jpg?w=300&h=300&s=1' } ];
+            const basePopularAccommodations = [ { name: 'Honolulu', location: 'Hawái, Estados Unidos', price: '335 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2e/0e/0a/6c/caption.jpg?w=1400&h=500&s=1' }, { name: 'Venecia', location: 'Véneto, Italia', price: '180 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=700&h=400&s=1' }, { name: 'Alpes Suizos', location: 'Suiza', price: '300 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1' }, { name: 'Bangkok', location: 'Tailandia', price: '69 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1' }, { name: 'Maldivas', location: 'Maldivas', price: '500 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=700&h=400&s=1' }, { name: 'París', location: 'Francia', price: '220 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/15/6d/d6/paris.jpg?w=1400&h=500&s=1' }, { name: 'Kioto', location: 'Japón', price: '150 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/18/28/2e/if-you-make-a-wish-when.jpg?w=1000&h=-1&s=1' }, { name: 'Roma', location: 'Lacio, Italia', price: '190 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c9/6c/08/caption.jpg?w=1400&h=500&s=1' }, { name: 'Praga', location: 'República Checa', price: '120 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/cc/d0/42/caption.jpg?w=1400&h=500&s=1' }, { name: 'Dubái', location: 'Emiratos Árabes Unidos', price: '280 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/4b/5f/39/caption.jpg?w=1400&h=500&s=1&cx=1348&cy=2741&chk=v1_2b5e36e781689a157686' }, { name: 'Nueva York', location: 'EE. UU.', price: '350 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c5/7c/68/caption.jpg?w=1400&h=500&s=1&cx=950&cy=1766&chk=v1_9ee2771da71f55a7ac6a' }, { name: 'Londres', location: 'Reino Unido', price: '210 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/08/4c/08/1b/sun-peeks-through-behind.jpg?w=1400&h=500&s=1' }, { name: 'Sídney', location: 'Australia', price: '260 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/27/84/4c/88/caption.jpg?w=1400&h=500&s=1&cx=984&cy=523&chk=v1_00dace674f6f45c8ec71' } ];
+            const baseOffers = [ { name: 'Ocean Palace Beach Resort', location: 'Italia', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/f2/69/4b/ocean-palace-beach-resort.jpg?w=1000&h=-1&s=1' }, { name: 'LACER OKINAWA MIEBASHI', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '530 €', priceNew: '424 €', perNight: '341 € por noche', discount: '20 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/91/a8/cc/hurawalhi-58-undersea.jpg?w=900&h=500&s=1' }, { name: 'Daikichi Okinawa', location: 'Naha', rating: '8.8', reviewText: 'Excelente', reviews: '5', priceOld: '372 €', priceNew: '312 €', perNight: '104 € por noche', discount: '16 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/06/5e/16/romantic-getaway-to-vista.jpg?w=1000&h=-1&s=1' }, { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/20/e6/c4/nimb-hotel.jpg?w=1000&h=-1&s=1' }, { name: 'Hotel de Montaña', location: 'Alpes', rating: '9.0', reviewText: 'Fantástico', reviews: '450', priceOld: '350 €', priceNew: '298 €', perNight: '149 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' }, { name: 'City Center Boutique', location: 'París', rating: '8.5', reviewText: 'Muy Bueno', reviews: '600', priceOld: '250 €', priceNew: '225 €', perNight: '225 € por noche', discount: '10 % de descuento', vip: false, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/654092424.jpg?k=02f22874b547d19f85121ca34ee5eced6343fd3985dcf1b3abc433d6c679aa71&o=' }, { name: 'The Grand Budapest Hotel', location: 'Zubrowka', rating: '9.8', reviewText: 'Legendario', reviews: '1932', priceOld: '1000 €', priceNew: '850 €', perNight: '425 € por noche', discount: '15 % de descuento', vip: true, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/359852575.jpg?k=5d5ffd42733c27cace9f5c128a68a8a94d1f13413344b4ae2056c9803814aeb5&o=' }, { name: 'Hotel Rústico Los Andes', location: 'Mérida', rating: '8.9', reviewText: 'Acogedor', reviews: '150', priceOld: '120 €', priceNew: '96 €', perNight: '48 € por noche', discount: '20 % de descuento', vip: false, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/529536451.jpg?k=1d32748e732194e3696abcc70ba6738394f940036df0bc347f895c782ada4348&o=' }, { name: 'Canaima Jungle Lodge', location: 'Canaima', rating: '9.3', reviewText: 'Aventura Pura', reviews: '400', priceOld: '500 €', priceNew: '450 €', perNight: '225 € por noche', discount: '10 % de descuento', vip: true, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/655010495.jpg?k=c73f37431f4677edda0b163ef62b464e149390a081c797515374774594cc0068&o=' }, { name: 'Posada El Morro', location: 'Lechería', rating: '8.2', reviewText: 'Buena Vista', reviews: '80', priceOld: '90 €', priceNew: '75 €', perNight: '75 € por noche', discount: '17 % de descuento', vip: false, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/646212843.jpg?k=b629bad3bdcd86c5ab780d64f7b27df0259442dd6f27d7744365e42026990690&o=' }, { name: 'Hotel Humboldt', location: 'Caracas', rating: '9.7', reviewText: 'Icónico', reviews: '1200', priceOld: '400 €', priceNew: '350 €', perNight: '350 € por noche', discount: '12 % de descuento', vip: true, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/602026540.jpg?k=e7b6260fe3104875385b15373f0b3e9eb8ac511defafe2efe4fe328f5859d975&o=' }, { name: 'Lidotel Caracas', location: 'Caracas', rating: '9.0', reviewText: 'Excelente Ubicación', reviews: '800', priceOld: '200 €', priceNew: '170 €', perNight: '170 € por noche', discount: '15 % de descuento', vip: true, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/444872694.jpg?k=fe902fb1dc25ba19128d63732074c67e76957973d0557610bb3403e7941c9aba&o=' }, { name: 'Hesperia WTC Valencia', location: 'Valencia', rating: '9.1', reviewText: 'Ideal para Negocios', reviews: '950', priceOld: '180 €', priceNew: '160 €', perNight: '160 € por noche', discount: '11 % de descuento', vip: true, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/656975661.jpg?k=d4594331cf38698eca36c082de6a38a94ebabe4f979b26198c1bf3fdbe43f6f5&o=' }, { name: 'Tibu Hotel Boutique', location: 'Margarita', rating: '8.7', reviewText: 'Encantador', reviews: '250', priceOld: '150 €', priceNew: '120 €', perNight: '120 € por noche', discount: '20 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/d2/05/7e/20180420-192822-largejpg.jpg?w=800&h=-1&s=1' }, { name: 'Marriott Maracay', location: 'Maracay', rating: '9.4', reviewText: 'Lujo y Confort', reviews: '1100', priceOld: '250 €', priceNew: '220 €', perNight: '220 € por noche', discount: '12 % de descuento', vip: true, img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/463619762.jpg?k=c1376a0487065ae390385ca04f15336b8d9d2318c7b7961f519d1d8505c25261&o=' } ];
+            const basePackages = [ { name: 'Prince Smart Inn Naha', stars: '3', rating: '9.2/10 Increíble (752)', flight: 'Tokio (HND) - Naha (OKA)', save: '79 €', priceNew: '311', priceOld: '390', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg' }, { name: 'HOTEL ANTEROOM Naha', stars: '4', rating: '9.2/10 Increíble (497)', flight: 'Tokio (HND) - Naha (OKA)', save: '89 €', priceNew: '360', priceOld: '449', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg' }, { name: 'Rembrandt Style Naha', stars: '3', rating: '8.8/10 Excelente (46)', flight: 'Tokio (HND) - Naha (OKA)', save: '75 €', priceNew: '323', priceOld: '398', dates: 'De lun., 18 ago al jue., 27 ago (3 noches)', updated: 'hace 45 horas', img: 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg' }, { name: 'Hotel Gracery Naha', stars: '4', rating: '9/10 Increíble (1.000)', flight: 'Tokio (HND) - Naha (OKA)', save: '194 €', priceNew: '500', priceOld: '694', dates: 'De mar., 17 ago al dom., 18 ago (1 noche)', updated: 'hace 47 horas', img: 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg' }, { name: 'Paquete Roma Imperial', stars: '4', rating: '9.0/10 Excelente (850)', flight: 'Madrid (MAD) - Roma (FCO)', save: '120 €', priceNew: '480', priceOld: '600', dates: 'De vie., 12 sep al lun., 15 sep (3 noches)', updated: 'hace 2 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/08/26/a2/c5/mount-monserrate.jpg?w=1000&h=-1&s=1' }, { name: 'Escapada a Lisboa', stars: '3', rating: '8.5/10 Muy Bueno (600)', flight: 'Barcelona (BCN) - Lisboa (LIS)', save: '50 €', priceNew: '250', priceOld: '300', dates: 'De jue., 01 oct al dom., 04 oct (3 noches)', updated: 'hace 8 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/21/8b/a4/photo0jpg.jpg?w=1000&h=-1&s=1' }, { name: 'Aventura en Los Roques', stars: '4', rating: '9.8/10 Paradisíaco (1200)', flight: 'Caracas (CCS) - Los Roques (LRV)', save: '150 €', priceNew: '800', priceOld: '950', dates: 'De lun., 01 sep al vie., 05 sep (4 noches)', updated: 'hace 3 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/e0/5f/90/fachada.jpg?w=1000&h=-1&s=1' }, { name: 'Descubre Canaima', stars: '5', rating: '9.9/10 Único (980)', flight: 'Caracas (CCS) - Canaima (CAJ)', save: '200 €', priceNew: '1200', priceOld: '1400', dates: 'De sáb., 10 oct al mié., 15 oct (5 noches)', updated: 'hace 1 hora', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/21/a2/be/db/giardino.jpg?w=1000&h=-1&s=1' }, { name: 'Magia Andina en Mérida', stars: '3', rating: '9.1/10 Encantador (750)', flight: 'Valencia (VLN) - El Vigía (VIG)', save: '80 €', priceNew: '400', priceOld: '480', dates: 'De vie., 20 nov al mar., 24 nov (4 noches)', updated: 'hace 12 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/21/54/38/standard-parque-de-la.jpg?w=1000&h=-1&s=1' }, { name: 'Sol y Playa en Margarita', stars: '4', rating: '8.7/10 Divertido (1500)', flight: 'Maracaibo (MAR) - Porlamar (PMV)', save: '100 €', priceNew: '550', priceOld: '650', dates: 'De mié., 15 jul al lun., 20 jul (5 noches)', updated: 'hace 24 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/1a/6f/bb/gran-salon.jpg?w=1000&h=-1&s=1' }, { name: 'Paquete Tango en Buenos Aires', stars: '4', rating: '9.3/10 Apasionante (1100)', flight: 'Santiago (SCL) - Buenos Aires (EZE)', save: '130 €', priceNew: '650', priceOld: '780', dates: 'De jue., 05 nov al lun., 09 nov (4 noches)', updated: 'hace 6 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/05/f0/77/7c/hotel-estelar-calle-100.jpg?w=900&h=-1&s=1' }, { name: 'Café y Cultura en Bogotá', stars: '3', rating: '8.9/10 Interesante (880)', flight: 'Caracas (CCS) - Bogotá (BOG)', save: '70 €', priceNew: '380', priceOld: '450', dates: 'De mar., 01 dic al sáb., 05 dic (4 noches)', updated: 'hace 18 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/03/e2/da/9e/north-michigan-avenue.jpg?w=1000&h=-1&s=1' }, { name: 'Historia y Sabor en Lima', stars: '4', rating: '9.0/10 Delicioso (920)', flight: 'Bogotá (BOG) - Lima (LIM)', save: '90 €', priceNew: '520', priceOld: '610', dates: 'De lun., 18 ene al vie., 22 ene (4 noches)', updated: 'hace 1 día', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/c4/d1/f4/the-palm-house-at-65.jpg?w=1000&h=-1&s=1' }, { name: 'Vibras de Estambul', stars: '4', rating: '9.4/10 Mágico (1300)', flight: 'Madrid (MAD) - Estambul (IST)', save: '110 €', priceNew: '700', priceOld: '810', dates: 'De dom., 10 may al jue., 14 may (4 noches)', updated: 'hace 9 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/c8/77/4e/bars-attractions-art.jpg?w=1000&h=-1&s=1' }, { name: 'Descanso en Punta Cana', stars: '5', rating: '9.5/10 Relax Total (2500)', flight: 'Caracas (CCS) - Punta Cana (PUJ)', save: '180 €', priceNew: '950', priceOld: '1130', dates: 'De sáb., 25 abr al jue., 30 abr (5 noches)', updated: 'hace 5 horas', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/41/2e/13/photo0jpg.jpg?w=1000&h=-1&s=1' } ];
+            const baseSpecialAccommodations = [ { name: 'Kutsurogian', location: 'Minamiuonuma', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '811 €', perNight: '405 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/1b/65/30/power-up-band-key-challenge.jpg?w=1000&h=-1&s=1' }, { name: 'HOSHINOYA Tokyo', location: 'Tokio', rating: '9.6', reviewText: 'Excepcional', reviews: '801', price: '1829 €', priceOld: '2400 €', discount: '25 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/6c/92/dc/dotonbori.jpg?w=1000&h=-1&s=1' }, { name: 'Fukiya Ryokan', location: 'Yugawara', rating: '10', reviewText: 'Excepcional', reviews: '25', price: '2023 €', priceOld: '2527 €', discount: '20 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/f9/cf/75/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Ryokan Tori', location: 'Kioto', rating: '10', reviewText: 'Excepcional', reviews: '10', price: '538 €', perNight: '269 € por noche', vip: false, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ba/0c/1b/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Treehotel', location: 'Harads, Suecia', rating: '9.8', reviewText: 'Excepcional', reviews: '150', price: '1200 €', perNight: '600 € por noche', vip: true, discount: null, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/28/64/9c/viceroy-chicago-guestroom.jpg?w=1000&h=-1&s=1' }, { name: 'Giraffe Manor', location: 'Nairobi, Kenia', rating: '9.9', reviewText: 'Único en la vida', reviews: '500', price: '2500 €', perNight: '1250 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/05/99/05/b5/thompson-chicago.jpg?w=700&h=-1&s=1' }, { name: 'Kakslauttanen Arctic Resort', location: 'Saariselkä, Finlandia', rating: '9.5', reviewText: 'Mágico', reviews: '700', price: '1500 €', perNight: '750 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1' }, { name: 'Amangiri', location: 'Utah, EE. UU.', rating: '9.9', reviewText: 'Espectacular', reviews: '300', price: '3000 €', perNight: '1500 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/30/5a/7e/db/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Icehotel', location: 'Jukkasjärvi, Suecia', rating: '9.4', reviewText: 'Increíble', reviews: '600', price: '900 €', perNight: '450 € por noche', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1' }, { name: 'Conrad Maldives Rangali Island', location: 'Maldivas', rating: '9.8', reviewText: 'Bajo el mar', reviews: '1200', price: '4000 €', perNight: '2000 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/91/a8/cc/hurawalhi-58-undersea.jpg?w=900&h=500&s=1' }, { name: 'Montaña Mágica Lodge', location: 'Huilo Huilo, Chile', rating: '9.2', reviewText: 'De Cuento', reviews: '450', price: '350 €', perNight: '175 € por noche', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/29/8d/fe/71/the-guesthouse-hotel.jpg?w=1000&h=-1&s=1' }, { name: 'The Caves Hotel', location: 'Negril, Jamaica', rating: '9.7', reviewText: 'Intrépido', reviews: '350', price: '800 €', perNight: '400 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/04/af/1a/14/girl-the-goat.jpg?w=1000&h=-1&s=1' }, { name: 'Singita Lebombo Lodge', location: 'Kruger, Sudáfrica', rating: '9.9', reviewText: 'Safari de Lujo', reviews: '250', price: '2800 €', perNight: '1400 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/c4/d4/07/18.jpg?w=1000&h=-1&s=1' }, { name: 'Skylodge Adventure Suites', location: 'Valle Sagrado, Perú', rating: '9.8', reviewText: 'Extremo', reviews: '180', price: '1300 €', perNight: '650 € por noche', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/b7/bc/20/dinning-area.jpg?w=900&h=-1&s=1' }, { name: 'Fogo Island Inn', location: 'Terranova, Canadá', rating: '9.9', reviewText: 'Arquitectura Única', reviews: '220', price: '2200 €', perNight: '1100 € por noche', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' } ];
+            const baseExperiences = [ { name: 'Visita guiada a la Torre Eiffel', rating: '4.4', reviews: '4554', price: '35 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/15/1b/d2/8d.jpg', tag: null }, { name: 'Entrada al museo Leonardo da Vinci', rating: '4.4', reviews: '116', price: '10 €', img: 'https://storage.googleapis.com/a1aa/image/b62daa48-69b3-47ef-2330-e180fe9709a4.jpg', tag: 'LO MÁS RESERVADO' }, { name: 'Crucero en barco por Amsterdam', rating: '4.9', reviews: '26903', price: '22 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/15/70/fa/81.jpg', tag: 'LO MÁS RESERVADO' }, { name: 'Avistamiento de delfines y cuevas', rating: '4.9', reviews: '3167', price: '28 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/a6/b0/d9.jpg', tag: 'SE AGOTA RÁPIDO' }, { name: 'Tour gastronómico en Roma', rating: '4.8', reviews: '2500', price: '85 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/c9/1d/49/caption.jpg?w=300&h=300&s=1', tag: 'NUEVO' }, { name: 'Clase de cocina de paella', rating: '4.9', reviews: '1200', price: '70 €', img: 'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0b/9c/6e/4f.jpg', tag: 'LO MÁS RESERVADO' }, { name: 'Paseo en góndola por Venecia', rating: '4.7', reviews: '8900', price: '80 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/fb/77/19/porto-di-ouchy.jpg?w=300&h=300&s=1', tag: null }, { name: 'Tour por el Coliseo y Foro Romano', rating: '4.8', reviews: '15000', price: '55 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/70/2f/22/caption.jpg?w=300&h=300&s=1', tag: 'SE AGOTA RÁPIDO' }, { name: 'Excursión al Salto Ángel', rating: '5.0', reviews: '850', price: '450 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/d9/74/1b/the-tribunal-federal.jpg?w=300&h=300&s=1', tag: 'AVENTURA' }, { name: 'Buceo en el Archipiélago Los Roques', rating: '4.9', reviews: '1100', price: '120 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/30/04/1f/4d/caption.jpg?w=300&h=300&s=1', tag: 'ACUÁTICO' }, { name: 'Senderismo en el Monte Roraima', rating: '4.9', reviews: '600', price: '600 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1', tag: 'TREKKING' }, { name: 'Tour del Café en Colombia', rating: '4.8', reviews: '1800', price: '40 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/c0/1d/b8/photo0jpg.jpg?w=300&h=300&s=1', tag: 'GASTRONOMÍA' }, { name: 'Vuelo en globo en Capadocia', rating: '4.9', reviews: '7500', price: '150 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1', tag: 'IMPERDIBLE' }, { name: 'Clase de Tango en Buenos Aires', rating: '4.7', reviews: '950', price: '30 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/91/a8/cc/hurawalhi-58-undersea.jpg?w=900&h=500&s=1', tag: 'CULTURAL' }, { name: 'Safari en el Parque Nacional Kruger', rating: '4.9', reviews: '2200', price: '200 €', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/06/5e/16/romantic-getaway-to-vista.jpg?w=1000&h=-1&s=1', tag: 'NATURALEZA' } ];
+            const baseHotelDeals = [ { name: 'The Naha Terrace', location: 'Naha', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' }, { name: 'Hotel Moderno', location: 'Ciudad', rating: '8.5', reviewText: 'Muy bueno', reviews: '150', priceOld: '180 €', priceNew: '153 €', perNight: '76 € por noche', discount: '15 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/e3/45/cf/hotel-exterior.jpg?w=1000&h=-1&s=1' }, { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg' }, { name: 'Hostal Céntrico', location: 'Centro', rating: '7.8', reviewText: 'Bueno', reviews: '500', priceOld: '80 €', priceNew: '72 €', perNight: '36 € por noche', discount: '10 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg' }, { name: 'Hotel Histórico', location: 'Casco Antiguo', rating: '9.1', reviewText: 'Increíble', reviews: '750', priceOld: '220 €', priceNew: '187 €', perNight: '187 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/21/73/30/the-langham-chicago.jpg?w=1000&h=-1&s=1' }, { name: 'Pensión Económica', location: 'Barrio Universitario', rating: '7.5', reviewText: 'Bueno', reviews: '200', priceOld: '60 €', priceNew: '54 €', perNight: '54 € por noche', discount: '10 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' }, { name: 'Hotel Eurobuilding Caracas', location: 'Caracas', rating: '9.3', reviewText: 'Excelente', reviews: '2500', priceOld: '250 €', priceNew: '212 €', perNight: '212 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/20/70/cf/outside-view.jpg?w=1000&h=-1&s=1' }, { name: 'Cayena Caracas', location: 'Caracas', rating: '9.6', reviewText: 'Exclusivo', reviews: '800', priceOld: '350 €', priceNew: '315 €', perNight: '315 € por noche', discount: '10 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' }, { name: 'Renaissance La Castellana', location: 'Caracas', rating: '9.2', reviewText: 'Moderno y Chic', reviews: '1500', priceOld: '220 €', priceNew: '198 €', perNight: '198 € por noche', discount: '10 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/62/39/1c/hostal-providencia.jpg?w=1000&h=-1&s=1' }, { name: 'JW Marriott Caracas', location: 'Caracas', rating: '9.4', reviewText: 'Lujo Clásico', reviews: '1800', priceOld: '280 €', priceNew: '238 €', perNight: '238 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/52/5d/8b/villa-lucia-principal.jpg?w=1000&h=-1&s=1' }, { name: 'Hotel Intercontinental', location: 'Maracaibo', rating: '9.0', reviewText: 'Vistas al Lago', reviews: '1200', priceOld: '190 €', priceNew: '161 €', perNight: '161 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/34/b0/15/masaje-sultan-el-mitico.jpg?w=1000&h=-1&s=1' }, { name: 'Kristoff Hotel', location: 'Maracaibo', rating: '8.5', reviewText: 'Tradición', reviews: '900', priceOld: '130 €', priceNew: '110 €', perNight: '110 € por noche', discount: '15 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1' }, { name: 'Hesperia Isla Margarita', location: 'Margarita', rating: '8.8', reviewText: 'Todo Incluido', reviews: '3000', priceOld: '300 €', priceNew: '255 €', perNight: '255 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/11/8c/6f/caption.jpg?w=900&h=-1&s=1' }, { name: 'Sunsol Ecoland', location: 'Margarita', rating: '8.6', reviewText: 'Ideal para Familias', reviews: '2200', priceOld: '240 €', priceNew: '204 €', perNight: '204 € por noche', discount: '15 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/c9/9c/ce/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Campamento Tapuy Lodge', location: 'Canaima', rating: '9.7', reviewText: 'Aventura Inolvidable', reviews: '500', priceOld: '450 €', priceNew: '405 €', perNight: '202 € por noche', discount: '10 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/25/04/82/a7/hotel-huinid-bustillo.jpg?w=1000&h=-1&s=1' } ];
+
+            if (flightCarousel) flightCarousel.innerHTML = baseFlights.map(f => `
+                <a href="productdetails.html" class="flex-shrink-0">
+                    <li class="border border-gray-200 rounded-lg p-3 w-56 bg-white interactive-card cursor-pointer h-full">
+                        <div class="flex items-center space-x-1 mb-1"> <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/> <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span> </div>
+                        <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.from}<span class="text-gray-500"> → </span>${f.to}</p>
+                        <p class="text-xs text-gray-600 mb-3">${f.time1}</p>
+                        <hr class="border-gray-200 mb-3"/>
+                        <div class="flex items-center space-x-1 mb-1"> <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/> <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span> </div>
+                        <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.to}<span class="text-gray-500"> → </span>${f.from}</p>
+                        <p class="text-xs text-gray-600">${f.time2}</p>
+                        <p class="text-sm font-semibold text-gray-900 mt-3">${f.price}</p>
+                        <p class="text-xs text-gray-600">Ida y vuelta por persona</p>
+                    </li>
+                </a>`).join('');
+
+            if (accommodationCarousel) accommodationCarousel.innerHTML = baseAccommodations.map(item => `<a href="productdetails.html" class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card"> <img alt="${item.name}" class="w-full h-40 object-cover rounded-lg" src="${item.img}" width="160" height="160"/> <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p> </a>`).join('');
+            if (popularAccommodationsCarousel) popularAccommodationsCarousel.innerHTML = basePopularAccommodations.map(item => `<a href="productdetails.html" class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card"> <img alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" src="${item.img}" width="192" height="120"/> <div class="p-2 text-left"> <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4> <p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p> <p class="text-[9px] text-gray-600 font-semibold">${item.price}</p> <p class="text-[8px] text-gray-400">precio medio por noche</p> </div> </a>`).join('');
+            if (offersCarousel) offersCarousel.innerHTML = baseOffers.map(o => `<a href="productdetails.html" class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 interactive-card flex flex-col cursor-pointer"> <div class="relative rounded-lg overflow-hidden mb-2"> <img alt="${o.name}" class="w-full h-32 object-cover rounded-lg" src="${o.img}"/> ${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''} </div> <div class="flex-grow"> <p class="text-[9px] font-semibold mb-0.5">${o.location}</p> <h4 class="text-xs font-semibold leading-tight mb-1">${o.name}</h4> <div class="flex items-center space-x-1 mb-1"> <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${o.rating}</span> <span class="text-[9px] font-normal">${o.reviewText}</span> <span class="text-[9px] font-normal opacity-50">(${o.reviews} comentarios)</span> </div> <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${o.priceOld}</div> <div class="text-xs font-bold mb-0.5">${o.priceNew}</div> <div class="text-[9px] font-normal opacity-80 mb-1">${o.perNight}</div> <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div> <div class="member-price-tag mt-2">Precio para miembros disponible</div> </div> </a>`).join('');
+            if (vacationPackagesCarousel) vacationPackagesCarousel.innerHTML = basePackages.map(p => `<a href="productdetails.html" class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card flex flex-col cursor-pointer"> <img alt="${p.name}" class="w-full h-44 object-cover" src="${p.img}" height="200" width="400"/> <div class="p-3 text-xs sm:text-sm text-left flex-grow flex flex-col"> <div class="flex-grow"> <h2 class="font-semibold mb-1 leading-tight">${p.name}</h2> <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">${'<i class="fas fa-star text-yellow-400"></i>'.repeat(parseInt(p.stars))}<span> ${p.stars} estrellas · ${p.rating}</span></div> <div class="text-gray-600 text-[9px] sm:text-xs mb-2"><i class="fas fa-plane-departure"></i> ${p.flight}</div> <div class="bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded mb-1 inline-block"><i class="fas fa-tag mr-1"></i>Ahorra ${p.save}</div> <div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div> <div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div> </div> </div> </a>`).join('');
+            if (specialAccommodationsCarousel) specialAccommodationsCarousel.innerHTML = baseSpecialAccommodations.map(s => `<a href="productdetails.html" class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card"> <img alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1" src="${s.img}"/> ${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''} <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div> <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">${s.reviewText}</p> <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(${s.reviews} comentarios)</p> <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">${s.name}</p> <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">${s.location}</p> <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1"> <span>${s.price}</span> ${s.priceOld ? `<span class="text-gray-500 line-through text-sm sm:text-base">${s.priceOld}</span>` : ''} </p> ${s.perNight ? `<p class="text-[8px] sm:text-[9px] text-gray-500">${s.perNight}</p>` : ''} ${s.discount ? `<p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">${s.discount}</p>` : ''} </a>`).join('');
+            if (experiencesCarousel) experiencesCarousel.innerHTML = baseExperiences.map(item => `<a href="productdetails.html" class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col"> <div class="relative"> <img alt="${item.name}" class="w-full h-36 object-cover" src="${item.img}" height="128" width="192"> <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button> </div> <div class="p-2 text-xs leading-tight flex-grow flex flex-col"> <div class="flex-grow"> ${item.tag ? `<div class="inline-block bg-gray-200 text-gray-700 text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase mb-1">${item.tag}</div>` : ''} <p class="font-semibold text-gray-900 truncate">${item.name}</p> <div class="flex items-center space-x-1 mt-1"> <span class="text-green-600 font-semibold text-xs">${item.rating}</span> <div class="flex space-x-0.5"><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-gray-300 text-[6px]"></i></div> <span class="text-gray-500">(${item.reviews})</span> </div> <p class="text-gray-400 text-[9px] mt-0.5">a partir de ${item.price} por adulto</p> </div> <div class="w-full mt-2 bg-guacamayafly-green text-white font-semibold py-1.5 rounded-full hover:bg-guacamayafly-dark-green transition text-xs">Reservar</div> </div> </a>`).join('');
+            if (hotelDealsCarousel) hotelDealsCarousel.innerHTML = baseHotelDeals.map(h => `<a href="productdetails.html" class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col cursor-pointer"> <div class="relative"> <img alt="${h.name}" class="w-full h-36 object-cover" src="${h.img}"> ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''} <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button> </div> <div class="p-2 text-xs leading-tight flex-grow flex flex-col"> <div class="flex-grow"> <p class="text-[9px] font-semibold mb-0.5">${h.location}</p> <h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4> <div class="flex items-center space-x-1 mb-1"> <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span> <span class="text-[9px] font-normal">${h.reviewText}</span> <span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span> </div> <p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p> <p class="text-xs font-bold mb-0.5">${h.priceNew}</p> <p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p> <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div> <div class="member-price-tag mt-2">Precio para miembros disponible</div> </div> </div> </a>`).join('');
+        }
+
+        // --- INICIALIZACIÓN Y EVENT LISTENERS ---
+        if (loader) {
+            loader.classList.add('hidden');
+            loader.addEventListener('transitionend', () => loader.remove());
+        }
+        populateCarousels();
+
+        if(searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if(currentSearchMode === 'flights') {
+                    const origin = originIataInput.value;
+                    const destination = destinationIataInput.value;
+                    const departure = departureDateInput.value;
+                    const returnD = returnDateInput.value;
+                    if (!origin || !destination || !departure) {
+                        showNotification('Por favor, selecciona un origen, destino y fecha de ida.', 'error');
+                        return;
+                    }
+                    searchFlights(origin, destination, departure, returnD, adultsCount, childrenCount);
+                } else if (currentSearchMode === 'hotels') {
+                    // Lógica para hoteles (si la implementas en el futuro)
+                }
+            });
+        }
+        
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', () => {
+                resultsContainer.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                originInput.value = '';
+                destinationInput.value = '';
+                originIataInput.value = '';
+                destinationIataInput.value = '';
+            });
+        }
+
+        document.querySelectorAll('.search-nav-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const newMode = e.currentTarget.dataset.mode;
+                if (newMode === currentSearchMode) return;
+                if (newMode === 'all' || newMode === 'flights' || newMode === 'hotels') {
+                    currentSearchMode = newMode;
+                    document.querySelectorAll('.search-nav-button').forEach(btn => btn.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                    updateSearchFormUI(newMode);
+                } else {
+                    showNotification("Esta función aún no está disponible.", 'error');
+                }
+            });
+        });
+
+        if (datePickerTrigger) datePickerTrigger.addEventListener('click', () => { calendarModal.classList.remove('hidden'); calendarModal.classList.add('visible'); renderCalendar(); });
+        if (closeCalendarBtn) closeCalendarBtn.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); updateDateDisplay(); });
+        if (closeCalendarModalX) closeCalendarModalX.addEventListener('click', () => { calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); });
+        if (clearDatesBtn) clearDatesBtn.addEventListener('click', () => { selectedDeparture = null; selectedReturn = null; renderCalendar(); updateDateDisplay(); });
+        if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() - 1); renderCalendar(); });
+        if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentMonthDate.setMonth(currentMonthDate.getMonth() + 1); renderCalendar(); });
+        if (tonightBtn) tonightBtn.addEventListener('click', () => { const today = new Date(); const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1); selectedDeparture = today; selectedReturn = tomorrow; updateDateDisplay(); calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); });
+        if (nextWeekendBtn) nextWeekendBtn.addEventListener('click', () => { const today = new Date(); const dayOfWeek = today.getDay(); const daysUntilFriday = (5 - dayOfWeek + 7) % 7; const nextFriday = new Date(today); nextFriday.setDate(today.getDate() + daysUntilFriday); const nextSunday = new Date(nextFriday); nextSunday.setDate(nextFriday.getDate() + 2); selectedDeparture = nextFriday; selectedReturn = nextSunday; updateDateDisplay(); calendarModal.classList.remove('visible'); calendarModal.classList.add('hidden'); });
+        
+        if (travelersPickerTrigger) { travelersPickerTrigger.addEventListener('click', (e) => { e.stopPropagation(); if (baggageModal) baggageModal.classList.add('hidden', 'visible'); if (travelersModal) { travelersModal.classList.toggle('hidden'); travelersModal.classList.toggle('visible'); } }); }
+        if (baggagePickerTrigger) { baggagePickerTrigger.addEventListener('click', (e) => { e.stopPropagation(); if (travelersModal) travelersModal.classList.add('hidden', 'visible'); if (baggageModal) { baggageModal.classList.toggle('hidden'); baggageModal.classList.toggle('visible'); } }); }
+
+        if (closeTravelersBtn) closeTravelersBtn.addEventListener('click', () => {travelersModal.classList.add('hidden'); travelersModal.classList.remove('visible');});
+        if (closeBaggageBtn) closeBaggageBtn.addEventListener('click', () => {baggageModal.classList.add('hidden'); baggageModal.classList.remove('visible');});
+        if (travelersModal) travelersModal.addEventListener('click', handleCounterClick);
+        if (baggageModal) baggageModal.addEventListener('click', handleCounterClick);
+        if (addPassengerBtn) addPassengerBtn.addEventListener('click', addPassengerForm);
+        if (closeBookingModalBtn) closeBookingModalBtn.addEventListener('click', () => { bookingModal.classList.remove('visible'); bookingModal.classList.add('hidden'); });
+        
+        document.addEventListener('click', function(event) { if (travelersPickerTrigger && !travelersPickerTrigger.contains(event.target) && travelersModal && !travelersModal.contains(event.target)) { travelersModal.classList.add('hidden'); travelersModal.classList.remove('visible'); } if (baggagePickerTrigger && !baggagePickerTrigger.contains(event.target) && baggageModal && !baggageModal.contains(event.target)) { baggageModal.classList.add('hidden'); baggageModal.classList.remove('visible'); } });
+
+        if (adultsCountSpan) { updateTravelersDisplay(); document.querySelector('[data-type="adults"][data-action="decrement"]').disabled = true; document.querySelector('[data-type="children"][data-action="decrement"]').disabled = true; }
+        if (baggageDisplay) { updateBaggageDisplay(); document.querySelector('[data-type="baggage-10kg"][data-action="decrement"]').disabled = true; document.querySelector('[data-type="baggage-23kg"][data-action="decrement"]').disabled = true; }
+
+        const heroSection = document.getElementById('hero-section');
+        const sliderContainer = document.getElementById('hero-slider-container');
+        const dotsContainer = document.getElementById('hero-slider-dots');
+        const slidesData = [ { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1', title: 'Los mejores hoteles del mundo, elegidos por ti', text: 'Desde complejos turísticos junto a la playa hasta los alojamientos más únicos. Consulta el mejor 1 % de hoteles y guarda tus favoritos.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=1200&h=-1&s=1', title: 'Escapadas románticas en Venecia', text: 'Descubre la magia de los canales, la arquitectura histórica y la gastronomía italiana en un viaje inolvidable.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1', title: 'Aventura en los Alpes Suizos', text: 'Explora paisajes montañosos impresionantes, lagos cristalinos y pueblos encantadores. Ideal para senderismo y esquí.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=1200&h=-1&s=1', title: 'Paraísos tropicales en las Maldivas', text: 'Relájate en bungalows sobre el agua, disfruta de playas de arena blanca y bucea en arrecifes de coral vibrantes.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1', title: 'Explora la vibrante Bangkok', text: 'Sumérgete en la cultura tailandesa, visita templos majestuosos y disfruta de la increíble comida callejera.' } ];
+        let currentSlide = 0;
+        let slideInterval;
+
+        function goToSlide(index) { if (!sliderContainer) return; sliderContainer.style.transform = `translateX(-${index * 100}%)`; document.querySelectorAll('.slider-dot').forEach((dot, i) => dot.classList.toggle('active', i === index)); currentSlide = index; }
+        function nextSlide() { const newIndex = (currentSlide + 1) % slidesData.length; goToSlide(newIndex); }
+        
+        function startSlider() {
+            if (!sliderContainer || !dotsContainer) return;
+            sliderContainer.innerHTML = '';
+            dotsContainer.innerHTML = '';
+            slidesData.forEach((slide, index) => {
+                const slideElement = document.createElement('div');
+                slideElement.className = 'hero-slide';
+                slideElement.innerHTML = `<a href="productdetails.html"><img src="${slide.img}" alt="${slide.title}" /><div class="hero-text-overlay"><div class="max-w-lg text-white drop-shadow-lg"><h2 class="font-extrabold text-xl sm:text-2xl mb-1">${slide.title}</h2><p class="text-xs sm:text-sm max-w-md mb-3 leading-tight">${slide.text}</p><button class="bg-white text-black rounded-full px-4 py-1 text-xs font-semibold hover:bg-gray-200 transition-colors" type="button">Ver más</button></div></div></a>`;
+                sliderContainer.appendChild(slideElement);
+                const dot = document.createElement('div');
+                dot.className = 'slider-dot';
+                dot.addEventListener('click', () => { goToSlide(index); clearInterval(slideInterval); slideInterval = setInterval(nextSlide, 5000); });
+                dotsContainer.appendChild(dot);
+            });
+            goToSlide(0);
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        if (heroSection) { heroSection.addEventListener('mouseenter', () => clearInterval(slideInterval)); heroSection.addEventListener('mouseleave', () => { slideInterval = setInterval(nextSlide, 5000); }); startSlider(); }
+        
+        // Resto de la lógica (validación, pago, etc.) permanece igual...
+
+    });
+    </script>
+
+</body>
+</html>
