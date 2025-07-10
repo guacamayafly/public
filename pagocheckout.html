@@ -1,3 +1,4 @@
+
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -193,16 +194,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 12000;
+        z-index: 12000; /* Ensure it's on top */
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
     }
-    .development-popup-overlay.visible {
+    #development-popup-overlay.visible {
         opacity: 1;
         pointer-events: auto;
     }
-    .development-popup-overlay .modal-container {
+    #development-popup-overlay .modal-container { /* Use the existing modal-container style */
         background-color: white;
         padding: 2rem;
         border-radius: 0.75rem;
@@ -215,7 +216,7 @@
         flex-direction: column;
         text-align: center;
     }
-    .development-popup-overlay.visible .modal-container {
+    #development-popup-overlay.visible .modal-container {
         transform: scale(1);
     }
 
@@ -225,8 +226,8 @@
       bottom: 0; /* Changed from 20px to 0 to stick to the bottom */
       left: 0;
       right: 0;
-      background-color: #333;
-      color: white;
+      background-color: #ffffff; /* Changed to white for better contrast with text */
+      color: #333; /* Darker text for readability */
       padding: 15px 25px;
       border-top-left-radius: 8px; /* Rounded top corners */
       border-top-right-radius: 8px; /* Rounded top corners */
@@ -302,7 +303,7 @@
 </head>
 <body class="bg-[#f7f8fa] text-[#222222]">
   <!-- Pop-up de Sitio en Desarrollo -->
-  <div id="development-popup-overlay" class="modal-overlay hidden development-popup-overlay">
+  <div id="development-popup-overlay" class="modal-overlay hidden">
       <div class="modal-container">
           <div class="text-yellow-500 mb-4">
               <i class="fas fa-exclamation-triangle fa-3x"></i>
@@ -914,6 +915,7 @@
     </div>
 </section>
 
+
 <!-- Reservation Confirmed Section (initially hidden) -->
 <section id="reservation-confirmed-section" class="hidden max-w-2xl mx-auto py-12 px-6 text-center bg-white rounded-xl shadow-lg mt-8">
     <div class="text-green-500 mb-4">
@@ -1096,10 +1098,10 @@
             });
         }
         
-        // Mostrar pop-up en la primera visita
-        if (!sessionStorage.getItem('initialPopupShown')) {
+        // Mostrar pop-up en la primera visita a esta página
+        if (!sessionStorage.getItem('checkoutPopupShown')) { // Changed key to be specific to checkout page
             showDevelopmentPopup(() => {
-                sessionStorage.setItem('initialPopupShown', 'true');
+                sessionStorage.setItem('checkoutPopupShown', 'true');
             });
         }
 
@@ -1255,6 +1257,7 @@
             } else if (currentStep === 3) {
                 mainContent.classList.add('hidden'); // Hide main content for confirmation screen
                 form.classList.add('hidden'); // Hide the form completely
+                cryptoCheckoutSection.classList.add('hidden'); // Ensure crypto section is hidden
                 reservationConfirmedSection.classList.remove('hidden');
                 progressFill.style.width = '100%'; // Full progress
                 updateHeaderSteps(3);
