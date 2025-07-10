@@ -829,6 +829,15 @@
         });
     }
     
+    // Función para iniciar reserva desde tarjetas de carrusel (no vuelos)
+    function handleCardBooking(type, name, details) {
+        showDevelopmentPopup(() => {
+            const message = `¡Hola! Estoy interesado en reservar la siguiente oferta:\n\n*Tipo:* ${type}\n*Nombre:* ${name}\n*Detalles:* ${details}`;
+            const whatsappUrl = `https://wa.me/5804243156057?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // --- Lógica del Pop-up de Desarrollo ---
         const devPopupOverlay = document.getElementById('development-popup-overlay');
@@ -1110,7 +1119,7 @@
                 const carrier = dictionaries.carriers[outbound.carrierCode];
 
                 const cardLink = document.createElement('a');
-                cardLink.href = 'productdetails.html';
+                cardLink.href = 'productdetails.html'; // Keep this for now, but the button handles the actual action
                 cardLink.className = 'flight-card-article border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col';
                 cardLink.style.opacity = 0;
                 cardLink.style.animationDelay = `${index * 0.1}s`;
@@ -1439,6 +1448,28 @@
             }
         }
 
+        // Function to select popular flights and trigger search
+        window.selectPopularFlight = (origin, destination, departureDate, returnDate) => {
+            const originAirport = airportsDb.find(a => a.iata === origin);
+            const destAirport = airportsDb.find(a => a.iata === destination);
+            if (originAirport) {
+                originInput.value = `${originAirport.city} (${originAirport.iata})`;
+                originIataInput.value = origin;
+            }
+            if (destAirport) {
+                destinationInput.value = `${destAirport.city} (${destAirport.iata})`;
+                destinationIataInput.value = destination;
+            }
+            
+            selectedDeparture = new Date(departureDate + 'T00:00:00');
+            selectedReturn = new Date(returnDate + 'T00:00:00');
+            updateDateDisplay();
+
+            searchFlights(origin, destination, departureDate, returnDate, adultsCount, childrenCount);
+            
+            resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         function populateCarousels() {
             const flightCarousel = document.getElementById('flight-carousel');
             const accommodationCarousel = document.getElementById('accommodation-carousel');
@@ -1459,19 +1490,17 @@
             const baseHotelDeals = [ { name: 'The Naha Terrace', location: 'Naha', rating: '9.2', reviewText: 'Increíble', reviews: '1000', priceOld: '690 €', priceNew: '587 €', perNight: '190 € por noche', discount: '15 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/63edd834-0d6e-44b4-f7e4-090dad321cc9.jpg' }, { name: 'Hotel Moderno', location: 'Ciudad', rating: '8.5', reviewText: 'Muy bueno', reviews: '150', priceOld: '180 €', priceNew: '153 €', perNight: '76 € por noche', discount: '15 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/e3/45/cf/hotel-exterior.jpg?w=1000&h=-1&s=1' }, { name: 'Resort Tranquilo', location: 'Playa', rating: '9.5', reviewText: 'Excepcional', reviews: '300', priceOld: '400 €', priceNew: '320 €', perNight: '160 € por noche', discount: '20 % de descuento', vip: true, img: 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg' }, { name: 'Hostal Céntrico', location: 'Centro', rating: '7.8', reviewText: 'Bueno', reviews: '500', priceOld: '80 €', priceNew: '72 €', perNight: '36 € por noche', discount: '10 % de descuento', vip: false, img: 'https://storage.googleapis.com/a1aa/image/7be15fdb-6ab0-4bd0-6612-8e0b7f8750f4.jpg' }, { name: 'Hotel Histórico', location: 'Casco Antiguo', rating: '9.1', reviewText: 'Increíble', reviews: '750', priceOld: '220 €', priceNew: '187 €', perNight: '187 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/21/73/30/the-langham-chicago.jpg?w=1000&h=-1&s=1' }, { name: 'Pensión Económica', location: 'Barrio Universitario', rating: '7.5', reviewText: 'Bueno', reviews: '200', priceOld: '60 €', priceNew: '54 €', perNight: '54 € por noche', discount: '10 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=-1&s=1' }, { name: 'Hotel Eurobuilding Caracas', location: 'Caracas', rating: '9.3', reviewText: 'Excelente', reviews: '2500', priceOld: '250 €', priceNew: '212 €', perNight: '212 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/20/70/cf/outside-view.jpg?w=1000&h=-1&s=1' }, { name: 'Cayena Caracas', location: 'Caracas', rating: '9.6', reviewText: 'Exclusivo', reviews: '800', priceOld: '350 €', priceNew: '315 €', perNight: '315 € por noche', discount: '10 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1' }, { name: 'Renaissance La Castellana', location: 'Caracas', rating: '9.2', reviewText: 'Moderno y Chic', reviews: '1500', priceOld: '220 €', priceNew: '198 €', perNight: '198 € por noche', discount: '10 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/62/39/1c/hostal-providencia.jpg?w=1000&h=-1&s=1' }, { name: 'JW Marriott Caracas', location: 'Caracas', rating: '9.4', reviewText: 'Lujo Clásico', reviews: '1800', priceOld: '280 €', priceNew: '238 €', perNight: '238 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/52/5d/8b/villa-lucia-principal.jpg?w=1000&h=-1&s=1' }, { name: 'Hotel Intercontinental', location: 'Maracaibo', rating: '9.0', reviewText: 'Vistas al Lago', reviews: '1200', priceOld: '190 €', priceNew: '161 €', perNight: '161 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/34/b0/15/masaje-sultan-el-mitico.jpg?w=1000&h=-1&s=1' }, { name: 'Kristoff Hotel', location: 'Maracaibo', rating: '8.5', reviewText: 'Tradición', reviews: '900', priceOld: '130 €', priceNew: '110 €', perNight: '110 € por noche', discount: '15 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/33/a1/30/photo2jpg.jpg?w=1000&h=-1&s=1' }, { name: 'Hesperia Isla Margarita', location: 'Margarita', rating: '8.8', reviewText: 'Todo Incluido', reviews: '3000', priceOld: '300 €', priceNew: '255 €', perNight: '255 € por noche', discount: '15 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/11/8c/6f/caption.jpg?w=900&h=-1&s=1' }, { name: 'Sunsol Ecoland', location: 'Margarita', rating: '8.6', reviewText: 'Ideal para Familias', reviews: '2200', priceOld: '240 €', priceNew: '204 €', perNight: '204 € por noche', discount: '15 % de descuento', vip: false, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/c9/9c/ce/caption.jpg?w=1000&h=-1&s=1' }, { name: 'Campamento Tapuy Lodge', location: 'Canaima', rating: '9.7', reviewText: 'Aventura Inolvidable', reviews: '500', priceOld: '450 €', priceNew: '405 €', perNight: '202 € por noche', discount: '10 % de descuento', vip: true, img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/25/04/82/a7/hotel-huinid-bustillo.jpg?w=1000&h=-1&s=1' } ];
 
             if (flightCarousel) flightCarousel.innerHTML = baseFlights.map(f => `
-                <a href="productdetails.html" class="flex-shrink-0">
-                    <li class="border border-gray-200 rounded-lg p-3 w-56 bg-white interactive-card cursor-pointer h-full">
-                        <div class="flex items-center space-x-1 mb-1"> <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/> <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span> </div>
-                        <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.from}<span class="text-gray-500"> → </span>${f.to}</p>
-                        <p class="text-xs text-gray-600 mb-3">${f.time1}</p>
-                        <hr class="border-gray-200 mb-3"/>
-                        <div class="flex items-center space-x-1 mb-1"> <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/> <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span> </div>
-                        <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.to}<span class="text-gray-500"> → </span>${f.from}</p>
-                        <p class="text-xs text-gray-600">${f.time2}</p>
-                        <p class="text-sm font-semibold text-gray-900 mt-3">${f.price}</p>
-                        <p class="text-xs text-gray-600">Ida y vuelta por persona</p>
-                    </li>
-                </a>`).join('');
+                <li class="border border-gray-200 rounded-lg p-3 w-56 flex-shrink-0 bg-white interactive-card cursor-pointer" onclick="selectPopularFlight('${f.fromIata}', '${f.toIata}', '2025-08-05', '2025-08-10')">
+                    <div class="flex items-center space-x-1 mb-1"> <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/> <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span> </div>
+                    <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.from}<span class="text-gray-500"> → </span>${f.to}</p>
+                    <p class="text-xs text-gray-600 mb-3">${f.time1}</p>
+                    <hr class="border-gray-200 mb-3"/>
+                    <div class="flex items-center space-x-1 mb-1"> <img alt="Logo ${f.airline}" class="w-4 h-4" src="https://images.kiwi.com/airlines/64/${f.airline.substring(0,2).toUpperCase()}.png" onerror="this.src='https://storage.googleapis.com/a1aa/image/e5e742ef-f3c6-451c-bf61-a50c3d662289.jpg'"/> <span class="text-xs font-semibold text-gray-700">${f.airline}</span><span class="text-xs text-gray-400">•</span><span class="text-xs text-gray-500">${f.stops}</span> </div>
+                    <p class="text-xs font-semibold text-gray-900 mb-0.5">${f.to}<span class="text-gray-500"> → </span>${f.from}</p>
+                    <p class="text-xs text-gray-600">${f.time2}</p>
+                    <p class="text-sm font-semibold text-gray-900 mt-3">${f.price}</p>
+                    <p class="text-xs text-gray-600">Ida y vuelta por persona</p>
+                </li>`).join('');
 
             if (accommodationCarousel) accommodationCarousel.innerHTML = baseAccommodations.map(item => `<a href="productdetails.html" class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card"> <img alt="${item.name}" class="w-full h-40 object-cover rounded-lg" src="${item.img}" width="160" height="160"/> <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p> </a>`).join('');
             if (popularAccommodationsCarousel) popularAccommodationsCarousel.innerHTML = basePopularAccommodations.map(item => `<a href="productdetails.html" class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card"> <img alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" src="${item.img}" width="192" height="120"/> <div class="p-2 text-left"> <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4> <p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p> <p class="text-[9px] text-gray-600 font-semibold">${item.price}</p> <p class="text-[8px] text-gray-400">precio medio por noche</p> </div> </a>`).join('');
