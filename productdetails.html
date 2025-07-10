@@ -1209,7 +1209,7 @@
         }
 
         // --- NEW INTEGRATED LOGIC FROM NUEVOINDEX.HTML ---
-        const nationalities = ["Afgana", "Alemana", "Árabe", "Argentina", "Australiana", "Belga", "Boliviana", "Brasileña", "Camboyana", "Canadiense", "Chilena", "China", "Colombiana", "Coreana", "Costarricense", "Cubana", "Danesa", "Ecuatoriana", "Egipcia", "Salvadoreña", "Escocesa", "Española", "Estadounidense", "Estonia", "Etiope", "Filipina", "Finlandesa", "Francesa", "Galesa", "Griega", "Guatemalteca", "Haitiana", "Holandesa", "Hondureña", "Indonesa", "Inglesa", "Iraquí", "Iraní", "Irlandesa", "Israelí", "Italiana", "Japonesa", "Jordana", "Laosiana", "Letona", "Lituana", "Malaya", "Marroquí", "Mexicana", "Nicaragüense", "Noruega", "Neozelandesa", "Panameña", "Paraguaya", "Peruana", "Polaca", "Portuguesa", "Puertorriqueña", "Dominicana", "Rumana", "Rusa", "Sueca", "Suiza", "Tailandesa", "Taiwanesa", "Turca", "Ucraniana", "Uruguaya", "Venezolana", "Vietnamita"];
+        // (Nationalities array is already present in productdetails.html, no need to re-declare)
 
         const loader = document.getElementById('loader');
         const notificationContainer = document.getElementById('notification-container');
@@ -1278,7 +1278,7 @@
         const calendarMonthsContainer = document.getElementById('calendar-months-container');
         const prevMonthBtn = document.getElementById('prev-month');
         const nextMonthBtn = document.getElementById('next-month'); 
-        const closeCalendarBtn = document.getElementById('close-calendar-btn');
+        const closeCalendarBtn = document.getElementById('close-calendar-btn'); // This button is not present in productdetails.html, keeping for consistency if it was planned.
         const clearDatesBtn = document.getElementById('clear-dates-btn');
         const closeCalendarModalX = document.getElementById('close-calendar-modal-x');
         const calendarCheckinDisplay = document.getElementById('calendar-checkin-display');
@@ -1516,18 +1516,21 @@
                 return;
             }
 
-            // Construir los parámetros para la URL
-            const params = new URLSearchParams();
-            params.append('hotelId', currentDisplayedHotel.id);
-            params.append('checkin', selectedDeparture.toISOString().split('T')[0]);
-            params.append('checkout', selectedReturn.toISOString().split('T')[0]);
-            params.append('adults', hotelAdultsCount);
-            params.append('children', hotelChildrenCount);
-            params.append('hotelName', currentDisplayedHotel.name);
-            params.append('price', currentDisplayedHotel.price);
+            // Mostrar el pop-up de desarrollo antes de redirigir
+            showDevelopmentPopup(() => {
+                // Construir los parámetros para la URL
+                const params = new URLSearchParams();
+                params.append('hotelId', currentDisplayedHotel.id);
+                params.append('checkin', selectedDeparture.toISOString().split('T')[0]);
+                params.append('checkout', selectedReturn.toISOString().split('T')[0]);
+                params.append('adults', hotelAdultsCount);
+                params.append('children', hotelChildrenCount);
+                params.append('hotelName', currentDisplayedHotel.name);
+                params.append('price', currentDisplayedHotel.price);
 
-            // Redirigir a la página de checkout
-            window.location.href = `pagocheckout.html?${params.toString()}`;
+                // Redirigir a la página de checkout
+                window.location.href = `pagocheckout.html?${params.toString()}`;
+            });
         }
 
         // --- Lógica del botón principal "Reservar" ---
