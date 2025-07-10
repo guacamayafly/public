@@ -5,20 +5,7 @@
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <title>Guacamayafly Booking Page</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    'guacamayafly-green': '#00c897',
-                    'guacamayafly-dark-green': '#00b386',
-                    'guacamayafly-orange': '#FF7F00',
-                    'guacamayafly-dark-orange': '#E67300',
-                }
-            }
-        }
-    }
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     rel="stylesheet"
@@ -109,7 +96,6 @@
         display: flex;
         justify-content: space-around;
         padding: 0.5rem 1rem;
-        /* Removed border-bottom for a more minimalist look */
         background-color: #f9fafb;
     }
     .info-box {
@@ -194,7 +180,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 12000; /* Ensure it's on top */
+        z-index: 12000;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
@@ -227,13 +213,13 @@
         left: 0;
         right: 0;
         background-color: white;
-        padding: 0.5rem 1.5rem; /* Made thinner */
+        padding: 0.5rem 1.5rem;
         box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
-        z-index: 900; /* Below popups, above main content */
+        z-index: 900;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.25rem; /* Reduced gap */
+        gap: 0.25rem;
         transition: transform 0.3s ease-in-out;
     }
 
@@ -245,10 +231,10 @@
         width: 100%;
         background-color: #0d6efd;
         color: white;
-        font-size: 1.125rem; /* text-lg, slightly smaller */
+        font-size: 1.125rem;
         font-weight: bold;
-        padding: 0.75rem 1.5rem; /* py-3 px-6, more minimal */
-        border-radius: 0.5rem; /* rounded-lg, slightly less rounded */
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
         transition: background-color 0.3s ease;
         display: flex;
         align-items: center;
@@ -261,28 +247,28 @@
     }
 
     #sticky-reserve-info {
-        font-size: 0.75rem; /* text-xs, slightly smaller */
-        color: #6b7280; /* text-gray-600 */
+        font-size: 0.75rem;
+        color: #6b7280;
         text-align: center;
     }
 
     /* Adjust main content padding when sticky button is visible */
     body.has-sticky-footer #main-content {
-        padding-bottom: 8rem; /* Enough space for the sticky footer */
+        padding-bottom: 8rem;
     }
 
     /* Specific date display adjustments for mobile */
     #date-display-block {
       display: grid;
-      grid-template-columns: 1fr auto 1fr auto; /* 4 columns: Check-in, Arrow, Check-out, Nights */
+      grid-template-columns: 1fr auto 1fr auto;
       align-items: center;
-      gap-x: 0.5rem; /* Reduced gap for tighter fit */
+      gap-x: 0.5rem;
     }
 
     #date-display-block .header-cell {
-        font-size: 0.75rem; /* text-xs */
-        color: #6b7280; /* text-gray-600 */
-        font-weight: 600; /* font-semibold */
+        font-size: 0.75rem;
+        color: #6b7280;
+        font-weight: 600;
     }
 
     #date-display-block .date-details {
@@ -301,7 +287,7 @@
     /* Hide arrow on larger screens if desired, but screenshot shows it */
     @media (min-width: 640px) {
         #date-display-block {
-            grid-template-columns: 1fr auto 1fr auto; /* Maintain grid for consistency */
+            grid-template-columns: 1fr auto 1fr auto;
         }
     }
   </style>
@@ -651,11 +637,10 @@
       </div>
     </aside>
 
-    <!-- Form section (appears second on desktop, first on mobile) -->
     <section
-      class="flex-1 bg-white rounded-xl border border-gray-200 p-6 max-w-full"
+      class="flex-1 bg-white rounded-xl border border-gray-200 p-6 max-w-full order-last lg:order-first"
     >
-      <!-- AgodaCash Block -->
+      <!-- Guacamayafly Cash Block -->
       <div class="bg-blue-100 border border-blue-200 text-blue-800 text-sm p-4 rounded-xl mb-6">
           <p class="font-semibold mb-2">
               ¡Inicia sesión para utilizar tu Guacamayafly Cash!
@@ -667,265 +652,261 @@
           </p>
       </div>
 
-      <!-- Step 1: Guest Information and Special Requests -->
-      <div id="step-1-content">
-        <h2 class="text-base font-semibold mb-2">
-          ¿Quién es el invitado principal?
-        </h2>
-        <p class="text-sm text-[#b33a3a] mb-4 font-semibold">
-          *Campo obligatorio
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label
-              class="block text-sm font-semibold text-gray-600 mb-1"
-              for="nombre"
-              >Nombre de pila *</label
-            >
-            <input
-              class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-              id="nombre"
-              name="nombre"
-              type="text"
-              required
-            />
-          </div>
-          <div>
-            <label
-              class="block text-sm font-semibold text-gray-600 mb-1"
-              for="apellido"
-              >Apellido *</label
-            >
-            <input
-              class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-              id="apellido"
-              name="apellido"
-              type="text"
-              required
-            />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <label
-              class="block text-sm font-semibold text-gray-600 mb-1"
-              for="email"
-              >Correo electrónico *</label
-            >
-            <input
-              class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-              id="email"
-              name="email"
-              type="email"
-              required
-            />
-          </div>
-          <div>
-            <label
-              class="block text-sm font-semibold text-gray-600 mb-1"
-              for="pais"
-              >País/región de residencia *</label
-            >
-            <select
-              class="w-full border-2 border-green-500 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-              id="pais"
-              name="pais"
-              required
-            >
-              <option value="">Selecciona un país</option>
-              <option>Países Bajos</option>
-              <option>España</option>
-              <option>Venezuela</option>
-              <option>Colombia</option>
-              <!-- Add more countries as needed -->
-            </select>
-          </div>
-        </div>
-        <div class="mb-6">
-          <label
-            class="block text-sm font-semibold text-gray-600 mb-1"
-            for="telefono"
-            >Número de teléfono (opcional)</label
-            >
-          <input
-            class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-            id="telefono"
-            name="telefono"
-            type="tel"
-          />
-        </div>
-
-        <fieldset
-          class="border border-gray-300 rounded-xl p-4 mb-6 text-sm"
-          aria-label="Solicitudes especiales"
-        >
-          <legend class="font-semibold text-base mb-2">Solicitudes especiales</legend>
-          <p class="text-gray-500 mb-4 text-sm">
-            Selecciona tu(s) preferencia(s) (sujeto a disponibilidad).
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <p class="font-semibold mb-2 text-sm">
-                ¿Qué tipo de habitación preferirías?
-              </p>
-              <div class="flex items-center mb-2">
-                <input
-                  class="mr-2 w-5 h-5"
-                  id="no-fumadores"
-                  name="fumadores"
-                  type="radio"
-                />
-                <label
-                  class="flex items-center gap-1 text-sm"
-                  for="no-fumadores"
-                  ><i class="fas fa-smoking-ban text-lg"></i> Habitación de no fumadores</label
-                >
-              </div>
-              <div class="flex items-center">
-                <input class="mr-2 w-5 h-5" id="fumadores" name="fumadores" type="radio" />
-                <label class="flex items-center gap-1 text-sm" for="fumadores"
-                  ><i class="fas fa-smoking text-lg"></i> Habitación de fumadores</label
-                >
-              </div>
-            </div>
-            <div>
-              <p class="font-semibold mb-2 text-sm">
-                ¿Qué configuración de camas prefieres?
-              </p>
-              <div class="flex items-center mb-2">
-                <input class="mr-2 w-5 h-5" id="cama-grande" name="camas" type="radio" />
-                <label class="flex items-center gap-1 text-sm" for="cama-grande"
-                  ><i class="fas fa-bed text-lg"></i> Quiero una cama grande</label
-                >
-              </div>
-              <div class="flex items-center">
-                <input class="mr-2 w-5 h-5" id="camas-separadas" name="camas" type="radio" />
-                <label class="flex items-center gap-1 text-sm" for="camas-separadas"
-                  ><i class="fas fa-bed text-lg"></i> Quiero camas separadas</label
-                >
-              </div>
-            </div>
-          </div>
-          <button
-            type="button"
-            class="mt-3 text-sm text-[#0d6efd] font-semibold underline flex items-center gap-1"
-          >
-            Haz clic aquí para más solicitudes.
-            <i class="fas fa-chevron-down text-sm"></i>
-          </button>
-        </fieldset>
-
-        <p class="text-sm text-[#b33a3a] font-semibold mb-3">
-          ¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!
-        </p>
-      </div> <!-- End of step-1-content equivalent -->
-
-      <!-- "Información adicional sobre hospitalidad" (from Image 3 & 4) -->
-      <div id="hospitality-info" class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <form id="booking-form">
+        <!-- Step 1: Guest Information and Special Requests -->
+        <div id="step-1">
           <h2 class="text-base font-semibold mb-2">
-              Información adicional sobre hospitalidad
+            ¿Quién es el invitado principal?
           </h2>
-          <p class="text-gray-500 mb-4 text-sm">
-              Por favor proporcione la siguiente información para
-              optimizar los servicios que brinda la propiedad
+          <p class="text-sm text-[#b33a3a] mb-4 font-semibold">
+            *Campo obligatorio
           </p>
-          <p class="font-semibold mb-2 text-sm">Avísanos cuando llegues</p>
-          <p class="text-gray-500 mb-4 text-sm">
-              Le informaremos a la propiedad o al anfitrión cuándo
-              esperarlo.
-          </p>
-          <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]">
-              <option>Seleccionar</option>
-              <option>No sé</option>
-          </select>
-      </div>
-
-      <!-- Checkbox and "No credit card" block (from Image 4) -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-          <div class="flex items-center mb-4">
-              <input type="checkbox" id="guacamayafly-updates" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
-              <label for="guacamayafly-updates" class="ml-2 text-sm text-gray-700">
-                  Acepto recibir actualizaciones y promociones de Guacamayafly y sus afiliados o socios comerciales a través de diversos canales, incluido WhatsApp. Puede cancelar su suscripción en cualquier momento.
-                  <a href="#" class="text-blue-600 hover:underline">Lea más en la Política de Privacidad.</a>
-              </label>
-          </div>
-          <div class="bg-green-100 border border-green-200 text-green-800 text-sm p-4 rounded-xl flex items-center gap-2 font-semibold">
-              <i class="fas fa-check-circle text-base"></i>
-              <span>
-                  ¡No necesitas tarjeta de crédito para reservar!
-                  <span class="font-normal">
-                      Puedes reservar ahora sin proporcionar detalles de pago y pagar en el establecimiento durante tu estancia.
-                  </span>
-              </span>
-          </div>
-      </div>
-
-      <!-- Terms and conditions, confirmation email (from Image 5) -->
-      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-          <p class="text-sm text-gray-600 mb-3">
-              Al continuar con esta reserva, acepto los términos y
-              condiciones de Guacamayafly. <a href="#" class="text-[#0d6efd] font-semibold hover:underline">Condiciones de uso</a> y
-              <a href="#" class="text-[#0d6efd] font-semibold hover:underline">política de privacidad</a>.
-          </p>
-          <p class="text-orange-600 text-xs font-semibold py-1 mt-2">
-              <i class="fas fa-exclamation-triangle"></i>
-              <span>¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</span>
-          </p>
-          <div class="flex items-center gap-2 text-gray-500 text-sm mt-4">
-              <i class="fas fa-envelope text-lg"></i>
-              <span>Le enviaremos la confirmación de su reserva a la dirección de correo electrónico proporcionada.</span>
-          </div>
-      </div>
-
-      <!-- Step 2: Payment Information -->
-      <div id="step-2-payment-info">
-          <h2 class="text-base font-semibold mb-2">
-              Información de pago
-          </h2>
-          <p class="text-sm text-gray-600 mb-4">
-              Por favor, selecciona tu método de pago preferido.
-          </p>
-
-          <div class="mt-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
-              <div class="space-y-3" id="payment-options-container">
-                  <div class="payment-option" data-payment="whatsapp">
-                      <div class="flex items-center justify-between">
-                          <span class="font-semibold text-sm">Reservar por WhatsApp</span>
-                          <i class="fab fa-whatsapp text-xl text-green-500"></i>
-                      </div>
-                  </div>
-                  <div class="payment-option" data-payment="card">
-                      <div class="flex items-center justify-between">
-                          <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
-                          <div class="flex items-center gap-2">
-                              <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
-                          </div>
-                      </div>
-                  </div>
-                  <div class="payment-option" data-payment="crypto">
-                       <div class="flex items-center justify-between">
-                          <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
-                          <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-          <div class="flex justify-between mt-6">
-              <button
-                  type="button"
-                  id="prev-step-btn"
-                  class="bg-gray-200 text-gray-700 text-lg font-bold py-3 px-6 rounded-xl hover:bg-gray-300 transition"
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-sm font-semibold text-gray-600 mb-1"
+                for="nombre"
+                >Nombre de pila *</label
               >
-                  ANTERIOR
-              </button>
+              <input
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
+                id="nombre"
+                name="nombre"
+                type="text"
+                required
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-semibold text-gray-600 mb-1"
+                for="apellido"
+                >Apellido *</label
+              >
+              <input
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
+                id="apellido"
+                name="apellido"
+                type="text"
+                required
+              />
+            </div>
           </div>
-      </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <label
+                class="block text-sm font-semibold text-gray-600 mb-1"
+                for="email"
+                >Correo electrónico *</label
+              >
+              <input
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
+                id="email"
+                name="email"
+                type="email"
+                required
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-semibold text-gray-600 mb-1"
+                for="pais"
+                >País/región de residencia *</label
+              >
+              <select
+                class="w-full border-2 border-green-500 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
+                id="pais"
+                name="pais"
+                required
+              >
+                <option value="">Selecciona un país</option>
+                <option>Países Bajos</option>
+                <option>España</option>
+                <option>Venezuela</option>
+                <option>Colombia</option>
+                </select>
+            </div>
+          </div>
+          <div class="mb-6">
+            <label
+              class="block text-sm font-semibold text-gray-600 mb-1"
+              for="telefono"
+              >Número de teléfono (opcional)</label
+              >
+            <input
+              class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
+              id="telefono"
+              name="telefono"
+              type="tel"
+            />
+          </div>
+
+          <fieldset
+            class="border border-gray-300 rounded-xl p-4 mb-6 text-sm"
+            aria-label="Solicitudes especiales"
+          >
+            <legend class="font-semibold text-base mb-2">Solicitudes especiales</legend>
+            <p class="text-gray-500 mb-4 text-sm">
+              Selecciona tu(s) preferencia(s) (sujeto a disponibilidad).
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p class="font-semibold mb-2 text-sm">
+                  ¿Qué tipo de habitación preferirías?
+                </p>
+                <div class="flex items-center mb-2">
+                  <input
+                    class="mr-2 w-5 h-5"
+                    id="no-fumadores"
+                    name="fumadores"
+                    type="radio"
+                  />
+                  <label
+                    class="flex items-center gap-1 text-sm"
+                    for="no-fumadores"
+                    ><i class="fas fa-smoking-ban text-lg"></i> Habitación de no fumadores</label
+                  >
+                </div>
+                <div class="flex items-center">
+                  <input class="mr-2 w-5 h-5" id="fumadores" name="fumadores" type="radio" />
+                  <label class="flex items-center gap-1 text-sm" for="fumadores"
+                    ><i class="fas fa-smoking text-lg"></i> Habitación de fumadores</label
+                  >
+                </div>
+              </div>
+              <div>
+                <p class="font-semibold mb-2 text-sm">
+                  ¿Qué configuración de camas prefieres?
+                </p>
+                <div class="flex items-center mb-2">
+                  <input class="mr-2 w-5 h-5" id="cama-grande" name="camas" type="radio" />
+                  <label class="flex items-center gap-1 text-sm" for="cama-grande"
+                    ><i class="fas fa-bed text-lg"></i> Quiero una cama grande</label
+                  >
+                </div>
+                <div class="flex items-center">
+                  <input class="mr-2 w-5 h-5" id="camas-separadas" name="camas" type="radio" />
+                  <label class="flex items-center gap-1 text-sm" for="camas-separadas"
+                    ><i class="fas fa-bed text-lg"></i> Quiero camas separadas</label
+                  >
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="mt-3 text-sm text-[#0d6efd] font-semibold underline flex items-center gap-1"
+            >
+              Haz clic aquí para más solicitudes.
+              <i class="fas fa-chevron-down text-sm"></i>
+            </button>
+          </fieldset>
+
+          <p class="text-sm text-[#b33a3a] font-semibold mb-3">
+            ¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!
+          </p>
+        </div>
+
+        <div id="hospitality-info" class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <h2 class="text-base font-semibold mb-2">
+                Información adicional sobre hospitalidad
+            </h2>
+            <p class="text-gray-500 mb-4 text-sm">
+                Por favor proporcione la siguiente información para
+                optimizar los servicios que brinda la propiedad
+            </p>
+            <p class="font-semibold mb-2 text-sm">Avísanos cuando llegues</p>
+            <p class="text-gray-500 mb-4 text-sm">
+                Le informaremos a la propiedad o al anfitrión cuándo
+                esperarlo.
+            </p>
+            <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]">
+                <option>Seleccionar</option>
+                <option>No sé</option>
+            </select>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <div class="flex items-center mb-4">
+                <input type="checkbox" id="guacamayafly-updates" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
+                <label for="guacamayafly-updates" class="ml-2 text-sm text-gray-700">
+                    Acepto recibir actualizaciones y promociones de Guacamayafly y sus afiliados o socios comerciales a través de diversos canales, incluido WhatsApp. Puede cancelar su suscripción en cualquier momento.
+                    <a href="#" class="text-[#0d6efd] hover:underline">Lea más en la Política de Privacidad.</a>
+                </label>
+            </div>
+            <div class="bg-green-100 border border-green-200 text-green-800 text-sm p-4 rounded-xl flex items-center gap-2 font-semibold">
+                <i class="fas fa-check-circle text-base"></i>
+                <span>
+                    ¡No necesitas tarjeta de crédito para reservar!
+                    <span class="font-normal">
+                        Puedes reservar ahora sin proporcionar detalles de pago y pagar en el establecimiento durante tu estancia.
+                    </span>
+                </span>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <p class="text-sm text-gray-600 mb-3">
+                Al continuar con esta reserva, acepto los términos y
+                condiciones de Guacamayafly. <a href="#" class="text-[#0d6efd] font-semibold hover:underline">Condiciones de uso</a> y
+                <a href="#" class="text-[#0d6efd] font-semibold hover:underline">política de privacidad</a>.
+            </p>
+            <p class="text-orange-600 text-xs font-semibold py-1 mt-2">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</span>
+            </p>
+            <div class="flex items-center gap-2 text-gray-500 text-sm mt-4">
+                <i class="fas fa-envelope text-lg"></i>
+                <span>Le enviaremos la confirmación de su reserva a la dirección de correo electrónico proporcionada.</span>
+            </div>
+        </div>
+
+        <div id="step-2-payment-info">
+            <h2 class="text-base font-semibold mb-2">
+                Información de pago
+            </h2>
+            <p class="text-sm text-gray-600 mb-4">
+                Por favor, selecciona tu método de pago preferido.
+            </p>
+
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
+                <div class="space-y-3" id="payment-options-container">
+                    <div class="payment-option" data-payment="whatsapp">
+                        <div class="flex items-center justify-between">
+                            <span class="font-semibold text-sm">Reservar por WhatsApp</span>
+                            <i class="fab fa-whatsapp text-xl text-green-500"></i>
+                        </div>
+                    </div>
+                    <div class="payment-option" data-payment="card">
+                        <div class="flex items-center justify-between">
+                            <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
+                            <div class="flex items-center gap-2">
+                                <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-option" data-payment="crypto">
+                         <div class="flex items-center justify-between">
+                            <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
+                            <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between mt-6">
+                <button
+                    type="button"
+                    id="prev-step-btn"
+                    class="bg-gray-200 text-gray-700 text-lg font-bold py-3 px-6 rounded-xl hover:bg-gray-300 transition"
+                >
+                    ANTERIOR
+                </button>
+            </div>
+        </div>
+      </form>
     </section>
   </main>
 
-<!-- Crypto Checkout Section (initially hidden) -->
 <section id="crypto-checkout-section" class="hidden max-w-4xl mx-auto py-12 px-6">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold text-gray-800">Finalizar Pago con Criptomonedas</h2>
@@ -938,7 +919,6 @@
             <div class="md:w-2/3">
                 <h3 class="font-bold text-gray-700 mb-3 text-lg">Resumen de la Reserva</h3>
                 <div id="crypto-summary-details" class="text-sm space-y-2 text-gray-600">
-                    <!-- Summary will be dynamically filled -->
                     <p><strong>Hotel:</strong> Lomas de las Mercedes</p>
                     <p><strong>Check-in:</strong> Vie, 11 de julio</p>
                     <p><strong>Check-out:</strong> Sábado 19 de julio</p>
@@ -957,8 +937,7 @@
         <div class="mt-6 border-t pt-6">
             <h3 class="font-bold text-gray-700 mb-3 text-lg">O Pagar a la Siguiente Dirección</h3>
             <div id="crypto-wallets-list" class="space-y-3">
-                <!-- Wallets will be dynamically filled -->
-            </div>
+                </div>
             <div class="mt-4">
               <label class="block text-sm font-semibold text-gray-600 mb-1" for="comprobante-pago">Cargar Comprobante de Pago (opcional)</label>
               <input type="file" id="comprobante-pago" class="w-full text-sm text-gray-500
@@ -977,7 +956,6 @@
 </section>
 
 
-<!-- Reservation Confirmed Section (initially hidden) -->
 <section id="reservation-confirmed-section" class="hidden max-w-2xl mx-auto py-12 px-6 text-center bg-white rounded-xl shadow-lg mt-8">
     <div class="text-green-500 mb-4">
         <i class="fas fa-check-circle fa-5x"></i>
@@ -987,14 +965,13 @@
     <p class="text-xl font-bold text-guacamayafly-orange mb-2">Número de Reserva: <span id="booking-number"></span></p>
     <p class="text-base text-gray-700 mb-4">ID de Confirmación: <span id="confirmation-id"></span></p>
     <p class="text-sm text-gray-500">Recibirás un correo electrónico de confirmación con todos los detalles de tu reserva en breve.</p>
-    <p class="text-sm text-gray-500 mt-4">Redirigiendo al inicio en <span id="redirect-countdown" class="font-bold">6</span> segundos...</p>
+    <p class="text-sm text-gray-500 mt-4">Redirigiendo al inicio en <span class="font-bold">6</span> segundos...</p>
     <button onclick="window.location.href = 'index.html';" class="mt-6 bg-[#0d6efd] text-white text-lg font-bold py-3 px-6 rounded-xl hover:bg-[#0b5ed7] transition">
         Volver al Inicio
     </button>
 </section>
 
 
-<!-- Calendar Modal from nuevoindex.html (initially hidden) -->
 <div id="calendar-modal" class="modal-overlay hidden calendar-modal">
     <div class="modal-container">
         <div class="calendar-modal-header">
@@ -1040,7 +1017,6 @@
 </div>
 
 
-<!-- Footer from nuevoindex.html -->
 <footer class="bg-gray-100 mt-12 py-10 text-xs text-blue-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-y-6 gap-x-8">
@@ -1097,13 +1073,11 @@
     </div>
 </footer>
 
-<!-- Floating Help Button from nuevoindex.html -->
 <button aria-label="Ayuda" class="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-full px-3 py-1 text-xs text-gray-700 shadow-md hover:bg-gray-50 flex items-center space-x-1" onclick="window.location.href='https://wa.me/5804243156057'">
     <span>Ayuda</span>
     <i class="fas fa-question-circle"></i>
 </button>
 
-<!-- Sticky Reserve Button -->
 <div id="sticky-reserve-btn-container">
     <button id="sticky-reserve-btn">
         <i class="fas fa-lock"></i>
@@ -1115,6 +1089,18 @@
 </div>
 
 <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'guacamayafly-green': '#00c897',
+                    'guacamayafly-dark-green': '#00b386',
+                    'guacamayafly-orange': '#FF7F00',
+                    'guacamayafly-dark-orange': '#E67300',
+                }
+            }
+        }
+    }
     document.addEventListener('DOMContentLoaded', function() {
         // --- Pop-up de Sitio en Desarrollo ---
         const devPopupOverlay = document.getElementById('development-popup-overlay');
@@ -1154,8 +1140,8 @@
 
         const form = document.getElementById('booking-form');
         const mainContent = document.getElementById('main-content');
-        const step1 = document.getElementById('step-1-content'); // Updated ID
-        const step2 = document.getElementById('step-2-payment-info'); // Updated ID
+        const step1 = document.getElementById('step-1'); // Corrected ID reference
+        const step2 = document.getElementById('step-2-payment-info'); // Corrected ID reference
         const nextStepBtn = document.getElementById('next-step-btn'); // This button is now removed from HTML, but reference kept for logic
         const prevStepBtn = document.getElementById('prev-step-btn');
         const payBtn = document.getElementById('pay-btn'); // This button is now removed from HTML, but reference kept for logic
@@ -1293,20 +1279,22 @@
             mainContent.classList.remove('hidden');
             cryptoCheckoutSection.classList.add('hidden');
             reservationConfirmedSection.classList.add('hidden');
+            // Form sections are no longer hidden/shown, they are always present for scrolling
+            // step1.classList.remove('hidden'); // No longer needed
+            // step2.classList.remove('hidden'); // No longer needed
             form.classList.remove('hidden'); // Ensure form is visible by default for steps
             stickyReserveBtnContainer.classList.remove('hidden'); // Show sticky button by default
 
-            // Control visibility of form content sections based on currentStep
             if (currentStep === 1) {
-                step1.style.display = 'block';
-                step2.style.display = 'none';
+                if (step1) step1.style.display = 'block'; // Added null check
+                if (step2) step2.style.display = 'none'; // Added null check
                 stickyReserveBtn.innerHTML = '<i class="fas fa-lock"></i><span>¡RESERVA YA!</span>';
                 document.getElementById('sticky-reserve-info').textContent = 'No se necesita tarjeta de crédito ni pago para reservar.';
                 progressFill.style.width = '16.5%'; // Adjusted for Step 1
                 updateHeaderSteps(1);
             } else if (currentStep === 2) {
-                step1.style.display = 'none';
-                step2.style.display = 'block';
+                if (step1) step1.style.display = 'none'; // Added null check
+                if (step2) step2.style.display = 'block'; // Added null check
                 stickyReserveBtn.innerHTML = '<i class="fas fa-lock"></i><span>PAGAR AHORA</span>';
                 document.getElementById('sticky-reserve-info').textContent = 'No se necesita tarjeta de crédito ni pago para reservar.';
                 progressFill.style.width = '50%'; // Adjusted for Step 2
@@ -1346,35 +1334,57 @@
 
             // Special handling for Step 3 checkmark
             if (activeStep >= 3) {
-                step3Header.querySelector('div').innerHTML = '<i class="fas fa-check"></i>';
-                step3Header.querySelector('div').classList.add('bg-[#0d6efd]', 'text-white', 'border-[#0d6efd]');
-                step3Header.querySelector('div').classList.remove('bg-white', 'text-gray-400', 'border-gray-300');
-                step3Header.querySelector('span').classList.add('text-[#0d6efd]', 'font-semibold');
-                step3Header.querySelector('span').classList.remove('text-gray-600');
+                if (step3Header.querySelector('div')) { // Added null check
+                    step3Header.querySelector('div').innerHTML = '<i class="fas fa-check"></i>';
+                    step3Header.querySelector('div').classList.add('bg-[#0d6efd]', 'text-white', 'border-[#0d6efd]');
+                    step3Header.querySelector('div').classList.remove('bg-white', 'text-gray-400', 'border-gray-300');
+                    if (step3Header.querySelector('span')) {
+                        step3Header.querySelector('span').classList.add('text-[#0d6efd]', 'font-semibold');
+                        step3Header.querySelector('span').classList.remove('text-gray-600');
+                    }
+                }
             } else {
-                step3Header.querySelector('div').innerHTML = '3'; // Revert to number if not confirmed
+                if (step3Header.querySelector('div')) { // Added null check
+                    step3Header.querySelector('div').innerHTML = '3'; // Revert to number if not confirmed
+                }
             }
         }
 
 
         function validateStep(step) {
             let isValid = true;
+            let inputsToValidate;
+
             if (step === 1) {
-                // Validate only the currently visible step's inputs
-                const currentStepInputs = document.querySelectorAll('#step-1-content input[required], #step-1-content select[required]');
-                currentStepInputs.forEach(input => {
-                    if (!input.value.trim()) {
-                        isValid = false;
-                        input.classList.add('border-red-500'); // Highlight invalid fields
-                    } else {
-                        input.classList.remove('border-red-500');
-                    }
-                });
-                if (!isValid) {
-                    showNotification('Por favor, completa todos los campos obligatorios.', 'error');
+                if (step1) { // Added null check for step1
+                    inputsToValidate = step1.querySelectorAll('input[required], select[required]');
+                } else {
+                    console.error("Step 1 content element not found for validation.");
+                    return false;
                 }
+            } else if (step === 2) {
+                if (step2) { // Added null check for step2
+                    inputsToValidate = step2.querySelectorAll('input[required], select[required]');
+                } else {
+                    console.error("Step 2 content element not found for validation.");
+                    return false;
+                }
+            } else {
+                return true; // No validation needed for other steps
             }
-            // Step 2 has no required fields for this demo, so no validation needed here
+            
+            inputsToValidate.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('border-red-500'); // Highlight invalid fields
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            if (!isValid) {
+                showNotification('Por favor, completa todos los campos obligatorios.', 'error');
+            }
             return isValid;
         }
 
@@ -1416,17 +1426,19 @@
         });
 
 
-        prevStepBtn.addEventListener('click', function() {
-            if (currentStep === 2) {
-                currentStep = 1;
-                updateStepVisibility();
-                window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top for new step
-            }
-        });
+        if (prevStepBtn) { // Added null check
+            prevStepBtn.addEventListener('click', function() {
+                if (currentStep === 2) {
+                    currentStep = 1;
+                    updateStepVisibility();
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top for new step
+                }
+            });
+        }
 
         // --- Payment Logic ---
         const paymentOptionsContainer = document.getElementById('payment-options-container');
-        if (paymentOptionsContainer) {
+        if (paymentOptionsContainer) { // Added null check
             paymentOptionsContainer.addEventListener('click', function(event) {
                 const selectedOption = event.target.closest('.payment-option');
                 if (selectedOption) {
@@ -1441,12 +1453,6 @@
             });
         }
 
-        form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-            // Form submission is now handled by the sticky button click listener
-            // No direct submit action here.
-        });
-
         // --- Crypto Checkout Section Logic ---
         const cryptoWallets = [
             { name: 'Bitcoin (BTC)', address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4' },
@@ -1458,7 +1464,8 @@
 
         function openCryptoCheckout() {
             mainContent.classList.add('hidden');
-            form.classList.add('hidden');
+            const formSection = document.querySelector('section.flex-1'); // Get the form section here
+            if (formSection) formSection.classList.add('hidden'); // Hide the entire form section
             cryptoCheckoutSection.classList.remove('hidden');
             stickyReserveBtnContainer.classList.add('hidden'); // Hide sticky button
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1466,24 +1473,30 @@
             const walletsContainer = cryptoCheckoutSection.querySelector('#crypto-wallets-list');
             const qrCodeImg = cryptoCheckoutSection.querySelector('#crypto-qr-code-img');
             
-            walletsContainer.innerHTML = cryptoWallets.map(wallet => `
-                <div class="bg-white p-3 rounded-lg border flex items-center gap-4">
-                    <img src="${wallet.logo}" alt="${wallet.name}" class="w-8 h-8">
-                    <div class="flex-grow">
-                        <p class="text-sm font-semibold text-gray-700">${wallet.name}</p>
-                        <p class="text-xs text-gray-500 break-all">${wallet.address}</p>
+            if (walletsContainer) {
+                walletsContainer.innerHTML = cryptoWallets.map(wallet => `
+                    <div class="bg-white p-3 rounded-lg border flex items-center gap-4">
+                        <img src="${wallet.logo}" alt="${wallet.name}" class="w-8 h-8">
+                        <div class="flex-grow">
+                            <p class="text-sm font-semibold text-gray-700">${wallet.name}</p>
+                            <p class="text-xs text-gray-500 break-all">${wallet.address}</p>
+                        </div>
+                        <button class="copy-btn p-2 rounded-md hover:bg-gray-200" data-address="${wallet.address}">
+                            <i class="far fa-copy"></i>
+                        </button>
                     </div>
-                    <button class="copy-btn p-2 rounded-md hover:bg-gray-200" data-address="${wallet.address}">
-                        <i class="far fa-copy"></i>
-                    </button>
-                </div>
-            `).join('');
-            qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${cryptoWallets[0].address}`; // Default to BTC QR
+                `).join('');
+            }
+            if (qrCodeImg) {
+                qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${cryptoWallets[0].address}`; // Default to BTC QR
+            }
         }
 
         closeCryptoCheckoutBtn.addEventListener('click', function() {
-            cryptoCheckoutSection.classList.add('hidden');
-            mainContent.classList.remove('hidden');
+            if (cryptoCheckoutSection) cryptoCheckoutSection.classList.add('hidden');
+            if (mainContent) mainContent.classList.remove('hidden');
+            const formSection = document.querySelector('section.flex-1'); // Get the form section here
+            if (formSection) formSection.classList.remove('hidden'); // Show the entire form section again
             currentStep = 2; // Go back to payment selection
             updateStepVisibility();
         });
@@ -1508,21 +1521,21 @@
 
         // Payment validation countdown
         paymentReceivedBtn.addEventListener('click', function() {
-            paymentReceivedBtn.disabled = true;
-            paymentValidationMessage.classList.remove('hidden');
+            if (paymentReceivedBtn) paymentReceivedBtn.disabled = true;
+            if (paymentValidationMessage) paymentValidationMessage.classList.remove('hidden');
             let timeLeft = 10; // This is the validation time, not the redirect time
-            countdownTimerDisplay.textContent = `${timeLeft} segundos`;
+            if (countdownTimerDisplay) countdownTimerDisplay.textContent = `${timeLeft} segundos`;
 
             const countdownInterval = setInterval(() => {
                 timeLeft--;
-                countdownTimerDisplay.textContent = `${timeLeft} segundos`;
+                if (countdownTimerDisplay) countdownTimerDisplay.textContent = `${timeLeft} segundos`;
                 if (timeLeft <= 0) {
                     clearInterval(countdownInterval);
-                    paymentValidationMessage.textContent = 'Pago validado.';
+                    if (paymentValidationMessage) paymentValidationMessage.textContent = 'Pago validado.';
                     showNotification('¡Pago validado con éxito!', 'success');
                     currentStep = 3;
                     updateStepVisibility();
-                    paymentReceivedBtn.disabled = false; // Reset button
+                    if (paymentReceivedBtn) paymentReceivedBtn.disabled = false;
                 }
             }, 1000);
         });
@@ -1559,11 +1572,11 @@
 
         function startRedirectCountdown() {
             let secondsToRedirect = 6;
-            redirectCountdownElement.textContent = secondsToRedirect;
+            if (redirectCountdownElement) redirectCountdownElement.textContent = secondsToRedirect;
 
             const redirectInterval = setInterval(() => {
                 secondsToRedirect--;
-                redirectCountdownElement.textContent = secondsToRedirect;
+                if (redirectCountdownElement) redirectCountdownElement.textContent = secondsToRedirect;
                 if (secondsToRedirect <= 0) {
                     clearInterval(redirectInterval);
                     window.location.href = 'index.html'; // Redirect to index.html
@@ -1572,63 +1585,91 @@
         }
 
         // --- Calendar Integration Logic ---
-        dateDisplayBlock.addEventListener('click', () => {
-            calendarModal.classList.remove('hidden');
-            calendarModal.classList.add('visible');
-            renderCalendar();
-        });
-        if (closeCalendarBtn) closeCalendarBtn.addEventListener('click', () => {
-            calendarModal.classList.remove('visible');
-            calendarModal.classList.add('hidden');
-            updateDateDisplayInSummary();
-        });
-        if (closeCalendarModalX) closeCalendarModalX.addEventListener('click', () => {
-            calendarModal.classList.remove('visible');
-            calendarModal.classList.add('hidden');
-        });
-        if (clearDatesBtn) clearDatesBtn.addEventListener('click', () => {
-            selectedDeparture = null;
-            selectedReturn = null;
-            renderCalendar();
-            updateCalendarSelection(); // Update calendar display
-            updateDateDisplayInSummary(); // Update summary display
-        });
-        if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => {
-            currentMonthDate.setMonth(currentMonthDate.getMonth() - 1);
-            renderCalendar();
-        });
-        if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => {
-            currentMonthDate.setMonth(currentMonthDate.getMonth() + 1);
-            renderCalendar();
-        });
-        if (tonightBtn) tonightBtn.addEventListener('click', () => {
-            const today = new Date();
-            const tomorrow = new Date();
-            tomorrow.setDate(today.getDate() + 1);
-            selectedDeparture = today;
-            selectedReturn = tomorrow;
-            updateCalendarSelection();
-            calendarModal.classList.remove('visible');
-            calendarModal.classList.add('hidden');
-            updateDateDisplayInSummary();
-        });
-        if (nextWeekendBtn) nextWeekendBtn.addEventListener('click', () => {
-            const today = new Date();
-            const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-            const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
-            const nextFriday = new Date(today);
-            nextFriday.setDate(today.getDate() + daysUntilFriday);
-            const nextSunday = new Date(nextFriday);
-            nextSunday.setDate(nextFriday.getDate() + 2);
-            selectedDeparture = nextFriday;
-            selectedReturn = nextSunday;
-            updateCalendarSelection();
-            calendarModal.classList.remove('visible');
-            calendarModal.classList.add('hidden');
-            updateDateDisplayInSummary();
-        });
+        if (dateDisplayBlock) {
+            dateDisplayBlock.addEventListener('click', () => {
+                if (calendarModal) {
+                    calendarModal.classList.remove('hidden');
+                    calendarModal.classList.add('visible');
+                }
+                renderCalendar();
+            });
+        }
+        if (closeCalendarBtn) {
+            closeCalendarBtn.addEventListener('click', () => {
+                if (calendarModal) {
+                    calendarModal.classList.remove('visible');
+                    calendarModal.classList.add('hidden');
+                }
+                updateDateDisplayInSummary();
+            });
+        }
+        if (closeCalendarModalX) {
+            closeCalendarModalX.addEventListener('click', () => {
+                if (calendarModal) {
+                    calendarModal.classList.remove('visible');
+                    calendarModal.classList.add('hidden');
+                }
+            });
+        }
+        if (clearDatesBtn) {
+            clearDatesBtn.addEventListener('click', () => {
+                selectedDeparture = null;
+                selectedReturn = null;
+                renderCalendar();
+                updateCalendarSelection(); // Update calendar display
+                updateDateDisplayInSummary(); // Update summary display
+            });
+        }
+        if (prevMonthBtn) {
+            prevMonthBtn.addEventListener('click', () => {
+                currentMonthDate.setMonth(currentMonthDate.getMonth() - 1);
+                renderCalendar();
+            });
+        }
+        if (nextMonthBtn) {
+            nextMonthBtn.addEventListener('click', () => {
+                currentMonthDate.setMonth(currentMonthDate.getMonth() + 1);
+                renderCalendar();
+            });
+        }
+        if (tonightBtn) {
+            tonightBtn.addEventListener('click', () => {
+                const today = new Date();
+                const tomorrow = new Date();
+                tomorrow.setDate(today.getDate() + 1);
+                selectedDeparture = today;
+                selectedReturn = tomorrow;
+                updateCalendarSelection();
+                if (calendarModal) {
+                    calendarModal.classList.remove('visible');
+                    calendarModal.classList.add('hidden');
+                }
+                updateDateDisplayInSummary();
+            });
+        }
+        if (nextWeekendBtn) {
+            nextWeekendBtn.addEventListener('click', () => {
+                const today = new Date();
+                const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+                const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+                const nextFriday = new Date(today);
+                nextFriday.setDate(today.getDate() + daysUntilFriday);
+                const nextSunday = new Date(nextFriday);
+                nextSunday.setDate(nextFriday.getDate() + 2);
+                selectedDeparture = nextFriday;
+                selectedReturn = nextSunday;
+                updateCalendarSelection();
+                if (calendarModal) {
+                    calendarModal.classList.remove('visible');
+                    calendarModal.classList.add('hidden');
+                }
+                updateDateDisplayInSummary();
+            });
+        }
 
         function renderCalendar() {
+            if (!calendarMonthsContainer || !calendarMonthYear) return;
+
             calendarMonthsContainer.innerHTML = '';
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -1742,4 +1783,5 @@
         renderAuthStatus(); // Render auth status on load
     });
 </script>
+</body>
 </html>
