@@ -1,24 +1,36 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <title>Guacamayafly Booking Page</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'guacamayafly-green': '#00c897',
+                    'guacamayafly-dark-green': '#00b386',
+                    'guacamayafly-orange': '#FF7F00',
+                    'guacamayafly-dark-orange': '#E67300',
+                }
+            }
+        }
+    }
+  </script>
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     rel="stylesheet"
   />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
     body {
-      font-family: "Inter", sans-serif;
+      font-family: "Poppins", sans-serif;
     }
-    /* Scrollbar hidden for timer */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -26,7 +38,6 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    /* Styles for payment options from nuevoindex.html */
     .payment-option {
         border: 1px solid #e5e7eb;
         padding: 0.75rem;
@@ -46,8 +57,6 @@
     .payment-logo {
         height: 24px;
     }
-
-    /* Calendar Modal Styles from nuevoindex.html */
     .modal-overlay {
         position: fixed;
         inset: 0;
@@ -162,17 +171,15 @@
     .calendar-day.price-cheap { background-color: #d1fae5; color: #065f46; }
     .calendar-day.price-medium { background-color: #fef3c7; color: #92400e; }
     .calendar-day.price-expensive { background-color: #fee2e2; color: #991b1b; }
-    .calendar-day.selected { background-color: #2563eb !important; color: white !important; font-weight: bold; }
-    .calendar-day.in-range { background-color: #dbeafe; border-radius: 0; }
+    .calendar-day.selected { background-color: #FF7F00 !important; color: white !important; font-weight: bold; }
+    .calendar-day.in-range { background-color: #fff7ed; border-radius: 0; }
     .calendar-day.range-start { border-top-left-radius: 50%; border-bottom-left-radius: 50%; }
     .calendar-day.range-end { border-top-right-radius: 50%; border-bottom-right-radius: 50%; }
 
-    /* Notification Popup */
     #notification-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
     .notification-popup { background-color: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.5s ease-in-out; margin-top: 10px; }
     .notification-popup.show { transform: translateX(0); }
 
-    /* Pop-up de Sitio en Desarrollo */
     #development-popup-overlay {
         position: fixed;
         inset: 0;
@@ -189,7 +196,7 @@
         opacity: 1;
         pointer-events: auto;
     }
-    #development-popup-overlay .modal-container { /* Use the existing modal-container style */
+    #development-popup-overlay .modal-container {
         background-color: white;
         padding: 2rem;
         border-radius: 0.75rem;
@@ -206,7 +213,6 @@
         transform: scale(1);
     }
 
-    /* Sticky footer button styles */
     #sticky-reserve-btn-container {
         position: fixed;
         bottom: 0;
@@ -226,24 +232,22 @@
     #sticky-reserve-btn-container.hidden {
         transform: translateY(100%);
     }
-
     #sticky-reserve-btn {
         width: 100%;
-        background-color: #0d6efd;
+        background-color: #FF7F00;
         color: white;
         font-size: 1.125rem;
         font-weight: bold;
         padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
+        border-radius: 9999px;
         transition: background-color 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
     }
-
     #sticky-reserve-btn:hover {
-        background-color: #0b5ed7;
+        background-color: #E67300;
     }
 
     #sticky-reserve-info {
@@ -252,12 +256,10 @@
         text-align: center;
     }
 
-    /* Adjust main content padding when sticky button is visible */
     body.has-sticky-footer #main-content {
         padding-bottom: 8rem;
     }
 
-    /* Specific date display adjustments for mobile */
     #date-display-block {
       display: grid;
       grid-template-columns: 1fr auto 1fr auto;
@@ -284,7 +286,6 @@
       flex-shrink: 0;
     }
 
-    /* Hide arrow on larger screens if desired, but screenshot shows it */
     @media (min-width: 640px) {
         #date-display-block {
             grid-template-columns: 1fr auto 1fr auto;
@@ -293,7 +294,6 @@
   </style>
 </head>
 <body class="bg-[#f7f8fa] text-[#222222] has-sticky-footer">
-  <!-- Pop-up de Sitio en Desarrollo -->
   <div id="development-popup-overlay" class="modal-overlay hidden">
       <div class="modal-container">
           <div class="text-yellow-500 mb-4">
@@ -303,50 +303,37 @@
           <p class="text-gray-600 mb-6">
               Los precios mostrados son de prueba y este sitio web está actualmente en desarrollo. Por favor, consulte con un agente antes de realizar cualquier pago o reserva.
           </p>
-          <button id="development-popup-close" class="bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          <button id="development-popup-close" class="bg-guacamayafly-orange text-white font-semibold px-8 py-2 rounded-lg hover:bg-guacamayafly-dark-orange transition-colors">
               Entendido
           </button>
       </div>
   </div>
 
-  <!-- Header -->
   <header class="bg-white border-b border-gray-200">
-    <!-- Adjusted header container for mobile: flex-col on small screens -->
     <div
       class="max-w-[1200px] mx-auto px-3 py-3 sm:px-6 flex flex-col sm:flex-row items-center justify-between relative"
     >
-      <!-- Login/Avatar Container (Top-right on mobile, relative on larger screens) -->
       <div id="auth-status-container" class="absolute top-3 right-3 sm:relative sm:top-0 sm:right-0 sm:order-last">
-        <!-- Content will be dynamically loaded here by JS -->
       </div>
 
-      <!-- Guacamayafly Logo (Centered on mobile, normal on larger screens) -->
       <div class="flex items-center space-x-2 mb-4 sm:mb-0 mx-auto sm:mx-0">
           <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
           <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
       </div>
 
-      <!-- Progress Steps (Below logo on mobile, centered; normal on larger screens) -->
       <nav class="flex items-start relative flex-1 justify-center w-full sm:w-auto mt-2 sm:mt-0">
-        <!-- Horizontal Line for progress bar -->
         <div class="absolute w-full h-0.5 bg-gray-300 top-[12px] left-0 right-0"></div>
-        <!-- Blue progress fill line (adjust width based on current step) -->
-        <div id="progress-fill" class="absolute h-0.5 bg-[#0d6efd] top-[12px] left-0 w-[33%] transition-all duration-300 ease-in-out"></div>
+        <div id="progress-fill" class="absolute h-0.5 bg-guacamayafly-orange top-[12px] left-0 w-[33%] transition-all duration-300 ease-in-out"></div>
 
-
-        <!-- Step 1: Active state -->
-        <!-- Adjusted padding and font size for mobile -->
         <div id="step-1-header" class="flex flex-col items-center relative z-10 px-0.5 sm:px-2">
           <div
-            class="flex items-center justify-center w-6 h-6 rounded-full bg-[#0d6efd] text-white text-xs font-semibold border-2 border-[#0d6efd]"
+            class="flex items-center justify-center w-6 h-6 rounded-full bg-guacamayafly-orange text-white text-xs font-semibold border-2 border-guacamayafly-orange"
           >
             1
           </div>
-          <span class="text-[#0d6efd] font-semibold text-[9px] sm:text-sm mt-1 whitespace-nowrap">Información del cliente</span>
+          <span class="text-guacamayafly-orange font-semibold text-[9px] sm:text-sm mt-1 whitespace-nowrap">Información del cliente</span>
         </div>
 
-        <!-- Step 2: Inactive state -->
-        <!-- Adjusted padding and font size for mobile -->
         <div id="step-2-header" class="flex flex-col items-center relative z-10 px-0.5 sm:px-2">
           <div
             class="flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 bg-white text-xs text-gray-400"
@@ -356,8 +343,6 @@
           <span class="text-gray-600 text-[9px] sm:text-sm mt-1 whitespace-nowrap">Información de pago</span>
         </div>
 
-        <!-- Step 3: Inactive state with checkmark -->
-        <!-- Adjusted padding and font size for mobile -->
         <div id="step-3-header" class="flex flex-col items-center relative z-10 px-0.5 sm:px-2">
           <div
             class="flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 bg-white text-xs text-gray-400"
@@ -370,7 +355,6 @@
     </div>
   </header>
 
-  <!-- Timer bar - Added ID for JavaScript functionality -->
   <div
     class="bg-[#fff0eb] border border-[#fcd9cc] text-[#b33a3a] text-sm font-semibold flex items-center justify-center space-x-2 py-1"
   >
@@ -383,20 +367,16 @@
     id="main-content"
     class="max-w-[1200px] mx-auto px-6 py-8 flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-140px)]"
   >
-    <!-- Summary section (appears first on mobile, second on desktop) -->
     <aside class="w-full lg:w-[360px] flex flex-col order-first lg:order-last">
-      <!-- Date section as a separate block - Adjusted for mobile responsiveness -->
       <div
         id="date-display-block"
         class="bg-white border border-gray-300 rounded-xl p-4 mb-5 text-gray-600 cursor-pointer grid grid-cols-[1fr_auto_1fr_auto] items-center gap-x-2"
       >
-        <!-- Row 1: Headers -->
         <div class="header-cell">Registrarse</div>
-        <div></div> <!-- Spacer for arrow column -->
+        <div></div>
         <div class="header-cell">Verificar</div>
-        <div class="header-cell text-right"></div> <!-- Placeholder for nights header -->
+        <div class="header-cell text-right"></div>
 
-        <!-- Row 2: Dates and Nights -->
         <div class="flex flex-col items-start">
           <div id="display-checkin-date" class="font-semibold text-base text-[#222222]">Vie, 11 de julio</div>
           <div id="display-checkin-time" class="text-xs font-normal text-gray-600">14:00</div>
@@ -415,12 +395,10 @@
         </div>
       </div>
 
-      <!-- Combined Hotel, Apartment, Features, and Cancellation Policy Section -->
       <div class="bg-white border border-gray-300 rounded-xl p-5 shadow-sm mb-6">
-        <!-- Hotel Details -->
         <div class="flex gap-3 mb-4 pb-4 border-b border-gray-300">
           <img
-            alt="Collage de fotos del interior del apartamento con cama, estantería y escritorio"
+            alt="Collage de fotos del interior del apartamento"
             class="w-20 h-20 rounded-md object-cover flex-shrink-0"
             height="80"
             src="https://storage.googleapis.com/a1aa/image/bd0ca2eb-5c60-48b0-7b47-cd427e61bf46.jpg"
@@ -438,7 +416,7 @@
               <i class="fas fa-star text-sm"></i>
               <i class="fas fa-star text-sm"></i>
             </div>
-            <div class="text-[#0d6efd] font-semibold text-sm mb-1">
+            <div class="text-guacamayafly-green font-semibold text-sm mb-1">
               9.7 Excepcional
               <span class="text-gray-400 font-normal ml-1 text-xs">49 reseñas</span>
             </div>
@@ -447,17 +425,16 @@
             </div>
             <a
               href="#"
-              class="text-[#0d6efd] text-xs font-semibold hover:underline mt-0.5 inline-block"
+              class="text-guacamayafly-orange text-xs font-semibold hover:underline mt-0.5 inline-block"
               >¿Qué hay cerca?</a
             >
           </div>
         </div>
 
-        <!-- Apartment details box (nested with its own border) -->
         <div class="bg-blue-50 rounded-md p-4 text-gray-700 text-sm space-y-2 border border-gray-300 mb-4">
           <div class="flex space-x-3 items-center font-semibold text-gray-900 pb-3">
             <img
-              alt="Interior del apartamento con cama, estantería y escritorio"
+              alt="Interior del apartamento"
               class="w-10 h-10 rounded-md object-cover flex-shrink-0"
               height="40"
               src="https://storage.googleapis.com/a1aa/image/a25bb66f-5ad8-4226-be1a-0afa0be991c9.jpg"
@@ -467,16 +444,9 @@
               1 x Apartamento
             </div>
           </div>
-          <!-- Removed all internal borders for a cleaner look -->
-          <div class="py-1">
-            Superficie: 50 m²
-          </div>
-          <div class="py-1">
-            Máx: 1 adulto, 1 niño (0-17 años)
-          </div>
-          <div class="py-1 mb-2">
-            1 cama doble
-          </div>
+          <div class="py-1">Superficie: 50 m²</div>
+          <div class="py-1">Máx: 1 adulto, 1 niño (0-17 años)</div>
+          <div class="py-1 mb-2">1 cama doble</div>
           <div class="flex items-center space-x-1 text-gray-500 text-xs py-1">
             <i class="fas fa-door-open"></i>
             <span>Último check-in antes de las 20:30</span>
@@ -490,429 +460,209 @@
             <span>¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</span>
           </div>
           <ul class="list-none space-y-1 text-green-700 text-xs font-semibold pt-2">
-            <li class="flex items-center space-x-1">
-              <i class="fas fa-check"></i>
-              <span>Aparcamiento</span>
-            </li>
-            <li class="flex items-center space-x-1">
-              <i class="fas fa-check"></i>
-              <span>Café y té</span>
-            </li>
-            <li class="flex items-center space-x-1">
-              <i class="fas fa-check"></i>
-              <span>Check-in exprés</span>
-            </li>
-            <li class="flex items-center space-x-1">
-              <i class="fas fa-check"></i>
-              <span>Wifi gratis</span>
-            </li>
-            <li class="flex items-center space-x-1">
-              <i class="fas fa-check"></i>
-              <span>Agua potable</span>
-            </li>
+            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Aparcamiento</span></li>
+            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Café y té</span></li>
+            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Check-in exprés</span></li>
+            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Wifi gratis</span></li>
+            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Agua potable</span></li>
           </ul>
           <div class="grid grid-cols-2 gap-3 mt-3">
-            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition">
-              <i class="fas fa-desktop"></i> Escritorio
-            </span>
-            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition">
-              <i class="fas fa-bottle-water"></i> Agua embotellada gratis
-            </span>
-            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition">
-              <i class="fas fa-parking"></i> Aparcamiento
-            </span>
-            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition">
-              <i class="fas fa-wifi"></i> Wi-Fi gratis
-            </span>
+            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition"><i class="fas fa-desktop"></i> Escritorio</span>
+            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition"><i class="fas fa-bottle-water"></i> Agua embotellada gratis</span>
+            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition"><i class="fas fa-parking"></i> Aparcamiento</span>
+            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition"><i class="fas fa-wifi"></i> Wi-Fi gratis</span>
           </div>
         </div>
 
-        <!-- Cancellation Policy Button -->
         <button
           type="button"
           class="w-full flex justify-between items-center text-sm font-semibold text-green-700 border border-gray-300 rounded px-4 py-2 hover:bg-green-50 transition"
         >
-          <div class="flex items-center gap-3">
-            <i class="fas fa-shield-alt text-lg"></i>
-            <span>Política de cancelación</span>
-          </div>
+          <div class="flex items-center gap-3"><i class="fas fa-shield-alt text-lg"></i><span>Política de cancelación</span></div>
           <i class="fas fa-chevron-right text-lg"></i>
         </button>
       </div>
 
-      <!-- Price and Payment Section (moved up to match screenshot order) -->
       <div class="bg-white rounded-xl border border-gray-200 text-sm mb-6">
-        <!-- Discount Banner -->
         <div class="bg-red-500 text-white text-center py-1 rounded-t-xl text-xs font-semibold">
             21% DE DESCUENTO HOY
         </div>
 
         <div class="p-4">
-          <!-- Room Price and Booking Fees -->
-          <div class="flex justify-between mb-1">
-              <span class="font-medium">Precio original ( 8 noches )</span>
-              <span class="font-semibold">669,77 €</span>
-          </div>
-          <div class="flex justify-between mb-1">
-              <span class="font-medium">Precio de la habitación ( 8 noches )</span>
-              <span class="font-semibold">503,76 €</span>
-          </div>
-          
-          <!-- Final Price Header -->
-          <div class="flex justify-between items-center border-t border-gray-200 pt-3 mt-3">
-              <span class="font-semibold text-base">Precio final <i class="fas fa-info-circle text-xs ml-1"></i></span>
-              <span class="font-bold text-base">507,56 €</span>
-          </div>
-
-          <p class="text-[10px] text-gray-400 mb-3">
-            Incluido en el precio total: Tasa de limpieza 17,07 €, IVA 52,56 €
-          </p>
-
-          <!-- Pay to the Property Section -->
+          <div class="flex justify-between mb-1"><span class="font-medium">Precio original ( 8 noches )</span><span class="font-semibold">669,77 €</span></div>
+          <div class="flex justify-between mb-1"><span class="font-medium">Precio de la habitación ( 8 noches )</span><span class="font-semibold">503,76 €</span></div>
+          <div class="flex justify-between items-center border-t border-gray-200 pt-3 mt-3"><span class="font-semibold text-base">Precio final <i class="fas fa-info-circle text-xs ml-1"></i></span><span class="font-bold text-base">507,56 €</span></div>
+          <p class="text-[10px] text-gray-400 mb-3">Incluido en el precio total: Tasa de limpieza 17,07 €, IVA 52,56 €</p>
           <div class="border-t border-gray-200 pt-4 mt-4">
-              <div class="flex justify-between mb-1">
-                <span class="font-semibold text-base">Pagar en la Propiedad</span>
-                <span class="font-bold text-base">507,56 €</span>
-              </div>
-              <p class="text-xs text-gray-500 mb-3">
-                Pagarás el Apartamento cerca del Boulevard de Sabana Grande y zona comercial
-                en la moneda de la propiedad (los tipos de cambio pueden variar): USD 594,52 =
-                € 507,56
-              </p>
+              <div class="flex justify-between mb-1"><span class="font-semibold text-base">Pagar en la Propiedad</span><span class="font-bold text-base">507,56 €</span></div>
+              <p class="text-xs text-gray-500 mb-3">Pagarás el Apartamento cerca del Boulevard de Sabana Grande y zona comercial en la moneda de la propiedad (los tipos de cambio pueden variar): USD 594,52 = € 507,56</p>
           </div>
-
-          <!-- Price Match Guarantee -->
-          <div
-            class="bg-[#0b5e07] bg-opacity-10 rounded-xl p-3 text-xs text-[#0b5e07] font-semibold mt-4"
-          >
-            Igualamos los precios. ¡Si lo encuentras por menos, lo igualamos!
-            <i class="fas fa-info-circle text-xs"></i>
-          </div>
-
+          <div class="bg-[#0b5e07] bg-opacity-10 rounded-xl p-3 text-xs text-[#0b5e07] font-semibold mt-4">Igualamos los precios. ¡Si lo encuentras por menos, lo igualamos! <i class="fas fa-info-circle text-xs"></i></div>
           <p class="text-[10px] text-gray-400 mt-2">¡Sabía elección! Has ahorrado 18,07 USD.</p>
         </div>
       </div>
 
-      <!-- Separated green boxes -->
       <div class="bg-[#d9f0d9] rounded-xl p-4 text-sm text-[#0b5e07] flex items-center gap-2 font-semibold mb-6">
         <i class="fas fa-thumbs-up text-base"></i>
-        <span>
-          ¡Excelente elección!
-          <span class="font-normal"
-            >Has elegido nuestra tarifa más baja en Lomas de las Mercedes.</span
-          >
-        </span>
+        <span>¡Excelente elección! <span class="font-normal">Has elegido nuestra tarifa más baja en Lomas de las Mercedes.</span></span>
       </div>
       <div class="bg-[#d9f0d9] rounded-xl p-4 text-sm text-[#0b5e07] flex items-center gap-2 font-semibold mb-6">
         <i class="fas fa-thumbs-up text-base"></i>
-        <span>
-          Gran variedad de propiedades,
-          <span class="font-normal">con una calificación promedio de los huéspedes de</span>
-          <span class="font-semibold text-[#0d6efd]">9,7</span>
-        </span>
+        <span>Gran variedad de propiedades, <span class="font-normal">con una calificación promedio de los huéspedes de</span> <span class="font-semibold text-guacamayafly-orange">9,7</span></span>
       </div>
+      <div class="bg-[#fddede] rounded-xl p-4 text-sm text-[#b33a3a] space-y-2 mb-6"><p class="flex items-center gap-2 font-semibold"><i class="fas fa-clock text-base"></i> ¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</p></div>
+      <div class="bg-[#ffe3d3] rounded-xl p-4 text-sm text-[#b35a0b] space-y-2 mb-6"><p class="flex items-center gap-2 font-semibold"><i class="fas fa-clock text-base"></i> Faltan solo <span class="font-bold">2 días</span> para tu llegada. <span class="font-bold">Las tarifas podrían aumentar si no reservas ahora.</span></p></div>
 
-      <!-- Red and Orange boxes -->
-      <div class="bg-[#fddede] rounded-xl p-4 text-sm text-[#b33a3a] space-y-2 mb-6">
-        <p class="flex items-center gap-2 font-semibold">
-          <i class="fas fa-clock text-base"></i> ¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!
-        </p>
-      </div >
-
-      <div class="bg-[#ffe3d3] rounded-xl p-4 text-sm text-[#b35a0b] space-y-2 mb-6">
-        <p class="flex items-center gap-2 font-semibold">
-          <i class="fas fa-clock text-base"></i>
-          Faltan solo <span class="font-bold">2 días</span> para tu llegada.
-          <span class="font-bold">Las tarifas podrían aumentar si no reservas ahora.</span>
-        </p>
-      </div>
-
-      <!-- About Payment Section -->
       <div class="bg-white rounded-xl border border-gray-200 p-4 text-sm">
         <h3 class="font-semibold text-base mb-2">Sobre el pago</h3>
         <p class="text-xs text-gray-500">
           El pago de esta reserva será cobrado por la propiedad, no por Guacamayafly. Compartiremos los detalles de tu tarjeta de crédito con nuestro proveedor y con la propiedad para asegurar tu reserva y completar la transacción.
-          <a href="#" class="text-[#0d6efd] font-semibold hover:underline">Ver condiciones de reserva.</a>
+          <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">Ver condiciones de reserva.</a>
         </p>
       </div>
     </aside>
 
-    <section
-      class="flex-1 bg-white rounded-xl border border-gray-200 p-6 max-w-full order-last lg:order-first"
-    >
-      <!-- Guacamayafly Cash Block -->
-      <div class="bg-blue-100 border border-blue-200 text-blue-800 text-sm p-4 rounded-xl mb-6">
+    <section class="flex-1 bg-white rounded-xl border border-gray-200 p-6 max-w-full">
+      <div class="bg-orange-100 border border-orange-200 text-orange-800 text-sm p-4 rounded-xl mb-6">
           <p class="font-semibold mb-2">
               ¡Inicia sesión para utilizar tu Guacamayafly Cash!
-              <a href="#" class="text-blue-600 hover:underline font-bold">Iniciar sesión</a>
+              <a href="#" class="text-guacamayafly-dark-orange hover:underline font-bold">Iniciar sesión</a>
           </p>
-          <p class="text-xs text-blue-700">
-              Iniciar sesión en su cuenta de Guacamayafly le permitirá realizar
-              reservas más rápidas y obtener más recompensas.
-          </p>
+          <p class="text-xs text-orange-700">Iniciar sesión en su cuenta de Guacamayafly le permitirá realizar reservas más rápidas y obtener más recompensas.</p>
       </div>
 
-      <form id="booking-form">
-        <!-- Step 1: Guest Information and Special Requests -->
-        <div id="step-1">
-          <h2 class="text-base font-semibold mb-2">
-            ¿Quién es el invitado principal?
-          </h2>
-          <p class="text-sm text-[#b33a3a] mb-4 font-semibold">
-            *Campo obligatorio
-          </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label
-                class="block text-sm font-semibold text-gray-600 mb-1"
-                for="nombre"
-                >Nombre de pila *</label
-              >
-              <input
-                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-                id="nombre"
-                name="nombre"
-                type="text"
-                required
-              />
-            </div>
-            <div>
-              <label
-                class="block text-sm font-semibold text-gray-600 mb-1"
-                for="apellido"
-                >Apellido *</label
-              >
-              <input
-                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-                id="apellido"
-                name="apellido"
-                type="text"
-                required
-              />
-            </div>
+      <!-- Container for both steps to manage visibility -->
+      <div>
+          <!-- Step 2: Payment Information -->
+          <div id="step-2-payment-info" style="display: none;">
+              <h2 class="text-base font-semibold mb-2">Información de pago</h2>
+              <p class="text-sm text-gray-600 mb-4">Por favor, selecciona tu método de pago preferido.</p>
+              
+              <div class="mt-6">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
+                  <div class="space-y-3" id="payment-options-container">
+                      <div class="payment-option" data-payment="whatsapp"><div class="flex items-center justify-between"><span class="font-semibold text-sm">Reservar por WhatsApp</span><i class="fab fa-whatsapp text-xl text-green-500"></i></div></div>
+                      <div class="payment-option" data-payment="card"><div class="flex items-center justify-between"><span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span><div class="flex items-center gap-2"><img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo"></div></div></div>
+                      <div class="payment-option" data-payment="crypto"><div class="flex items-center justify-between"><span class="font-semibold text-sm">Pagar con Criptomonedas</span><img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo"></div></div>
+                  </div>
+              </div>
+
+              <div class="flex justify-between mt-6">
+                  <button
+                      type="button"
+                      id="prev-step-btn"
+                      class="bg-white text-gray-700 text-lg font-bold py-3 px-6 rounded-full border border-gray-300 hover:bg-gray-100 transition"
+                  >
+                      ANTERIOR
+                  </button>
+              </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <label
-                class="block text-sm font-semibold text-gray-600 mb-1"
-                for="email"
-                >Correo electrónico *</label
-              >
-              <input
-                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-                id="email"
-                name="email"
-                type="email"
-                required
-              />
+
+          <!-- Step 1: All other content now wrapped in a single div -->
+          <div id="step-1-content">
+            <h2 class="text-base font-semibold mb-2">¿Quién es el invitado principal?</h2>
+            <p class="text-sm text-[#b33a3a] mb-4 font-semibold">*Campo obligatorio</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1" for="nombre">Nombre de pila *</label>
+                <input class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-guacamayafly-orange" id="nombre" name="nombre" type="text" required />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1" for="apellido">Apellido *</label>
+                <input class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-guacamayafly-orange" id="apellido" name="apellido" type="text" required />
+              </div>
             </div>
-            <div>
-              <label
-                class="block text-sm font-semibold text-gray-600 mb-1"
-                for="pais"
-                >País/región de residencia *</label
-              >
-              <select
-                class="w-full border-2 border-green-500 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-                id="pais"
-                name="pais"
-                required
-              >
-                <option value="">Selecciona un país</option>
-                <option>Países Bajos</option>
-                <option>España</option>
-                <option>Venezuela</option>
-                <option>Colombia</option>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1" for="email">Correo electrónico *</label>
+                <input class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-guacamayafly-orange" id="email" name="email" type="email" required />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1" for="pais">País/región de residencia *</label>
+                <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-guacamayafly-orange" id="pais" name="pais" required>
+                  <option value="">Selecciona un país</option>
+                  <option>Países Bajos</option><option>España</option><option>Venezuela</option><option>Colombia</option>
                 </select>
-            </div>
-          </div>
-          <div class="mb-6">
-            <label
-              class="block text-sm font-semibold text-gray-600 mb-1"
-              for="telefono"
-              >Número de teléfono (opcional)</label
-              >
-            <input
-              class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]"
-              id="telefono"
-              name="telefono"
-              type="tel"
-            />
-          </div>
-
-          <fieldset
-            class="border border-gray-300 rounded-xl p-4 mb-6 text-sm"
-            aria-label="Solicitudes especiales"
-          >
-            <legend class="font-semibold text-base mb-2">Solicitudes especiales</legend>
-            <p class="text-gray-500 mb-4 text-sm">
-              Selecciona tu(s) preferencia(s) (sujeto a disponibilidad).
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <p class="font-semibold mb-2 text-sm">
-                  ¿Qué tipo de habitación preferirías?
-                </p>
-                <div class="flex items-center mb-2">
-                  <input
-                    class="mr-2 w-5 h-5"
-                    id="no-fumadores"
-                    name="fumadores"
-                    type="radio"
-                  />
-                  <label
-                    class="flex items-center gap-1 text-sm"
-                    for="no-fumadores"
-                    ><i class="fas fa-smoking-ban text-lg"></i> Habitación de no fumadores</label
-                  >
-                </div>
-                <div class="flex items-center">
-                  <input class="mr-2 w-5 h-5" id="fumadores" name="fumadores" type="radio" />
-                  <label class="flex items-center gap-1 text-sm" for="fumadores"
-                    ><i class="fas fa-smoking text-lg"></i> Habitación de fumadores</label
-                  >
-                </div>
-              </div>
-              <div>
-                <p class="font-semibold mb-2 text-sm">
-                  ¿Qué configuración de camas prefieres?
-                </p>
-                <div class="flex items-center mb-2">
-                  <input class="mr-2 w-5 h-5" id="cama-grande" name="camas" type="radio" />
-                  <label class="flex items-center gap-1 text-sm" for="cama-grande"
-                    ><i class="fas fa-bed text-lg"></i> Quiero una cama grande</label
-                  >
-                </div>
-                <div class="flex items-center">
-                  <input class="mr-2 w-5 h-5" id="camas-separadas" name="camas" type="radio" />
-                  <label class="flex items-center gap-1 text-sm" for="camas-separadas"
-                    ><i class="fas fa-bed text-lg"></i> Quiero camas separadas</label
-                  >
-                </div>
               </div>
             </div>
-            <button
-              type="button"
-              class="mt-3 text-sm text-[#0d6efd] font-semibold underline flex items-center gap-1"
-            >
-              Haz clic aquí para más solicitudes.
-              <i class="fas fa-chevron-down text-sm"></i>
-            </button>
-          </fieldset>
-
-          <p class="text-sm text-[#b33a3a] font-semibold mb-3">
-            ¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!
-          </p>
-        </div>
-
-        <div id="hospitality-info" class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-            <h2 class="text-base font-semibold mb-2">
-                Información adicional sobre hospitalidad
-            </h2>
-            <p class="text-gray-500 mb-4 text-sm">
-                Por favor proporcione la siguiente información para
-                optimizar los servicios que brinda la propiedad
-            </p>
-            <p class="font-semibold mb-2 text-sm">Avísanos cuando llegues</p>
-            <p class="text-gray-500 mb-4 text-sm">
-                Le informaremos a la propiedad o al anfitrión cuándo
-                esperarlo.
-            </p>
-            <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-[#0d6efd]">
-                <option>Seleccionar</option>
-                <option>No sé</option>
-            </select>
-        </div>
-
-        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-            <div class="flex items-center mb-4">
-                <input type="checkbox" id="guacamayafly-updates" class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
-                <label for="guacamayafly-updates" class="ml-2 text-sm text-gray-700">
-                    Acepto recibir actualizaciones y promociones de Guacamayafly y sus afiliados o socios comerciales a través de diversos canales, incluido WhatsApp. Puede cancelar su suscripción en cualquier momento.
-                    <a href="#" class="text-[#0d6efd] hover:underline">Lea más en la Política de Privacidad.</a>
-                </label>
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-600 mb-1" for="telefono">Número de teléfono (opcional)</label>
+              <input class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-guacamayafly-orange" id="telefono" name="telefono" type="tel" />
             </div>
-            <div class="bg-green-100 border border-green-200 text-green-800 text-sm p-4 rounded-xl flex items-center gap-2 font-semibold">
-                <i class="fas fa-check-circle text-base"></i>
-                <span>
-                    ¡No necesitas tarjeta de crédito para reservar!
-                    <span class="font-normal">
-                        Puedes reservar ahora sin proporcionar detalles de pago y pagar en el establecimiento durante tu estancia.
-                    </span>
-                </span>
-            </div>
-        </div>
 
-        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-            <p class="text-sm text-gray-600 mb-3">
-                Al continuar con esta reserva, acepto los términos y
-                condiciones de Guacamayafly. <a href="#" class="text-[#0d6efd] font-semibold hover:underline">Condiciones de uso</a> y
-                <a href="#" class="text-[#0d6efd] font-semibold hover:underline">política de privacidad</a>.
-            </p>
-            <p class="text-orange-600 text-xs font-semibold py-1 mt-2">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</span>
-            </p>
-            <div class="flex items-center gap-2 text-gray-500 text-sm mt-4">
-                <i class="fas fa-envelope text-lg"></i>
-                <span>Le enviaremos la confirmación de su reserva a la dirección de correo electrónico proporcionada.</span>
-            </div>
-        </div>
-
-        <div id="step-2-payment-info">
-            <h2 class="text-base font-semibold mb-2">
-                Información de pago
-            </h2>
-            <p class="text-sm text-gray-600 mb-4">
-                Por favor, selecciona tu método de pago preferido.
-            </p>
-
-            <div class="mt-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Método de Pago</label>
-                <div class="space-y-3" id="payment-options-container">
-                    <div class="payment-option" data-payment="whatsapp">
-                        <div class="flex items-center justify-between">
-                            <span class="font-semibold text-sm">Reservar por WhatsApp</span>
-                            <i class="fab fa-whatsapp text-xl text-green-500"></i>
-                        </div>
-                    </div>
-                    <div class="payment-option" data-payment="card">
-                        <div class="flex items-center justify-between">
-                            <span class="font-semibold text-sm">Tarjeta de Crédito/Débito</span>
-                            <div class="flex items-center gap-2">
-                                <img src="https://cryptoindex.com/pic/icons/visa-mastercard.svg" alt="Visa y Mastercard" class="payment-logo">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="payment-option" data-payment="crypto">
-                         <div class="flex items-center justify-between">
-                            <span class="font-semibold text-sm">Pagar con Criptomonedas</span>
-                            <img src="https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4" alt="Bitcoin" class="payment-logo">
-                        </div>
-                    </div>
+            <fieldset class="border border-gray-300 rounded-xl p-4 mb-6 text-sm" aria-label="Solicitudes especiales">
+              <legend class="font-semibold text-base mb-2">Solicitudes especiales</legend>
+              <p class="text-gray-500 mb-4 text-sm">Selecciona tu(s) preferencia(s) (sujeto a disponibilidad).</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <p class="font-semibold mb-2 text-sm">¿Qué tipo de habitación preferirías?</p>
+                  <div class="flex items-center mb-2">
+                    <input class="mr-2 w-5 h-5 accent-guacamayafly-orange" id="no-fumadores" name="fumadores" type="radio" />
+                    <label class="flex items-center gap-1 text-sm" for="no-fumadores"><i class="fas fa-smoking-ban text-lg"></i> Habitación de no fumadores</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input class="mr-2 w-5 h-5 accent-guacamayafly-orange" id="fumadores" name="fumadores" type="radio" />
+                    <label class="flex items-center gap-1 text-sm" for="fumadores"><i class="fas fa-smoking text-lg"></i> Habitación de fumadores</label>
+                  </div>
                 </div>
+                <div>
+                  <p class="font-semibold mb-2 text-sm">¿Qué configuración de camas prefieres?</p>
+                  <div class="flex items-center mb-2">
+                    <input class="mr-2 w-5 h-5 accent-guacamayafly-orange" id="cama-grande" name="camas" type="radio" />
+                    <label class="flex items-center gap-1 text-sm" for="cama-grande"><i class="fas fa-bed text-lg"></i> Quiero una cama grande</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input class="mr-2 w-5 h-5 accent-guacamayafly-orange" id="camas-separadas" name="camas" type="radio" />
+                    <label class="flex items-center gap-1 text-sm" for="camas-separadas"><i class="fas fa-bed text-lg"></i> Quiero camas separadas</label>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="mt-3 text-sm text-guacamayafly-orange font-semibold hover:underline flex items-center gap-1">Haz clic aquí para más solicitudes.<i class="fas fa-chevron-down text-sm"></i></button>
+            </fieldset>
+            <p class="text-sm text-[#b33a3a] font-semibold mb-3">¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</p>
+            
+            <div id="hospitality-info" class="bg-white rounded-xl border border-gray-200 p-6 my-6">
+              <h2 class="text-base font-semibold mb-2">Información adicional sobre hospitalidad</h2>
+              <p class="text-gray-500 mb-4 text-sm">Por favor proporcione la siguiente información para optimizar los servicios que brinda la propiedad</p>
+              <p class="font-semibold mb-2 text-sm">Avísanos cuando llegues</p>
+              <p class="text-gray-500 mb-4 text-sm">Le informaremos a la propiedad o al anfitrión cuándo esperarlo.</p>
+              <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-base focus:outline-none focus:ring-1 focus:ring-guacamayafly-orange">
+                  <option>Seleccionar</option><option>No sé</option>
+              </select>
             </div>
 
-            <div class="flex justify-between mt-6">
-                <button
-                    type="button"
-                    id="prev-step-btn"
-                    class="bg-gray-200 text-gray-700 text-lg font-bold py-3 px-6 rounded-xl hover:bg-gray-300 transition"
-                >
-                    ANTERIOR
-                </button>
+            <div class="bg-white rounded-xl border border-gray-200 p-6 my-6">
+              <div class="flex items-center mb-4">
+                  <input type="checkbox" id="guacamayafly-updates" class="w-5 h-5 text-guacamayafly-orange rounded focus:ring-guacamayafly-orange">
+                  <label for="guacamayafly-updates" class="ml-2 text-sm text-gray-700">
+                      Acepto recibir actualizaciones y promociones de Guacamayafly y sus afiliados o socios comerciales a través de diversos canales, incluido WhatsApp. Puede cancelar su suscripción en cualquier momento.
+                      <a href="#" class="text-guacamayafly-orange hover:underline">Lea más en la Política de Privacidad.</a>
+                  </label>
+              </div>
+              <div class="bg-green-100 border border-green-200 text-green-800 text-sm p-4 rounded-xl flex items-center gap-2 font-semibold">
+                  <i class="fas fa-check-circle text-base"></i>
+                  <span>¡No necesitas tarjeta de crédito para reservar! <span class="font-normal">Puedes reservar ahora sin proporcionar detalles de pago y pagar en el establecimiento durante tu estancia.</span></span>
+              </div>
             </div>
-        </div>
-      </form>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-6 my-6">
+              <p class="text-sm text-gray-600 mb-3">
+                  Al continuar con esta reserva, acepto los términos y condiciones de Guacamayafly. 
+                  <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">Condiciones de uso</a> y
+                  <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">política de privacidad</a>.
+              </p>
+              <p class="text-orange-600 text-xs font-semibold py-1 mt-2"><i class="fas fa-exclamation-triangle"></i><span>¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</span></p>
+              <div class="flex items-center gap-2 text-gray-500 text-sm mt-4"><i class="fas fa-envelope text-lg"></i><span>Le enviaremos la confirmación de su reserva a la dirección de correo electrónico proporcionada.</span></div>
+            </div>
+          </div>
+      </div>
     </section>
   </main>
 
 <section id="crypto-checkout-section" class="hidden max-w-4xl mx-auto py-12 px-6">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold text-gray-800">Finalizar Pago con Criptomonedas</h2>
-        <button id="close-crypto-checkout-btn" class="text-gray-500 hover:text-gray-800">
-            <i class="fas fa-times fa-lg"></i>&nbsp;Volver
-        </button>
+        <button id="close-crypto-checkout-btn" class="text-gray-500 hover:text-gray-800"><i class="fas fa-times fa-lg"></i>&nbsp;Volver</button>
     </div>
     <div class="bg-gray-50 p-6 rounded-lg shadow-md">
         <div class="flex flex-col md:flex-row gap-8">
@@ -936,41 +686,30 @@
         </div>
         <div class="mt-6 border-t pt-6">
             <h3 class="font-bold text-gray-700 mb-3 text-lg">O Pagar a la Siguiente Dirección</h3>
-            <div id="crypto-wallets-list" class="space-y-3">
-                </div>
+            <div id="crypto-wallets-list" class="space-y-3"></div>
             <div class="mt-4">
               <label class="block text-sm font-semibold text-gray-600 mb-1" for="comprobante-pago">Cargar Comprobante de Pago (opcional)</label>
-              <input type="file" id="comprobante-pago" class="w-full text-sm text-gray-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100"/>
+              <input type="file" id="comprobante-pago" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
             </div>
-            <button id="payment-received-btn" class="w-full bg-guacamayafly-green text-white text-lg font-bold py-3 rounded-xl hover:bg-guacamayafly-dark-green transition mt-6">
-                He pagado
-            </button>
+            <!-- CAMBIO: Botón "He pagado" ahora es naranja -->
+            <button id="payment-received-btn" class="w-full bg-guacamayafly-orange text-white text-lg font-bold py-3 rounded-full hover:bg-guacamayafly-dark-orange transition mt-6">He pagado</button>
             <p id="payment-validation-message" class="text-center text-sm text-gray-600 mt-2 hidden">Validando pago... <span id="countdown-timer"></span></p>
         </div>
     </div>
 </section>
 
-
 <section id="reservation-confirmed-section" class="hidden max-w-2xl mx-auto py-12 px-6 text-center bg-white rounded-xl shadow-lg mt-8">
-    <div class="text-green-500 mb-4">
-        <i class="fas fa-check-circle fa-5x"></i>
-    </div>
+    <div class="text-green-500 mb-4"><i class="fas fa-check-circle fa-5x"></i></div>
     <h2 class="text-3xl font-bold text-gray-800 mb-2">¡Reserva Confirmada!</h2>
     <p class="text-lg text-gray-600 mb-4">Tu reserva ha sido procesada con éxito.</p>
     <p class="text-xl font-bold text-guacamayafly-orange mb-2">Número de Reserva: <span id="booking-number"></span></p>
     <p class="text-base text-gray-700 mb-4">ID de Confirmación: <span id="confirmation-id"></span></p>
     <p class="text-sm text-gray-500">Recibirás un correo electrónico de confirmación con todos los detalles de tu reserva en breve.</p>
-    <p class="text-sm text-gray-500 mt-4">Redirigiendo al inicio en <span class="font-bold">6</span> segundos...</p>
-    <button onclick="window.location.href = 'index.html';" class="mt-6 bg-[#0d6efd] text-white text-lg font-bold py-3 px-6 rounded-xl hover:bg-[#0b5ed7] transition">
+    <p class="text-sm text-gray-500 mt-4">Redirigiendo al inicio en <span id="redirect-countdown" class="font-bold">6</span> segundos...</p>
+    <button onclick="window.location.href = 'index.html';" class="mt-6 bg-guacamayafly-orange text-white text-lg font-bold py-3 px-6 rounded-full hover:bg-guacamayafly-dark-orange transition">
         Volver al Inicio
     </button>
 </section>
-
 
 <div id="calendar-modal" class="modal-overlay hidden calendar-modal">
     <div class="modal-container">
@@ -979,20 +718,11 @@
              <button id="close-calendar-modal-x" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
         </div>
         <div class="calendar-modal-top-info">
-            <div class="info-box">
-                <span class="label">Check-in</span>
-                <span id="calendar-checkin-display" class="value">--</span>
-            </div>
-            <div class="info-box">
-                <span class="label">Check-out</span>
-                <span id="calendar-checkout-display" class="value">--</span>
-            </div>
+            <div class="info-box"><span class="label">Check-in</span><span id="calendar-checkin-display" class="value">--</span></div>
+            <div class="info-box"><span class="label">Check-out</span><span id="calendar-checkout-display" class="value">--</span></div>
         </div>
         <div class="calendar-modal-body">
-            <div class="flex items-center gap-2 text-sm text-gray-700 mb-4">
-                <i class="far fa-calendar-alt"></i>
-                <p>Selecciona fechas para encontrar los mejores precios para tu viaje</p>
-            </div>
+            <div class="flex items-center gap-2 text-sm text-gray-700 mb-4"><i class="far fa-calendar-alt"></i><p>Selecciona fechas para encontrar los mejores precios para tu viaje</p></div>
             <div class="calendar-header">
                 <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200"><i class="fas fa-chevron-left"></i></button>
                 <h4 id="calendar-month-year" class="font-semibold text-lg"></h4>
@@ -1011,11 +741,10 @@
         </div>
         <div class="calendar-modal-footer">
             <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
-            <button id="close-calendar-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Aplicar</button>
+            <button id="close-calendar-btn" class="bg-guacamayafly-orange text-white px-6 py-2 rounded-lg hover:bg-guacamayafly-dark-orange font-semibold">Aplicar</button>
         </div>
     </div>
 </div>
-
 
 <footer class="bg-gray-100 mt-12 py-10 text-xs text-blue-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1074,35 +803,16 @@
 </footer>
 
 <button aria-label="Ayuda" class="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-full px-3 py-1 text-xs text-gray-700 shadow-md hover:bg-gray-50 flex items-center space-x-1" onclick="window.location.href='https://wa.me/5804243156057'">
-    <span>Ayuda</span>
-    <i class="fas fa-question-circle"></i>
+    <span>Ayuda</span><i class="fas fa-question-circle"></i>
 </button>
 
 <div id="sticky-reserve-btn-container">
-    <button id="sticky-reserve-btn">
-        <i class="fas fa-lock"></i>
-        <span>¡RESERVA YA!</span>
-    </button>
-    <p id="sticky-reserve-info">
-        No se necesita tarjeta de crédito ni pago para reservar.
-    </p>
+    <button id="sticky-reserve-btn"><i class="fas fa-lock"></i><span>¡RESERVA YA!</span></button>
+    <p id="sticky-reserve-info">No se necesita tarjeta de crédito ni pago para reservar.</p>
 </div>
 
 <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    'guacamayafly-green': '#00c897',
-                    'guacamayafly-dark-green': '#00b386',
-                    'guacamayafly-orange': '#FF7F00',
-                    'guacamayafly-dark-orange': '#E67300',
-                }
-            }
-        }
-    }
     document.addEventListener('DOMContentLoaded', function() {
-        // --- Pop-up de Sitio en Desarrollo ---
         const devPopupOverlay = document.getElementById('development-popup-overlay');
         const devPopupCloseBtn = document.getElementById('development-popup-close');
         let onPopupConfirmCallback = null;
@@ -1130,21 +840,17 @@
             });
         }
         
-        // Mostrar pop-up en la primera visita a esta página
-        if (!sessionStorage.getItem('checkoutPopupShown')) { // Changed key to be specific to checkout page
+        if (!sessionStorage.getItem('checkoutPopupShown')) {
             showDevelopmentPopup(() => {
                 sessionStorage.setItem('checkoutPopupShown', 'true');
             });
         }
 
-
-        const form = document.getElementById('booking-form');
+        const form = document.querySelector('section.flex-1');
         const mainContent = document.getElementById('main-content');
-        const step1 = document.getElementById('step-1'); // Corrected ID reference
-        const step2 = document.getElementById('step-2-payment-info'); // Corrected ID reference
-        const nextStepBtn = document.getElementById('next-step-btn'); // This button is now removed from HTML, but reference kept for logic
+        const step1 = document.getElementById('step-1-content');
+        const step2 = document.getElementById('step-2-payment-info');
         const prevStepBtn = document.getElementById('prev-step-btn');
-        const payBtn = document.getElementById('pay-btn'); // This button is now removed from HTML, but reference kept for logic
         const progressFill = document.getElementById('progress-fill');
         const step1Header = document.getElementById('step-1-header');
         const step2Header = document.getElementById('step-2-header');
@@ -1162,7 +868,6 @@
 
         const stickyReserveBtnContainer = document.getElementById('sticky-reserve-btn-container');
         const stickyReserveBtn = document.getElementById('sticky-reserve-btn');
-
 
         const dateDisplayBlock = document.getElementById('date-display-block');
         const calendarModal = document.getElementById('calendar-modal');
@@ -1182,42 +887,36 @@
         const displayCheckoutDate = document.getElementById('display-checkout-date');
         const displayNights = document.getElementById('display-nights');
 
-        // Timer variables
         let timerInterval;
-        const initialTimeInSeconds = 20 * 60; // 20 minutes
+        const initialTimeInSeconds = 20 * 60;
         let timeLeft = initialTimeInSeconds;
 
-        // Auth status elements
         const authStatusContainer = document.getElementById('auth-status-container');
-        // Use event delegation for dynamically added login/logout buttons
         authStatusContainer.addEventListener('click', (event) => {
             if (event.target.id === 'login-btn') {
                 localStorage.setItem('isLoggedIn', 'true');
-                location.reload(); // Reload to reflect login state
+                location.reload();
             } else if (event.target.id === 'logout-btn') {
                 localStorage.setItem('isLoggedIn', 'false');
-                location.reload(); // Reload to reflect logout state
+                location.reload();
             }
         });
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'; // Simulate login state
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
-        // Function to render auth status (login button or avatar)
         function renderAuthStatus() {
-            authStatusContainer.innerHTML = ''; // Clear previous content
+            authStatusContainer.innerHTML = '';
             if (isLoggedIn) {
-                // Display avatar and logout button
                 authStatusContainer.innerHTML = `
                     <div class="flex items-center space-x-2">
                         <img src="https://placehold.co/32x32/FF7F00/FFFFFF?text=AV" alt="User Avatar" class="rounded-full w-8 h-8 cursor-pointer" id="avatar-btn">
-                        <button id="logout-btn" class="hidden sm:block text-[#0d6efd] border border-[#0d6efd] rounded-xl px-2 py-1 text-[10px] sm:text-sm font-semibold hover:bg-[#0d6efd] hover:text-white transition">
+                        <button id="logout-btn" class="hidden sm:block text-guacamayafly-orange border border-guacamayafly-orange rounded-full px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-guacamayafly-orange hover:text-white transition">
                             Cerrar sesión
                         </button>
                     </div>
                 `;
             } else {
-                // Display login button
                 authStatusContainer.innerHTML = `
-                    <button id="login-btn" class="text-[#0d6efd] border border-[#0d6efd] rounded-xl px-2 py-1 text-[10px] sm:text-sm font-semibold hover:bg-[#0d6efd] hover:text-white transition">
+                    <button id="login-btn" class="text-guacamayafly-orange border border-guacamayafly-orange rounded-full px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-guacamayafly-orange hover:text-white transition">
                         Iniciar sesión
                     </button>
                 `;
@@ -1227,13 +926,11 @@
         let currentStep = 1;
         let selectedDeparture = null;
         let selectedReturn = null;
-        let currentMonthDate = new Date(); // For calendar
+        let currentMonthDate = new Date();
 
-        // --- Utility Functions ---
         function showNotification(message, type = 'success') {
             let container = document.getElementById('notification-container');
             if (!container) {
-                console.warn('Notification container not found. Creating one.');
                 const body = document.querySelector('body');
                 const newContainer = document.createElement('div');
                 newContainer.id = 'notification-container';
@@ -1251,7 +948,6 @@
             }, 3000);
         }
 
-        // --- Timer Functionality ---
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = seconds % 60;
@@ -1259,142 +955,115 @@
         }
 
         function startTimer() {
-            if (timerInterval) clearInterval(timerInterval); // Clear any existing timer
+            if (timerInterval) clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('timer-display');
+            if (!timerDisplay) return;
             timerInterval = setInterval(() => {
                 if (timeLeft > 0) {
                     timeLeft--;
-                    document.getElementById('timer-display').textContent = formatTime(timeLeft);
+                    timerDisplay.textContent = formatTime(timeLeft);
                 } else {
                     clearInterval(timerInterval);
-                    document.getElementById('timer-display').textContent = '00:00';
-                    // Optional: Add logic for when timer runs out, e.g., show a message
+                    timerDisplay.textContent = '00:00';
                     showNotification('¡Tu precio ha caducado! Por favor, actualiza la página.', 'error');
                 }
             }, 1000);
         }
-
-        // --- Form Paging Logic ---
+        
         function updateStepVisibility() {
-            // Ensure main content is visible unless a specific overlay is active
             mainContent.classList.remove('hidden');
             cryptoCheckoutSection.classList.add('hidden');
             reservationConfirmedSection.classList.add('hidden');
-            // Form sections are no longer hidden/shown, they are always present for scrolling
-            // step1.classList.remove('hidden'); // No longer needed
-            // step2.classList.remove('hidden'); // No longer needed
-            form.classList.remove('hidden'); // Ensure form is visible by default for steps
-            stickyReserveBtnContainer.classList.remove('hidden'); // Show sticky button by default
+            if (form) form.classList.remove('hidden');
+            stickyReserveBtnContainer.classList.remove('hidden');
 
             if (currentStep === 1) {
-                if (step1) step1.style.display = 'block'; // Added null check
-                if (step2) step2.style.display = 'none'; // Added null check
+                if (step1) step1.style.display = 'block';
+                if (step2) step2.style.display = 'none';
                 stickyReserveBtn.innerHTML = '<i class="fas fa-lock"></i><span>¡RESERVA YA!</span>';
                 document.getElementById('sticky-reserve-info').textContent = 'No se necesita tarjeta de crédito ni pago para reservar.';
-                progressFill.style.width = '16.5%'; // Adjusted for Step 1
+                if(progressFill) progressFill.style.width = '16.5%';
                 updateHeaderSteps(1);
             } else if (currentStep === 2) {
-                if (step1) step1.style.display = 'none'; // Added null check
-                if (step2) step2.style.display = 'block'; // Added null check
+                if (step1) step1.style.display = 'none';
+                if (step2) step2.style.display = 'block';
                 stickyReserveBtn.innerHTML = '<i class="fas fa-lock"></i><span>PAGAR AHORA</span>';
                 document.getElementById('sticky-reserve-info').textContent = 'No se necesita tarjeta de crédito ni pago para reservar.';
-                progressFill.style.width = '50%'; // Adjusted for Step 2
+                if(progressFill) progressFill.style.width = '50%';
                 updateHeaderSteps(2);
             } else if (currentStep === 3) {
-                mainContent.classList.add('hidden'); // Hide main content for confirmation screen
-                form.classList.add('hidden'); // Hide the form completely
-                cryptoCheckoutSection.classList.add('hidden'); // Ensure crypto section is hidden
+                mainContent.classList.add('hidden');
+                if (form) form.classList.add('hidden');
+                cryptoCheckoutSection.classList.add('hidden');
                 reservationConfirmedSection.classList.remove('hidden');
-                progressFill.style.width = '100%'; // Full progress
+                if(progressFill) progressFill.style.width = '100%';
                 updateHeaderSteps(3);
-                generateAndDisplayBookingInfo(); // Generate and display booking info
-                startRedirectCountdown(); // Start redirect countdown
-                stickyReserveBtnContainer.classList.add('hidden'); // Hide sticky button on confirmation
+                generateAndDisplayBookingInfo();
+                startRedirectCountdown();
+                stickyReserveBtnContainer.classList.add('hidden');
             }
         }
 
         function updateHeaderSteps(activeStep) {
             const headers = [step1Header, step2Header, step3Header];
             headers.forEach((header, index) => {
+                if (!header) return;
                 const circle = header.querySelector('div');
                 const text = header.querySelector('span');
                 const stepNum = index + 1;
 
                 if (stepNum === activeStep) {
-                    circle.classList.add('bg-[#0d6efd]', 'text-white', 'border-[#0d6efd]');
+                    circle.classList.add('bg-guacamayafly-orange', 'text-white', 'border-guacamayafly-orange');
                     circle.classList.remove('bg-white', 'text-gray-400', 'border-gray-300');
-                    text.classList.add('text-[#0d6efd]', 'font-semibold');
+                    text.classList.add('text-guacamayafly-orange', 'font-semibold');
                     text.classList.remove('text-gray-600');
                 } else {
-                    circle.classList.remove('bg-[#0d6efd]', 'text-white', 'border-[#0d6efd]');
+                    circle.classList.remove('bg-guacamayafly-orange', 'text-white', 'border-guacamayafly-orange');
                     circle.classList.add('bg-white', 'text-gray-400', 'border-gray-300');
-                    text.classList.remove('text-[#0d6efd]', 'font-semibold');
+                    text.classList.remove('text-guacamayafly-orange', 'font-semibold');
                     text.classList.add('text-gray-600');
                 }
             });
 
-            // Special handling for Step 3 checkmark
-            if (activeStep >= 3) {
-                if (step3Header.querySelector('div')) { // Added null check
-                    step3Header.querySelector('div').innerHTML = '<i class="fas fa-check"></i>';
-                    step3Header.querySelector('div').classList.add('bg-[#0d6efd]', 'text-white', 'border-[#0d6efd]');
-                    step3Header.querySelector('div').classList.remove('bg-white', 'text-gray-400', 'border-gray-300');
-                    if (step3Header.querySelector('span')) {
-                        step3Header.querySelector('span').classList.add('text-[#0d6efd]', 'font-semibold');
-                        step3Header.querySelector('span').classList.remove('text-gray-600');
-                    }
-                }
-            } else {
-                if (step3Header.querySelector('div')) { // Added null check
-                    step3Header.querySelector('div').innerHTML = '3'; // Revert to number if not confirmed
-                }
+            if (activeStep >= 3 && step3Header) {
+                const circle = step3Header.querySelector('div');
+                circle.innerHTML = '<i class="fas fa-check"></i>';
+                circle.classList.add('bg-guacamayafly-orange', 'text-white', 'border-guacamayafly-orange');
+                circle.classList.remove('bg-white', 'text-gray-400', 'border-gray-300');
+                step3Header.querySelector('span').classList.add('text-guacamayafly-orange', 'font-semibold');
+                step3Header.querySelector('span').classList.remove('text-gray-600');
+            } else if (step3Header) {
+                step3Header.querySelector('div').innerHTML = '3';
             }
         }
 
 
         function validateStep(step) {
             let isValid = true;
-            let inputsToValidate;
-
             if (step === 1) {
-                if (step1) { // Added null check for step1
-                    inputsToValidate = step1.querySelectorAll('input[required], select[required]');
-                } else {
-                    console.error("Step 1 content element not found for validation.");
-                    return false;
+                const currentStepInputs = document.querySelectorAll('#step-1-content input[required], #step-1-content select[required]');
+                currentStepInputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('border-red-500');
+                    } else {
+                        input.classList.remove('border-red-500');
+                    }
+                });
+                if (!isValid) {
+                    showNotification('Por favor, completa todos los campos obligatorios.', 'error');
                 }
-            } else if (step === 2) {
-                if (step2) { // Added null check for step2
-                    inputsToValidate = step2.querySelectorAll('input[required], select[required]');
-                } else {
-                    console.error("Step 2 content element not found for validation.");
-                    return false;
-                }
-            } else {
-                return true; // No validation needed for other steps
-            }
-            
-            inputsToValidate.forEach(input => {
-                if (!input.value.trim()) {
-                    isValid = false;
-                    input.classList.add('border-red-500'); // Highlight invalid fields
-                } else {
-                    input.classList.remove('border-red-500');
-                }
-            });
-
-            if (!isValid) {
-                showNotification('Por favor, completa todos los campos obligatorios.', 'error');
             }
             return isValid;
         }
 
-        // Handle sticky button click
         stickyReserveBtn.addEventListener('click', function() {
             if (currentStep === 1) {
                 if (validateStep(1)) {
                     currentStep = 2;
                     updateStepVisibility();
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top for new step
+                    // CAMBIO: Añadido scroll suave hacia arriba
+                    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             } else if (currentStep === 2) {
                 const selectedPaymentOption = document.querySelector('.payment-option.selected');
@@ -1406,39 +1075,31 @@
                 if (paymentType === 'crypto') {
                     openCryptoCheckout();
                 } else if (paymentType === 'whatsapp') {
-                    showNotification('Redirigiendo a WhatsApp para finalizar la reserva.', 'success');
-                    window.open('https://wa.me/5804243156057?text=Hola, quisiera proceder con mi reserva.', '_blank');
-                    // For demo purposes, simulate confirmation after a short delay
-                    setTimeout(() => {
-                        currentStep = 3;
-                        updateStepVisibility();
-                    }, 2000);
+                    showDevelopmentPopup(() => {
+                        window.open('https://wa.me/5804243156057?text=Hola, quisiera proceder con mi reserva.', '_blank');
+                        setTimeout(() => { currentStep = 3; updateStepVisibility(); }, 2000);
+                    });
                 } else if (paymentType === 'card') {
-                    showNotification('Redirigiendo a la pasarela de pago con tarjeta.', 'success');
-                    window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
-                    // For demo purposes, simulate confirmation after a short delay
-                    setTimeout(() => {
-                        currentStep = 3;
-                        updateStepVisibility();
-                    }, 2000);
+                    showDevelopmentPopup(() => {
+                        window.open('https://link.mercadopago.cl/guacamayatravels', '_blank');
+                         setTimeout(() => { currentStep = 3; updateStepVisibility(); }, 2000);
+                    });
                 }
             }
         });
 
 
-        if (prevStepBtn) { // Added null check
+        if (prevStepBtn) {
             prevStepBtn.addEventListener('click', function() {
                 if (currentStep === 2) {
                     currentStep = 1;
                     updateStepVisibility();
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top for new step
                 }
             });
         }
 
-        // --- Payment Logic ---
         const paymentOptionsContainer = document.getElementById('payment-options-container');
-        if (paymentOptionsContainer) { // Added null check
+        if (paymentOptionsContainer) {
             paymentOptionsContainer.addEventListener('click', function(event) {
                 const selectedOption = event.target.closest('.payment-option');
                 if (selectedOption) {
@@ -1446,14 +1107,16 @@
                         option.classList.remove('selected');
                     });
                     selectedOption.classList.add('selected');
-
-                    // The actual payment action is now triggered by the sticky button
-                    // based on the selected option.
                 }
             });
         }
 
-        // --- Crypto Checkout Section Logic ---
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+            });
+        }
+
         const cryptoWallets = [
             { name: 'Bitcoin (BTC)', address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/btc.svg?quality=63&format=avif&resize=width/50.4' },
             { name: 'Ethereum (ETH)', address: '0x1234567890123456789012345678901234567890', logo: 'https://www.bybit.com/bycsi-root/assets/image/coins/light/eth.svg?quality=63&format=avif&resize=width/50.4' },
@@ -1464,88 +1127,84 @@
 
         function openCryptoCheckout() {
             mainContent.classList.add('hidden');
-            const formSection = document.querySelector('section.flex-1'); // Get the form section here
-            if (formSection) formSection.classList.add('hidden'); // Hide the entire form section
+            if(form) form.classList.add('hidden');
             cryptoCheckoutSection.classList.remove('hidden');
-            stickyReserveBtnContainer.classList.add('hidden'); // Hide sticky button
+            stickyReserveBtnContainer.classList.add('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             const walletsContainer = cryptoCheckoutSection.querySelector('#crypto-wallets-list');
             const qrCodeImg = cryptoCheckoutSection.querySelector('#crypto-qr-code-img');
             
-            if (walletsContainer) {
-                walletsContainer.innerHTML = cryptoWallets.map(wallet => `
-                    <div class="bg-white p-3 rounded-lg border flex items-center gap-4">
-                        <img src="${wallet.logo}" alt="${wallet.name}" class="w-8 h-8">
-                        <div class="flex-grow">
-                            <p class="text-sm font-semibold text-gray-700">${wallet.name}</p>
-                            <p class="text-xs text-gray-500 break-all">${wallet.address}</p>
-                        </div>
-                        <button class="copy-btn p-2 rounded-md hover:bg-gray-200" data-address="${wallet.address}">
-                            <i class="far fa-copy"></i>
-                        </button>
+            walletsContainer.innerHTML = cryptoWallets.map(wallet => `
+                <div class="bg-white p-3 rounded-lg border flex items-center gap-4">
+                    <img src="${wallet.logo}" alt="${wallet.name}" class="w-8 h-8">
+                    <div class="flex-grow">
+                        <p class="text-sm font-semibold text-gray-700">${wallet.name}</p>
+                        <p class="text-xs text-gray-500 break-all">${wallet.address}</p>
                     </div>
-                `).join('');
-            }
-            if (qrCodeImg) {
-                qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${cryptoWallets[0].address}`; // Default to BTC QR
-            }
+                    <button class="copy-btn p-2 rounded-md hover:bg-gray-200" data-address="${wallet.address}">
+                        <i class="far fa-copy"></i>
+                    </button>
+                </div>
+            `).join('');
+            qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${cryptoWallets[0].address}`;
         }
 
-        closeCryptoCheckoutBtn.addEventListener('click', function() {
-            if (cryptoCheckoutSection) cryptoCheckoutSection.classList.add('hidden');
-            if (mainContent) mainContent.classList.remove('hidden');
-            const formSection = document.querySelector('section.flex-1'); // Get the form section here
-            if (formSection) formSection.classList.remove('hidden'); // Show the entire form section again
-            currentStep = 2; // Go back to payment selection
-            updateStepVisibility();
-        });
-
-        // Copy address to clipboard
-        cryptoCheckoutSection.addEventListener('click', function(e) {
-            if (e.target.closest('.copy-btn')) {
-                const address = e.target.closest('.copy-btn').dataset.address;
-                const textArea = document.createElement("textarea");
-                textArea.value = address;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showNotification('¡Dirección copiada al portapapeles!', 'success');
-                } catch (err) {
-                    console.error('No se pudo copiar la dirección: ', err);
+        if(closeCryptoCheckoutBtn) {
+            closeCryptoCheckoutBtn.addEventListener('click', function() {
+                cryptoCheckoutSection.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                currentStep = 2;
+                updateStepVisibility();
+            });
+        }
+        
+        if(cryptoCheckoutSection) {
+            cryptoCheckoutSection.addEventListener('click', function(e) {
+                const copyBtn = e.target.closest('.copy-btn');
+                if (copyBtn) {
+                    const address = copyBtn.dataset.address;
+                    const textArea = document.createElement("textarea");
+                    textArea.value = address;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showNotification('¡Dirección copiada al portapapeles!', 'success');
+                    } catch (err) {
+                        console.error('No se pudo copiar la dirección: ', err);
+                    }
+                    document.body.removeChild(textArea);
                 }
-                document.body.removeChild(textArea);
-            }
-        });
+            });
+        }
 
-        // Payment validation countdown
-        paymentReceivedBtn.addEventListener('click', function() {
-            if (paymentReceivedBtn) paymentReceivedBtn.disabled = true;
-            if (paymentValidationMessage) paymentValidationMessage.classList.remove('hidden');
-            let timeLeft = 10; // This is the validation time, not the redirect time
-            if (countdownTimerDisplay) countdownTimerDisplay.textContent = `${timeLeft} segundos`;
+        if (paymentReceivedBtn) {
+            paymentReceivedBtn.addEventListener('click', function() {
+                paymentReceivedBtn.disabled = true;
+                paymentValidationMessage.classList.remove('hidden');
+                let timeLeft = 10;
+                countdownTimerDisplay.textContent = `${timeLeft} segundos`;
 
-            const countdownInterval = setInterval(() => {
-                timeLeft--;
-                if (countdownTimerDisplay) countdownTimerDisplay.textContent = `${timeLeft} segundos`;
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    if (paymentValidationMessage) paymentValidationMessage.textContent = 'Pago validado.';
-                    showNotification('¡Pago validado con éxito!', 'success');
-                    currentStep = 3;
-                    updateStepVisibility();
-                    if (paymentReceivedBtn) paymentReceivedBtn.disabled = false;
-                }
-            }, 1000);
-        });
+                const countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    countdownTimerDisplay.textContent = `${timeLeft} segundos`;
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        paymentValidationMessage.textContent = 'Pago validado.';
+                        showNotification('¡Pago validado con éxito!', 'success');
+                        currentStep = 3;
+                        updateStepVisibility();
+                        paymentReceivedBtn.disabled = false;
+                    }
+                }, 1000);
+            });
+        }
 
-        // --- Booking Confirmation and Redirect Logic ---
         function generateBookingNumber() {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let result = '';
-            const length = 10;
-            for (let i = 0; i < length; i++) {
+            for (let i = 0; i < 10; i++) {
                 result += characters.charAt(Math.floor(Math.random() * characters.length));
             }
             return result;
@@ -1554,122 +1213,91 @@
         function generateConfirmationId() {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let result = '';
-            const length = 8;
-            for (let i = 0; i < length; i++) {
+            for (let i = 0; i < 8; i++) {
                 result += characters.charAt(Math.floor(Math.random() * characters.length));
             }
             return result;
         }
 
         function generateAndDisplayBookingInfo() {
-            if (bookingNumberElement) {
-                bookingNumberElement.textContent = generateBookingNumber();
-            }
-            if (confirmationIdElement) {
-                confirmationIdElement.textContent = generateConfirmationId();
-            }
+            if (bookingNumberElement) bookingNumberElement.textContent = generateBookingNumber();
+            if (confirmationIdElement) confirmationIdElement.textContent = generateConfirmationId();
         }
 
         function startRedirectCountdown() {
             let secondsToRedirect = 6;
-            if (redirectCountdownElement) redirectCountdownElement.textContent = secondsToRedirect;
+            redirectCountdownElement.textContent = secondsToRedirect;
 
             const redirectInterval = setInterval(() => {
                 secondsToRedirect--;
-                if (redirectCountdownElement) redirectCountdownElement.textContent = secondsToRedirect;
+                redirectCountdownElement.textContent = secondsToRedirect;
                 if (secondsToRedirect <= 0) {
                     clearInterval(redirectInterval);
-                    window.location.href = 'index.html'; // Redirect to index.html
+                    window.location.href = 'index.html';
                 }
             }, 1000);
         }
 
-        // --- Calendar Integration Logic ---
         if (dateDisplayBlock) {
             dateDisplayBlock.addEventListener('click', () => {
-                if (calendarModal) {
-                    calendarModal.classList.remove('hidden');
-                    calendarModal.classList.add('visible');
-                }
+                calendarModal.classList.remove('hidden');
+                calendarModal.classList.add('visible');
                 renderCalendar();
             });
         }
-        if (closeCalendarBtn) {
-            closeCalendarBtn.addEventListener('click', () => {
-                if (calendarModal) {
-                    calendarModal.classList.remove('visible');
-                    calendarModal.classList.add('hidden');
-                }
-                updateDateDisplayInSummary();
-            });
-        }
-        if (closeCalendarModalX) {
-            closeCalendarModalX.addEventListener('click', () => {
-                if (calendarModal) {
-                    calendarModal.classList.remove('visible');
-                    calendarModal.classList.add('hidden');
-                }
-            });
-        }
-        if (clearDatesBtn) {
-            clearDatesBtn.addEventListener('click', () => {
-                selectedDeparture = null;
-                selectedReturn = null;
-                renderCalendar();
-                updateCalendarSelection(); // Update calendar display
-                updateDateDisplayInSummary(); // Update summary display
-            });
-        }
-        if (prevMonthBtn) {
-            prevMonthBtn.addEventListener('click', () => {
-                currentMonthDate.setMonth(currentMonthDate.getMonth() - 1);
-                renderCalendar();
-            });
-        }
-        if (nextMonthBtn) {
-            nextMonthBtn.addEventListener('click', () => {
-                currentMonthDate.setMonth(currentMonthDate.getMonth() + 1);
-                renderCalendar();
-            });
-        }
-        if (tonightBtn) {
-            tonightBtn.addEventListener('click', () => {
-                const today = new Date();
-                const tomorrow = new Date();
-                tomorrow.setDate(today.getDate() + 1);
-                selectedDeparture = today;
-                selectedReturn = tomorrow;
-                updateCalendarSelection();
-                if (calendarModal) {
-                    calendarModal.classList.remove('visible');
-                    calendarModal.classList.add('hidden');
-                }
-                updateDateDisplayInSummary();
-            });
-        }
-        if (nextWeekendBtn) {
-            nextWeekendBtn.addEventListener('click', () => {
-                const today = new Date();
-                const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-                const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
-                const nextFriday = new Date(today);
-                nextFriday.setDate(today.getDate() + daysUntilFriday);
-                const nextSunday = new Date(nextFriday);
-                nextSunday.setDate(nextFriday.getDate() + 2);
-                selectedDeparture = nextFriday;
-                selectedReturn = nextSunday;
-                updateCalendarSelection();
-                if (calendarModal) {
-                    calendarModal.classList.remove('visible');
-                    calendarModal.classList.add('hidden');
-                }
-                updateDateDisplayInSummary();
-            });
-        }
+        if (closeCalendarBtn) closeCalendarBtn.addEventListener('click', () => {
+            calendarModal.classList.remove('visible');
+            calendarModal.classList.add('hidden');
+            updateDateDisplayInSummary();
+        });
+        if (closeCalendarModalX) closeCalendarModalX.addEventListener('click', () => {
+            calendarModal.classList.remove('visible');
+            calendarModal.classList.add('hidden');
+        });
+        if (clearDatesBtn) clearDatesBtn.addEventListener('click', () => {
+            selectedDeparture = null;
+            selectedReturn = null;
+            renderCalendar();
+            updateCalendarSelection();
+            updateDateDisplayInSummary();
+        });
+        if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => {
+            currentMonthDate.setMonth(currentMonthDate.getMonth() - 1);
+            renderCalendar();
+        });
+        if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => {
+            currentMonthDate.setMonth(currentMonthDate.getMonth() + 1);
+            renderCalendar();
+        });
+        if (tonightBtn) tonightBtn.addEventListener('click', () => {
+            const today = new Date();
+            const tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1);
+            selectedDeparture = today;
+            selectedReturn = tomorrow;
+            updateCalendarSelection();
+            calendarModal.classList.remove('visible');
+            calendarModal.classList.add('hidden');
+            updateDateDisplayInSummary();
+        });
+        if (nextWeekendBtn) nextWeekendBtn.addEventListener('click', () => {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+            const nextFriday = new Date(today);
+            nextFriday.setDate(today.getDate() + daysUntilFriday);
+            const nextSunday = new Date(nextFriday);
+            nextSunday.setDate(nextFriday.getDate() + 2);
+            selectedDeparture = nextFriday;
+            selectedReturn = nextSunday;
+            updateCalendarSelection();
+            calendarModal.classList.remove('visible');
+            calendarModal.classList.add('hidden');
+            updateDateDisplayInSummary();
+        });
 
         function renderCalendar() {
-            if (!calendarMonthsContainer || !calendarMonthYear) return;
-
+            if (!calendarMonthsContainer) return;
             calendarMonthsContainer.innerHTML = '';
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -1680,7 +1308,7 @@
 
             for (let i = 0; i < monthsToShow; i++) {
                 const monthDate = new Date(currentMonthDate.getFullYear(), currentMonthDate.getMonth() + i, 1);
-                if (monthsToShow > 1) { // Only show month/year title if showing multiple months
+                if (monthsToShow > 1) {
                     const monthTitle = document.createElement('h4');
                     monthTitle.className = 'font-semibold text-center mb-2';
                     monthTitle.textContent = monthDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
@@ -1692,8 +1320,7 @@
                 ['D', 'L', 'M', 'X', 'J', 'V', 'S'].forEach(day => gridEl.innerHTML += `<div class="calendar-day weekday">${day}</div>`);
 
                 let firstDayOfMonth = monthDate.getDay();
-                // Adjust firstDayOfMonth for Monday start (if Sunday is 0, Monday is 1, etc.)
-                firstDayOfMonth = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1; // Convert Sunday (0) to 6 (Saturday), Monday (1) to 0 etc.
+                firstDayOfMonth = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
                 
                 for (let j = 0; j < firstDayOfMonth; j++) gridEl.appendChild(document.createElement('div'));
 
@@ -1734,8 +1361,8 @@
 
         function updateCalendarSelection() {
             const formatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
-            calendarCheckinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
-            calendarCheckoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
+            if(calendarCheckinDisplay) calendarCheckinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
+            if(calendarCheckoutDisplay) calendarCheckoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
 
             document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
                 day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
@@ -1748,40 +1375,49 @@
 
         function updateDateDisplayInSummary() {
             const formatOptionsDate = { weekday: 'short', day: 'numeric', month: 'long' };
-            const formatOptionsTime = { hour: '2-digit', minute: '2-digit' };
-
+            
             if (selectedDeparture) {
-                displayCheckinDate.textContent = selectedDeparture.toLocaleDateString('es-ES', formatOptionsDate);
-                // Assuming fixed times for now, or you can add time pickers
+                if(displayCheckinDate) displayCheckinDate.textContent = selectedDeparture.toLocaleDateString('es-ES', formatOptionsDate);
                 document.getElementById('display-checkin-time').textContent = '14:00';
             } else {
-                displayCheckinDate.textContent = 'Vie, 11 de julio'; // Default
-                document.getElementById('display-checkin-time').textContent = '14:00'; // Default
+                if(displayCheckinDate) displayCheckinDate.textContent = 'Vie, 11 de julio';
+                document.getElementById('display-checkin-time').textContent = '14:00';
             }
 
             if (selectedReturn) {
-                displayCheckoutDate.textContent = selectedReturn.toLocaleDateString('es-ES', formatOptionsDate);
+                if(displayCheckoutDate) displayCheckoutDate.textContent = selectedReturn.toLocaleDateString('es-ES', formatOptionsDate);
                 document.getElementById('display-checkout-time').textContent = '13:00';
             } else {
-                displayCheckoutDate.textContent = 'Sábado 19 de julio'; // Default
-                document.getElementById('display-checkout-time').textContent = '13:00'; // Default
+                if(displayCheckoutDate) displayCheckoutDate.textContent = 'Sábado 19 de julio';
+                document.getElementById('display-checkout-time').textContent = '13:00';
             }
 
             if (selectedDeparture && selectedReturn) {
                 const diffTime = Math.abs(selectedReturn - selectedDeparture);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                displayNights.textContent = diffDays;
+                if(displayNights) displayNights.textContent = diffDays;
             } else {
-                displayNights.textContent = '8'; // Default
+                if(displayNights) displayNights.textContent = '8';
             }
         }
+        
+        const specialRequestsFieldset = document.querySelector('fieldset[aria-label="Solicitudes especiales"]');
+        if (specialRequestsFieldset) {
+            specialRequestsFieldset.addEventListener('change', function(event) {
+                if (event.target.name === 'fumadores') {
+                    const camaGrandeRadio = document.getElementById('cama-grande');
+                    if (camaGrandeRadio) {
+                        camaGrandeRadio.checked = true;
+                    }
+                }
+            });
+        }
 
-        // Initialize display and step
+
         updateStepVisibility();
         updateDateDisplayInSummary();
-        startTimer(); // Start the timer when the page loads
-        renderAuthStatus(); // Render auth status on load
+        startTimer();
+        renderAuthStatus();
     });
 </script>
-</body>
 </html>
