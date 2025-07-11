@@ -245,10 +245,27 @@
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
     }
     #sticky-reserve-btn:hover {
         background-color: #E67300;
     }
+    
+    #sticky-reserve-btn::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.4) 50%, transparent 75%);
+        transition: left 0.8s ease-in-out;
+    }
+    #sticky-reserve-btn:hover::after {
+        left: 100%;
+    }
+
 
     #sticky-reserve-info {
         font-size: 0.75rem;
@@ -256,8 +273,8 @@
         text-align: center;
     }
 
-    body.has-sticky-footer #main-content {
-        padding-bottom: 8rem;
+    body.has-sticky-footer {
+        padding-bottom: 8rem; 
     }
 
     #date-display-block {
@@ -291,9 +308,17 @@
             grid-template-columns: 1fr auto 1fr auto;
         }
     }
+    
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+    .heartbeat-animation {
+        animation: heartbeat 1.5s infinite ease-in-out;
+    }
   </style>
 </head>
-<body class="bg-[#f7f8fa] text-[#222222] has-sticky-footer">
+<body class="bg-[#f7f8fa] text-[#222222]">
   <div id="development-popup-overlay" class="modal-overlay hidden">
       <div class="modal-container">
           <div class="text-yellow-500 mb-4">
@@ -313,12 +338,8 @@
     <div
       class="max-w-[1200px] mx-auto px-3 py-3 sm:px-6 flex items-center justify-between relative"
     >
-      <!-- CAMBIO: Estructura de Header modificada para mobile y desktop -->
       <div class="flex items-center gap-4">
-        <button class="hidden lg:block text-gray-700">
-            <i class="fas fa-bars fa-lg"></i>
-        </button>
-        <a href="productdetails.html" class="lg:hidden text-guacamayafly-orange"><i class="fas fa-arrow-left fa-lg"></i></a>
+        <a href="productdetails.html" class="text-guacamayafly-orange"><i class="fas fa-arrow-left fa-lg"></i></a>
         <div class="flex items-center space-x-2">
             <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
             <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
@@ -349,7 +370,7 @@
         <div id="auth-status-container">
             <!-- Auth Button/Avatar will be injected here by JS -->
         </div>
-        <button class="lg:hidden text-gray-700">
+        <button class="text-gray-700">
             <i class="fas fa-bars fa-lg"></i>
         </button>
       </div>
@@ -357,7 +378,8 @@
   </header>
 
   <div
-    class="bg-[#fff0eb] border border-[#fcd9cc] text-[#b33a3a] text-sm font-semibold flex items-center justify-center space-x-2 py-1"
+    id="timer-bar"
+    class="bg-[#fff0eb] border border-[#fcd9cc] text-[#b33a3a] text-sm font-semibold flex items-center justify-center space-x-2 py-2 heartbeat-animation"
   >
     <i class="far fa-clock"></i>
     <span>Estamos manteniendo tu precio...</span>
@@ -366,7 +388,7 @@
 
   <main
     id="main-content"
-    class="max-w-[1200px] mx-auto px-6 py-8 flex flex-col lg:flex-row gap-6 min-h-[calc(100vh-140px)]"
+    class="max-w-[1200px] mx-auto px-6 py-8 flex flex-col lg:flex-row gap-6"
   >
     <aside class="w-full lg:w-[360px] flex flex-col order-first lg:order-last">
       <div
@@ -492,7 +514,6 @@
         </div>
       </div>
       
-      <!-- CAMBIO: Secciones de información restauradas -->
       <div id="restored-info-boxes" class="space-y-6">
           <div class="bg-[#d9f0d9] rounded-xl p-4 text-sm text-[#0b5e07] flex items-center gap-2 font-semibold">
             <i class="fas fa-thumbs-up text-base"></i>
@@ -643,7 +664,7 @@
                   </div>
                 </div>
 
-                <div class="bg-white rounded-xl border border-gray-200 p-6 my-6">
+                <div id="terms-section" class="bg-white rounded-xl border border-gray-200 p-6 my-6">
                   <p class="text-sm text-gray-600 mb-3">
                       Al continuar con esta reserva, acepto los términos y condiciones de Guacamayafly. 
                       <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">Condiciones de uso</a> y
@@ -656,6 +677,8 @@
       </div>
     </section>
   </main>
+  <div id="footer-sentinel"></div>
+
 
 <section id="crypto-checkout-section" class="hidden max-w-4xl mx-auto py-12 px-6">
     <div class="flex justify-between items-center mb-6">
@@ -738,7 +761,7 @@
     </div>
 </div>
 
-<footer class="bg-gray-100 mt-12 py-10 text-xs text-blue-900">
+<footer id="page-footer" class="bg-gray-100 mt-12 py-10 text-xs text-blue-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-4 gap-y-6 gap-x-8">
             <div>
@@ -1488,6 +1511,22 @@
                     summaryBedType.textContent = event.target.nextElementSibling.textContent.trim();
                 }
             });
+        }
+        
+        // Sticky button logic
+        const footerSentinel = document.getElementById('footer-sentinel');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    stickyReserveBtnContainer.style.position = 'absolute';
+                } else {
+                    stickyReserveBtnContainer.style.position = 'fixed';
+                }
+            });
+        }, { threshold: [0.1] });
+
+        if (footerSentinel) {
+            observer.observe(footerSentinel);
         }
 
 
