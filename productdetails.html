@@ -1676,9 +1676,8 @@
             });
         }
 
-        // --- Lógica de redirección a Checkout ---
+        // --- Lógica de redirección a Checkout (MEJORADA) ---
         function redirectToCheckout(event) {
-            // Prevenir la acción por defecto si es un enlace
             if (event) {
                 event.preventDefault();
             }
@@ -1686,35 +1685,47 @@
             // Validar que las fechas han sido seleccionadas
             if (!selectedDeparture || !selectedReturn) {
                 showNotification('Por favor, selecciona las fechas de llegada y salida.', 'error');
-                // Abrir el calendario para que el usuario seleccione las fechas
-                if(checkinCheckoutTrigger) {
-                    checkinCheckoutTrigger.click();
+                
+                const bookingSection = document.getElementById('booking-section');
+                if (bookingSection) {
+                    // Scroll a la sección de reserva para dar contexto al usuario
+                    bookingSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Opcional: añadir un efecto de resaltado temporal
+                    bookingSection.style.transition = 'background-color 0.3s';
+                    bookingSection.style.backgroundColor = '#fffbeb'; // Un amarillo claro
+                    setTimeout(() => {
+                        bookingSection.style.backgroundColor = ''; // Volver al color original
+                    }, 2000);
                 }
+
+                // Abrir el calendario después de un breve retraso para que el scroll se complete
+                setTimeout(() => {
+                    if(checkinCheckoutTrigger) {
+                        checkinCheckoutTrigger.click();
+                    }
+                }, 600); // 600ms de retraso
+
                 return;
             }
 
-            // Validar que hay un hotel seleccionado
             if (!currentDisplayedHotel) {
                 showNotification('Error: No se ha seleccionado ningún hotel.', 'error');
                 return;
             }
 
-            // Mostrar el pop-up de desarrollo antes de redirigir
             showDevelopmentPopup(() => {
-                // Guardar los datos de la reserva del hotel en sessionStorage
                 sessionStorage.setItem('hotelBookingDetails', JSON.stringify({
                     hotelId: currentDisplayedHotel.id,
                     hotelName: currentDisplayedHotel.name,
-                    hotelImage: currentDisplayedHotel.img, // Añadir la imagen del hotel
+                    hotelImage: currentDisplayedHotel.img,
                     price: currentDisplayedHotel.price,
                     checkin: selectedDeparture.toISOString().split('T')[0],
                     checkout: selectedReturn.toISOString().split('T')[0],
                     adults: hotelAdultsCount,
                     children: hotelChildrenCount
                 }));
-
-                // Redirigir a la página de checkout
-                window.location.href = `pagocheckout.html`; // Ya no pasamos los parámetros por URL
+                window.location.href = `pagocheckout.html`;
             });
         }
 
@@ -1732,20 +1743,17 @@
         }
         
         if (stickyFooterOfferBtn) {
-            // Cambiar el comportamiento para que redirija en lugar de solo hacer scroll
-            stickyFooterOfferBtn.href = '#'; // Prevenir navegación
+            stickyFooterOfferBtn.href = '#';
             stickyFooterOfferBtn.addEventListener('click', redirectToCheckout);
         }
 
         // --- Initial setup ---
-        // Intentar cargar datos del hotel desde sessionStorage
         const storedHotelData = sessionStorage.getItem('selectedHotelData');
         if (storedHotelData) {
             const hotel = JSON.parse(storedHotelData);
             updateMainHotelContent(hotel);
-            sessionStorage.removeItem('selectedHotelData'); // Limpiar después de usar
+            sessionStorage.removeItem('selectedHotelData');
         } else if (hotelsDB.length > 0) {
-            // Si no hay datos en sessionStorage, cargar el hotel por defecto (ID 11 o el primero)
             const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0];
             updateMainHotelContent(initialHotel);
         }
