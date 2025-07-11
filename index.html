@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -449,7 +450,7 @@
     <header class="flex items-center justify-between px-6 py-4 max-w-[1200px] mx-auto">
         <div class="flex items-center space-x-2">
             <img alt="Logo UACAMAYAFLY" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
-            <span class="font-extrabold text-lg select-none text-guacamayafly-orange">UACAMAYAFLY</span>
+            <span class="font-extrabold text-lg select-none text-guacamayafly-orange">UACAMAYA</span>
         </div>
         <nav class="hidden sm:flex space-x-6 text-sm font-normal text-black">
             <a class="hover:underline" href="https://wa.me/5804243156057">Descubrir</a>
@@ -662,7 +663,7 @@
                <button class="mt-6 bg-blue-700 text-white text-sm font-semibold px-4 py-1.5 rounded shadow hover:bg-blue-800 transition" type="button" onclick="window.location.href='https://wa.me/5804243156057'">Ver paquetes</button>
             </section>
 
-            <section class="max-w-[1200px] mx-auto my-12 text-center">
+            <section class="my-12 text-center">
                 <h2 class="text-lg sm:text-xl md:text-2xl font-semibold leading-tight mb-1">
                     Echa un vistazo a estos alojamientos muy especiales
                 </h2>
@@ -685,7 +686,7 @@
             </section>
 
             <section class="my-12 text-center">
-                <h3 class="text-sm font-semibold text-gray-900 mb-1">Ofertas de hoteles</h3>
+                <h3 class="text-sm font-semibold text-gray-900 mb-0.5">Ofertas de hoteles</h3>
                  <p class="text-xs text-gray-500 mb-3">Precios por noche, impuestos y tasas incluidos.</p>
                 <div class="carousel-container max-w-[1200px] mx-auto">
                     <div id="hotel-deals-carousel" class="flex space-x-4 scrollbar-hide pb-2 carousel-content-wrapper">
@@ -870,6 +871,11 @@
         const carousel = document.getElementById(carouselId);
         if (!carousel || carousel.children.length < 2) return;
 
+        // Clear any existing interval for this carousel
+        if (carousel._autoplayInterval) {
+            clearInterval(carousel._autoplayInterval);
+        }
+
         const playStep = () => {
             // Check if the carousel is currently hovered over
             if (carousel.matches(':hover')) return;
@@ -886,13 +892,13 @@
             }
         };
 
-        let intervalId = setInterval(playStep, interval);
+        carousel._autoplayInterval = setInterval(playStep, interval);
 
         // Pause on hover, resume on mouse leave
-        carousel.addEventListener('mouseenter', () => clearInterval(intervalId));
+        carousel.addEventListener('mouseenter', () => clearInterval(carousel._autoplayInterval));
         carousel.addEventListener('mouseleave', () => {
-            clearInterval(intervalId); // Clear any old interval just in case
-            intervalId = setInterval(playStep, interval);
+            clearInterval(carousel._autoplayInterval); // Clear any old interval just in case
+            carousel._autoplayInterval = setInterval(playStep, interval);
         });
     }
     
@@ -1391,21 +1397,6 @@
             updateCalendarSelection();
         }
 
-        function updateCalendarSelection() {
-            const formatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
-            calendarCheckinDisplay.textContent = selectedDeparture ? selectedDeparture.toLocaleDateString('es-ES', formatOptions) : '--';
-            calendarCheckoutDisplay.textContent = selectedReturn ? selectedReturn.toLocaleDateString('es-ES', formatOptions) : '--';
-            calendarGuestsDisplay.innerHTML = `<i class="fas fa-user-friends mr-1"></i> ${adultsCount + childrenCount}`;
-            
-            document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
-                day.classList.remove('selected', 'in-range', 'range-start', 'range-end');
-                const dayDate = new Date(day.dataset.date + 'T00:00:00');
-                if (selectedDeparture && day.dataset.date === selectedDeparture.toISOString().split('T')[0]) day.classList.add('selected', 'range-start');
-                if (selectedReturn && day.dataset.date === selectedReturn.toISOString().split('T')[0]) day.classList.add('selected', 'range-end');
-                if (selectedDeparture && selectedReturn && dayDate > selectedDeparture && dayDate < selectedReturn) day.classList.add('in-range');
-            });
-        }
-
         function updateDateDisplay() {
             if (selectedDeparture && selectedReturn) {
                 const depStr = selectedDeparture.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
@@ -1577,31 +1568,162 @@
             }
 
             if (accommodationCarousel) {
-                accommodationCarousel.innerHTML = baseAccommodations.map(item => `<a href="productdetails.html" class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card"> <img src="${item.img}" alt="${item.name}" class="w-full h-40 object-cover rounded-lg" width="160" height="160"/> <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p> </a>`).join('');
+                accommodationCarousel.innerHTML = baseAccommodations.map(item => `
+                    <a href="productdetails.html" class="flex-shrink-0 w-40 sm:w-48 md:w-56 rounded-lg overflow-hidden cursor-pointer interactive-card"
+                       data-property-id="${item.name.replace(/\s/g, '-')}"
+                       data-property-name="${item.name}"
+                       data-property-image="${item.img}"
+                       data-property-price="150"> <!-- Precio de ejemplo para este tipo de alojamiento -->
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-40 object-cover rounded-lg" width="160" height="160"/>
+                        <p class="text-xs font-semibold text-white bg-gray-900 bg-opacity-80 px-2 py-1 rounded-bl-lg rounded-br-lg -mt-8 ml-1 w-max">${item.name}</p>
+                    </a>`).join('');
                 setupCarouselHopAnimation('accommodation-carousel');
             }
             if (popularAccommodationsCarousel) {
-                popularAccommodationsCarousel.innerHTML = basePopularAccommodations.map(item => `<a href="productdetails.html" class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card"> <img src="${item.img}" alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" width="192" height="120"/> <div class="p-2 text-left"> <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4> <p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p> <p class="text-[9px] text-gray-600 font-semibold">${item.price}</p> <p class="text-[8px] text-gray-400">precio medio por noche</p> </div> </a>`).join('');
+                popularAccommodationsCarousel.innerHTML = basePopularAccommodations.map(item => `
+                    <a href="productdetails.html" class="flex-shrink-0 w-56 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card"
+                       data-property-id="${item.name.replace(/\s/g, '-')}"
+                       data-property-name="${item.name}"
+                       data-property-image="${item.img}"
+                       data-property-price="${parseFloat(item.price)}">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-32 object-cover rounded-t-lg" width="192" height="120"/>
+                        <div class="p-2 text-left">
+                            <h4 class="text-xs font-semibold text-gray-900 mb-0.5">${item.name}</h4>
+                            <p class="text-[9px] text-gray-600 mb-0.5">${item.location}</p>
+                            <p class="text-[9px] text-gray-600 font-semibold">${item.price}</p>
+                            <p class="text-[8px] text-gray-400">precio medio por noche</p>
+                        </div>
+                    </a>`).join('');
                 setupCarouselHopAnimation('popular-accommodations-carousel');
             }
             if (offersCarousel) {
-                offersCarousel.innerHTML = baseOffers.map(o => `<a href="productdetails.html" class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 interactive-card flex flex-col cursor-pointer"> <div class="relative rounded-lg overflow-hidden mb-2"> <img src="${o.img}" alt="${o.name}" class="w-full h-32 object-cover rounded-lg"/> ${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''} </div> <div class="flex-grow"> <p class="text-[9px] font-semibold mb-0.5">${o.location}</p> <h4 class="text-xs font-semibold leading-tight mb-1">${o.name}</h4> <div class="flex items-center space-x-1 mb-1"> <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${o.rating}</span> <span class="text-[9px] font-normal">${o.reviewText}</span> <span class="text-[9px] font-normal opacity-50">(${o.reviews} comentarios)</span> </div> <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${o.priceOld}</div> <div class="text-xs font-bold mb-0.5">${o.priceNew}</div> <div class="text-[9px] font-normal opacity-80 mb-1">${o.perNight}</div> <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div> <div class="member-price-tag mt-2">Precio para miembros disponible</div> </div> </a>`).join('');
+                offersCarousel.innerHTML = baseOffers.map(o => `
+                    <a href="productdetails.html" class="flex-shrink-0 w-64 bg-white text-gray-900 rounded-lg p-3 interactive-card flex flex-col cursor-pointer"
+                       data-property-id="${o.name.replace(/\s/g, '-')}"
+                       data-property-name="${o.name}"
+                       data-property-image="${o.img}"
+                       data-property-price="${parseFloat(o.priceNew)}">
+                        <div class="relative rounded-lg overflow-hidden mb-2">
+                            <img src="${o.img}" alt="${o.name}" class="w-full h-32 object-cover rounded-lg"/>
+                            ${o.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
+                        </div>
+                        <div class="flex-grow">
+                            <p class="text-[9px] font-semibold mb-0.5">${o.location}</p>
+                            <h4 class="text-xs font-semibold leading-tight mb-1">${o.name}</h4>
+                            <div class="flex items-center space-x-1 mb-1">
+                                <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${o.rating}</span>
+                                <span class="text-[9px] font-normal">${o.reviewText}</span>
+                                <span class="text-[9px] font-normal opacity-50">(${o.reviews} comentarios)</span>
+                            </div>
+                            <div class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${o.priceOld}</div>
+                            <div class="text-xs font-bold mb-0.5">${o.priceNew}</div>
+                            <div class="text-[9px] font-normal opacity-80 mb-1">${o.perNight}</div>
+                            <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${o.discount}</div>
+                            <div class="member-price-tag mt-2">Precio para miembros disponible</div>
+                        </div>
+                    </a>`).join('');
                 setupCarouselHopAnimation('offers-carousel');
             }
             if (vacationPackagesCarousel) {
-                vacationPackagesCarousel.innerHTML = basePackages.map(p => `<a href="productdetails.html" class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card flex flex-col cursor-pointer"> <img src="${p.img}" alt="${p.name}" class="w-full h-44 object-cover" height="200" width="400"/> <div class="p-3 text-xs sm:text-sm text-left flex-grow flex flex-col"> <div class="flex-grow"> <h2 class="font-semibold mb-1 leading-tight">${p.name}</h2> <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">${'<i class="fas fa-star text-yellow-400"></i>'.repeat(parseInt(p.stars))}<span> ${p.stars} estrellas · ${p.rating}</span></div> <div class="text-gray-600 text-[9px] sm:text-xs mb-2"><i class="fas fa-plane-departure"></i> ${p.flight}</div> <div class="bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded mb-1 inline-block"><i class="fas fa-tag mr-1"></i>Ahorra ${p.save}</div> <div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div> <div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div> </div> </div> </a>`).join('');
+                vacationPackagesCarousel.innerHTML = basePackages.map(p => `
+                    <a href="productdetails.html" class="flex-shrink-0 w-64 border border-gray-200 rounded-lg overflow-hidden shadow-sm interactive-card flex flex-col cursor-pointer"
+                       data-property-id="${p.name.replace(/\s/g, '-')}"
+                       data-property-name="${p.name}"
+                       data-property-image="${p.img}"
+                       data-property-price="${parseFloat(p.priceNew)}">
+                        <img src="${p.img}" alt="${p.name}" class="w-full h-44 object-cover" height="200" width="400"/>
+                        <div class="p-3 text-xs sm:text-sm text-left flex-grow flex flex-col">
+                            <div class="flex-grow">
+                                <h2 class="font-semibold mb-1 leading-tight">${p.name}</h2>
+                                <div class="flex items-center text-gray-600 text-[9px] sm:text-xs mb-1 space-x-1">${'<i class="fas fa-star text-yellow-400"></i>'.repeat(parseInt(p.stars))}<span> ${p.stars} estrellas · ${p.rating}</span></div>
+                                <div class="text-gray-600 text-[9px] sm:text-xs mb-2"><i class="fas fa-plane-departure"></i> ${p.flight}</div>
+                                <div class="bg-yellow-300 text-yellow-900 text-[10px] sm:text-xs font-semibold px-2 py-1 rounded mb-1 inline-block"><i class="fas fa-tag mr-1"></i>Ahorra ${p.save}</div>
+                                <div class="flex items-center space-x-1 font-semibold text-base sm:text-lg"><span>${p.priceNew}</span><span class="text-gray-500 line-through text-sm sm:text-base">€ ${p.priceOld}</span></div>
+                                <div class="text-gray-600 text-[9px] sm:text-xs mt-1">${p.dates}<br/>Actualizado ${p.updated}</div>
+                            </div>
+                        </div>
+                    </a>`).join('');
                 setupCarouselHopAnimation('vacation-packages-carousel');
             }
             if (specialAccommodationsCarousel) {
-                specialAccommodationsCarousel.innerHTML = baseSpecialAccommodations.map(s => `<a href="productdetails.html" class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card"> <img src="${s.img}" alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1"/> ${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''} <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div> <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">${s.reviewText}</p> <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(${s.reviews} comentarios)</p> <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">${s.name}</p> <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">${s.location}</p> <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1"> <span>${s.price}</span> ${s.priceOld ? `<span class="text-gray-500 line-through text-sm sm:text-base">${s.priceOld}</span>` : ''} </p> ${s.perNight ? `<p class="text-[8px] sm:text-[9px] text-gray-500">${s.perNight}</p>` : ''} ${s.discount ? `<p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">${s.discount}</p>` : ''} </a>`).join('');
+                specialAccommodationsCarousel.innerHTML = baseSpecialAccommodations.map(s => `
+                    <a href="productdetails.html" class="w-[180px] sm:w-[200px] md:w-[220px] flex-shrink-0 text-left relative interactive-card"
+                       data-property-id="${s.name.replace(/\s/g, '-')}"
+                       data-property-name="${s.name}"
+                       data-property-image="${s.img}"
+                       data-property-price="${parseFloat(s.price)}">
+                        <img src="${s.img}" alt="${s.name}" class="rounded-lg w-full h-32 object-cover mb-1"/>
+                        ${s.vip ? `<div class="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-[8px] sm:text-[9px] font-semibold rounded px-1.5 py-0.5 select-none">VIP Access</div>` : ''}
+                        <div class="flex items-center space-x-1 text-[9px] sm:text-xs font-semibold text-white bg-green-700 rounded px-1.5 py-0.5 mb-0.5 w-max">${s.rating}</div>
+                        <p class="text-[9px] sm:text-xs text-gray-700 font-semibold mb-0.5">${s.reviewText}</p>
+                        <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">(${s.reviews} comentarios)</p>
+                        <p class="text-[9px] sm:text-xs font-semibold text-gray-700 mb-0.5">${s.name}</p>
+                        <p class="text-[8px] sm:text-[9px] text-gray-500 mb-1">${s.location}</p>
+                        <p class="text-sm sm:text-base font-semibold mb-0.5 flex items-center space-x-1">
+                            <span>${s.price}</span>
+                            ${s.priceOld ? `<span class="text-gray-500 line-through text-sm sm:text-base">${s.priceOld}</span>` : ''}
+                        </p>
+                        ${s.perNight ? `<p class="text-[8px] sm:text-[9px] text-gray-500">${s.perNight}</p>` : ''}
+                        ${s.discount ? `<p class="text-[8px] sm:text-[9px] text-white bg-green-700 rounded px-1.5 py-0.5 w-max font-semibold">${s.discount}</p>` : ''}
+                    </a>`).join('');
                 setupCarouselHopAnimation('special-accommodations-carousel');
             }
             if (experiencesCarousel) {
-                experiencesCarousel.innerHTML = baseExperiences.map(item => `<a href="productdetails.html" class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col"> <div class="relative"> <img src="${item.img}" alt="${item.name}" class="w-full h-36 object-cover" height="128" width="192"> <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button> </div> <div class="p-2 text-xs leading-tight flex-grow flex flex-col"> <div class="flex-grow"> ${item.tag ? `<div class="inline-block bg-gray-200 text-gray-700 text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase mb-1">${item.tag}</div>` : ''} <p class="font-semibold text-gray-900 truncate">${item.name}</p> <div class="flex items-center space-x-1 mt-1"> <span class="text-green-600 font-semibold text-xs">${item.rating}</span> <div class="flex space-x-0.5"><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-gray-300 text-[6px]"></i></div> <span class="text-gray-500">(${item.reviews})</span> </div> <p class="text-gray-400 text-[9px] mt-0.5">a partir de ${item.price} por adulto</p> </div> <div class="w-full mt-2 bg-guacamayafly-green text-white font-semibold py-1.5 rounded-full hover:bg-guacamayafly-dark-green transition text-xs">Reservar</div> </div> </a>`).join('');
+                experiencesCarousel.innerHTML = baseExperiences.map(item => `
+                    <a href="productdetails.html" class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col"
+                       data-property-id="${item.name.replace(/\s/g, '-')}"
+                       data-property-name="${item.name}"
+                       data-property-image="${item.img}"
+                       data-property-price="${parseFloat(item.price)}">
+                        <div class="relative">
+                            <img src="${item.img}" alt="${item.name}" class="w-full h-36 object-cover" height="128" width="192">
+                            <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button>
+                        </div>
+                        <div class="p-2 text-xs leading-tight flex-grow flex flex-col">
+                            <div class="flex-grow">
+                                ${item.tag ? `<div class="inline-block bg-gray-200 text-gray-700 text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase mb-1">${item.tag}</div>` : ''}
+                                <p class="font-semibold text-gray-900 truncate">${item.name}</p>
+                                <div class="flex items-center space-x-1 mt-1">
+                                    <span class="text-green-600 font-semibold text-xs">${item.rating}</span>
+                                    <div class="flex space-x-0.5"><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-green-600 text-[6px]"></i><i class="fas fa-circle text-gray-300 text-[6px]"></i></div>
+                                    <span class="text-gray-500">(${item.reviews})</span>
+                                </div>
+                                <p class="text-gray-400 text-[9px] mt-0.5">a partir de ${item.price} por adulto</p>
+                            </div>
+                            <div class="w-full mt-2 bg-guacamayafly-green text-white font-semibold py-1.5 rounded-full hover:bg-guacamayafly-dark-green transition text-xs">Reservar</div>
+                        </div>
+                    </a>`).join('');
                 setupCarouselHopAnimation('experiences-carousel');
             }
             if (hotelDealsCarousel) {
-                hotelDealsCarousel.innerHTML = baseHotelDeals.map(h => `<a href="productdetails.html" class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col cursor-pointer"> <div class="relative"> <img src="${h.img}" alt="${h.name}" class="w-full h-36 object-cover"> ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''} <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button> </div> <div class="p-2 text-xs leading-tight flex-grow flex flex-col"> <div class="flex-grow"> <p class="text-[9px] font-semibold mb-0.5">${h.location}</p> <h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4> <div class="flex items-center space-x-1 mb-1"> <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span> <span class="text-[9px] font-normal">${h.reviewText}</span> <span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span> </div> <p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p> <p class="text-xs font-bold mb-0.5">${h.priceNew}</p> <p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p> <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div> <div class="member-price-tag mt-2">Precio para miembros disponible</div> </div> </div> </a>`).join('');
+                hotelDealsCarousel.innerHTML = baseHotelDeals.map(h => `
+                    <a href="productdetails.html" class="flex-shrink-0 w-52 rounded-lg overflow-hidden border border-gray-200 text-left interactive-card flex flex-col"
+                       data-property-id="${h.name.replace(/\s/g, '-')}"
+                       data-property-name="${h.name}"
+                       data-property-image="${h.img}"
+                       data-property-price="${parseFloat(h.priceNew)}">
+                        <div class="relative">
+                            <img src="${h.img}" alt="${h.name}" class="w-full h-36 object-cover">
+                            ${h.vip ? `<span class="absolute top-2 left-2 bg-green-700 text-white text-[8px] font-semibold rounded px-1.5 py-0.5 z-10">VIP Access</span>` : ''}
+                            <button aria-label="Agregar a favoritos" class="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center text-gray-400 hover:text-red-500"><i class="far fa-heart fa-sm"></i></button>
+                        </div>
+                        <div class="p-2 text-xs leading-tight flex-grow flex flex-col">
+                            <div class="flex-grow">
+                                <p class="text-[9px] font-semibold mb-0.5">${h.location}</p>
+                                <h4 class="text-xs font-semibold leading-tight mb-1">${h.name}</h4>
+                                <div class="flex items-center space-x-1 mb-1">
+                                    <span class="text-[10px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none">${h.rating}</span>
+                                    <span class="text-[9px] font-normal">${h.reviewText}</span>
+                                    <span class="text-[9px] font-normal opacity-50">(${h.reviews} comentarios)</span>
+                                </div>
+                                <p class="text-[10px] font-semibold line-through opacity-50 mb-0.5">${h.priceOld}</p>
+                                <p class="text-xs font-bold mb-0.5">${h.priceNew}</p>
+                                <p class="text-[9px] font-normal opacity-80 mb-1">${h.perNight}</p>
+                                <div class="text-[9px] font-semibold bg-green-500 text-white rounded px-1.5 py-0.5 leading-none w-max">${h.discount}</div>
+                                <div class="member-price-tag mt-2">Precio para miembros disponible</div>
+                            </div>
+                        </div>
+                    </a>`).join('');
                 setupCarouselHopAnimation('hotel-deals-carousel');
             }
 
@@ -1695,7 +1817,14 @@
         const heroSection = document.getElementById('hero-section');
         const sliderContainer = document.getElementById('hero-slider-container');
         const dotsContainer = document.getElementById('hero-slider-dots');
-        const slidesData = [ { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1', title: 'Los mejores hoteles del mundo, elegidos por ti', text: 'Desde complejos turísticos junto a la playa hasta los alojamientos más únicos. Consulta el mejor 1 % de hoteles y guarda tus favoritos.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=1200&h=-1&s=1', title: 'Escapadas románticas en Venecia', text: 'Descubre la magia de los canales, la arquitectura histórica y la gastronomía italiana en un viaje inolvidable.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1', title: 'Aventura en los Alpes Suizos', text: 'Explora paisajes montañosos impresionantes, lagos cristalinos y pueblos encantadores. Ideal para senderismo y esquí.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=1200&h=-1&s=1', title: 'Paraísos tropicales en las Maldivas', text: 'Relájate en bungalows sobre el agua, disfruta de playas de arena blanca y bucea en arrecifes de coral vibrantes.' }, { img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1', title: 'Explora la vibrante Bangkok', text: 'Sumérgete en la cultura tailandesa, visita templos majestuosos y disfruta de la increíble comida callejera.' } ];
+        // MODIFICACIÓN CLAVE: Añadir ID y precio a los datos de los slides del héroe
+        const slidesData = [
+            { id: 'hero-1', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/9e/57/5e/caption.jpg?w=2400&h=-1&s=1', title: 'Los mejores hoteles del mundo, elegidos por ti', text: 'Desde complejos turísticos junto a la playa hasta los alojamientos más únicos. Consulta el mejor 1 % de hoteles y guarda tus favoritos.', price: 250 },
+            { id: 'hero-2', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/3b/33/2b/20201018-122621-largejpg.jpg?w=1200&h=-1&s=1', title: 'Escapadas románticas en Venecia', text: 'Descubre la magia de los canales, la arquitectura histórica y la gastronomía italiana en un viaje inolvidable.', price: 180 },
+            { id: 'hero-3', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/33/f9/1c/swiss-alps.jpg?w=1400&h=500&s=1', title: 'Aventura en los Alpes Suizos', text: 'Explora paisajes montañosos impresionantes, lagos cristalinos y pueblos encantadores. Ideal para senderismo y esquí.', price: 300 },
+            { id: 'hero-4', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/bb/64/6b/alimatha-island.jpg?w=1200&h=-1&s=1', title: 'Paraísos tropicales en las Maldivas', text: 'Relájate en bungalows sobre el agua, disfruta de playas de arena blanca y bucea en arrecifes de coral vibrantes.', price: 500 },
+            { id: 'hero-5', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/c2/79/7f/caption.jpg?w=1100&h=-1&s=1', title: 'Explora la vibrante Bangkok', text: 'Sumérgete en la cultura tailandesa, visita templos majestuosos y disfruta de la increíble comida callejera.', price: 69 }
+        ];
         let currentSlide = 0;
         let slideInterval;
 
@@ -1715,6 +1844,17 @@
                 dot.className = 'slider-dot';
                 dot.addEventListener('click', () => { goToSlide(index); clearInterval(slideInterval); slideInterval = setInterval(nextSlide, 5000); });
                 dotsContainer.appendChild(dot);
+
+                // MODIFICACIÓN CLAVE: Añadir event listener para guardar datos en sessionStorage
+                slideElement.querySelector('a').addEventListener('click', (event) => {
+                    sessionStorage.setItem('selectedPropertyData', JSON.stringify({
+                        id: slide.id,
+                        name: slide.title,
+                        image: slide.img,
+                        price: slide.price
+                    }));
+                    // La redirección se maneja por el href del <a>
+                });
             });
             goToSlide(0);
             slideInterval = setInterval(nextSlide, 5000);
@@ -1722,6 +1862,28 @@
 
         if (heroSection) { heroSection.addEventListener('mouseenter', () => clearInterval(slideInterval)); heroSection.addEventListener('mouseleave', () => { slideInterval = setInterval(nextSlide, 5000); }); startSlider(); }
         
+        // MODIFICACIÓN CLAVE: Manejar clics en las tarjetas de "Ofertas Destacadas" y otros carruseles
+        const allPropertyLinks = document.querySelectorAll('a[href="productdetails.html"]');
+        allPropertyLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                // Solo si el link tiene los atributos de datos para la propiedad
+                if (link.dataset.propertyId && link.dataset.propertyName && link.dataset.propertyImage && link.dataset.propertyPrice) {
+                    const propertyId = link.dataset.propertyId;
+                    const propertyName = link.dataset.propertyName;
+                    const propertyImage = link.dataset.propertyImage;
+                    const propertyPrice = link.dataset.propertyPrice;
+
+                    sessionStorage.setItem('selectedPropertyData', JSON.stringify({
+                        id: propertyId,
+                        name: propertyName,
+                        image: propertyImage,
+                        price: parseFloat(propertyPrice) // Asegúrate de que el precio sea un número
+                    }));
+                }
+                // La redirección se maneja por el href del <a>, no necesitamos preventDefault
+            });
+        });
+
         // Resto de la lógica (validación, pago, etc.) permanece igual...
 
     });
