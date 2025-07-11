@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -505,7 +506,7 @@
 
     <header class="bg-white shadow-sm flex items-center justify-between px-4 sm:px-6 py-3 sticky top-0 z-40">
         <div class="flex items-center space-x-2">
-            <a href="#" class="back-button"><i class="fas fa-chevron-left"></i> <span id="back-button-text" class="hidden sm:block">Ver todos los hoteles</span></a>
+            <a href="index.html" class="back-button"><i class="fas fa-chevron-left"></i> <span id="back-button-text" class="hidden sm:block">Ver todos los hoteles</span></a>
         </div>
         <div class="flex-1 max-w-xl hidden sm:block">
             <div class="relative">
@@ -886,7 +887,64 @@
 
 
     <script>
+    // Utility function for showing notifications
+    function showNotification(message, type = 'info') {
+        const container = document.getElementById('notification-container');
+        if (!container) {
+            console.error('Notification container not found.');
+            return;
+        }
+
+        const notification = document.createElement('div');
+        notification.className = `notification-popup ${type === 'error' ? 'bg-red-500' : 'bg-blue-500'} text-white px-4 py-2 rounded-lg shadow-md mb-2`;
+        notification.textContent = message;
+        container.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+
+        // Animate out and remove
+        setTimeout(() => {
+            notification.classList.remove('show');
+            notification.addEventListener('transitionend', () => notification.remove(), { once: true });
+        }, 3000);
+    }
+
+    // Utility function for showing development popup
+    function showDevelopmentPopup(callback) {
+        const overlay = document.getElementById('development-popup-overlay');
+        const closeButton = document.getElementById('development-popup-close');
+
+        if (overlay && closeButton) {
+            overlay.classList.remove('hidden');
+            overlay.classList.add('visible');
+
+            const handleClose = () => {
+                overlay.classList.remove('visible');
+                overlay.classList.add('hidden');
+                closeButton.removeEventListener('click', handleClose);
+                overlay.removeEventListener('click', handleOverlayClick);
+                if (callback) callback();
+            };
+
+            const handleOverlayClick = (event) => {
+                if (event.target === overlay) {
+                    handleClose();
+                }
+            };
+
+            closeButton.addEventListener('click', handleClose);
+            overlay.addEventListener('click', handleOverlayClick);
+        } else {
+            if (callback) callback(); // If popup elements not found, just proceed
+        }
+    }
+
+
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded fired. Initializing app...'); // DEBUG: Confirma que el evento DOMContentLoaded se ha disparado.
         
         // --- UPDATED DATABASE WITH VALID IMAGE URLs AND MORE REVIEWS ---
         const hotelsDB = [
@@ -1185,46 +1243,72 @@
 
 
         function updateMainHotelContent(hotel) {
+            console.log('Updating main hotel content with:', hotel); // DEBUG: Check what hotel object is received
             currentDisplayedHotel = hotel;
             const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
             const setSrc = (id, src) => { const el = document.getElementById(id); if (el) el.src = src; };
             const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
 
-            setText('mobile-hotel-name', hotel.name);
-            setText('desktop-hotel-name', hotel.name);
-            setText('desktop-hotel-location', hotel.location);
-            setText('info-rating-value', hotel.rating.toFixed(1));
+            // Use default values if properties are missing from the passed hotel object
+            const hotelName = hotel.name || 'Hotel Desconocido';
+            const hotelLocation = hotel.location || 'Ubicación Desconocida';
+            const hotelRating = hotel.rating ?? 0; // Use nullish coalescing for numbers
+            const hotelReviews = hotel.reviews ?? 0;
+            const hotelDescription = hotel.description || 'No hay descripción disponible para este hotel.';
+            const hotelAddress = hotel.address || 'Dirección no disponible';
+            const hotelPrice = hotel.price ?? 0;
+
+            // --- IMAGE HANDLING ---
+            // Prioritize the 'image' property from the passed hotel object for the main image
+            const mainImageSrc = hotel.image || 'https://placehold.co/600x400/cccccc/ffffff?text=Imagen+no+disponible';
+
+            // Use galleryImages for sub-images, falling back to placeholders
+            const hotelGalleryImages = hotel.galleryImages || [];
+            const subImage1Src = hotelGalleryImages[1] || 'https://placehold.co/400x300/cccccc/ffffff?text=Imagen+2';
+            const subImage2Src = hotelGalleryImages[2] || 'https://placehold.co/400x300/cccccc/ffffff?text=Imagen+3';
+            // --- END IMAGE HANDLING ---
+
+            const hotelMapImage = hotel.mapImage || 'https://placehold.co/600x400/cccccc/ffffff?text=Mapa+no+disponible';
+            const hotelFaq = hotel.faq || [];
+            const hotelReviewsData = hotel.reviewsData || [];
+
+
+            setText('mobile-hotel-name', hotelName);
+            setText('desktop-hotel-name', hotelName);
+            setText('desktop-hotel-location', hotelLocation);
+            setText('info-rating-value', hotelRating.toFixed(1));
             
-            const reviewsText = `(${hotel.reviews.toLocaleString('es-ES')} opiniones)`;
+            const reviewsText = `(${hotelReviews.toLocaleString('es-ES')} opiniones)`;
             setText('info-reviews-count', reviewsText);
             setText('mobile-reviews-link', reviewsText);
             setText('desktop-reviews-link', reviewsText);
 
-            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating)) + '<span></span>'.repeat(5 - Math.round(hotel.rating));
+            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotelRating)) + '<span></span>'.repeat(5 - Math.round(hotelRating));
             setHTML('info-rating-dots', ratingDotsHtml);
 
-            setText('hotel-description', hotel.description);
+            setText('hotel-description', hotelDescription);
             
             const locationAddressSpan = document.querySelector('#location-address span');
-            if (locationAddressSpan) locationAddressSpan.textContent = hotel.address;
-            setText('map-hotel-name', hotel.name);
-            const mapRatingHtml = `<div class="rating-dots mr-2">${ratingDotsHtml}</div> <span>(${hotel.reviews})</span>`;
+            if (locationAddressSpan) locationAddressSpan.textContent = hotelAddress;
+            setText('map-hotel-name', hotelName);
+            const mapRatingHtml = `<div class="rating-dots mr-2">${ratingDotsHtml}</div> <span>(${hotelReviews})</span>`;
             setHTML('map-hotel-rating', mapRatingHtml);
             setText('nearby-restaurants', '893 restaurantes en 0,5 km');
             setText('nearby-attractions', '328 atracciones en 0,5 km');
             
-            setText('direct-booking-price', `${hotel.price} €`);
-            setText('sticky-footer-price', `${hotel.price} €`); 
-            setText('sticky-footer-price-desktop', `${hotel.price} €`); 
+            setText('direct-booking-price', `${hotelPrice} €`);
+            setText('sticky-footer-price', `${hotelPrice} €`); 
+            setText('sticky-footer-price-desktop', `${hotelPrice} €`); 
             
-            setSrc('mobile-main-image', hotel.galleryImages[0]);
-            setSrc('desktop-main-image', hotel.galleryImages[0]);
-            setSrc('desktop-sub-image1', hotel.galleryImages[1] || hotel.galleryImages[0]);
-            setSrc('desktop-sub-image2', hotel.galleryImages[2] || hotel.galleryImages[0]);
-            setSrc('location-map-image', hotel.mapImage); // Usar la URL de mapa proporcionada
+            // Apply the image sources
+            setSrc('mobile-main-image', mainImageSrc);
+            setSrc('desktop-main-image', mainImageSrc);
+            setSrc('desktop-sub-image1', subImage1Src);
+            setSrc('desktop-sub-image2', subImage2Src);
+            setSrc('location-map-image', hotelMapImage); // Usar la URL de mapa proporcionada
             
-            populateFAQ(hotel.faq);
-            populateReviews(hotel.reviewsData); // Populate reviews for the selected hotel
+            populateFAQ(hotelFaq);
+            populateReviews(hotelReviewsData); // Populate reviews for the selected hotel
 
             selectedDeparture = null;
             selectedReturn = null;
@@ -1241,27 +1325,27 @@
         
         function createHotelListCard(hotel) {
             const hotelCard = document.createElement('div');
-            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating)) + '<span></span>'.repeat(5 - Math.round(hotel.rating));
+            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating ?? 0)) + '<span></span>'.repeat(5 - Math.round(hotel.rating ?? 0));
             
             // Modified classes for better mobile layout and minimalist design
             // w-full para mobile, flex-shrink-0 para que no se encojan, y se ajusta el padding y gap
             hotelCard.className = 'bg-white rounded-lg shadow-sm border interactive-card flex flex-col items-center sm:items-start gap-2 p-2 cursor-pointer flex-shrink-0 w-full';
             
             hotelCard.innerHTML = `
-                <img alt="Imagen de ${hotel.name}" src="${hotel.img}" class="w-16 h-16 object-cover rounded-md flex-shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/ffffff?text=Hotel';"/>
+                <img alt="Imagen de ${hotel.name || 'Hotel'}" src="${hotel.image || 'https://placehold.co/64x64/cccccc/ffffff?text=Hotel'}" class="w-16 h-16 object-cover rounded-md flex-shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/ffffff?text=Hotel';"/>
                 <div class="flex flex-col flex-grow w-full">
                     <div>
                         ${hotel.sponsored ? '<p class="text-xs text-gray-500 font-medium">Patrocinado <i class="fas fa-info-circle text-gray-400 fa-xs"></i></p>' : ''}
-                        <h4 class="font-semibold text-gray-900 text-sm leading-tight mt-0.5 truncate">${hotel.name}</h4>
+                        <h4 class="font-semibold text-gray-900 text-sm leading-tight mt-0.5 truncate">${hotel.name || 'Hotel Desconocido'}</h4>
                         <div class="flex items-center text-xs text-gray-600 mt-0.5">
-                            <span class="font-bold text-xs mr-0.5">${hotel.rating.toFixed(1)}</span>
+                            <span class="font-bold text-xs mr-0.5">${(hotel.rating ?? 0).toFixed(1)}</span>
                             <div class="rating-dots mr-1" style="transform: scale(0.75); transform-origin: left center;">${ratingDotsHtml}</div>
-                            <span class="text-xs">(${hotel.reviews})</span>
+                            <span class="text-xs">(${(hotel.reviews ?? 0).toLocaleString('es-ES')})</span>
                         </div>
-                        <p class="text-xs text-gray-600 mt-0.5"><i class="fas fa-map-marker-alt fa-xs mr-1"></i>a ${hotel.distance} km del centro</p>
+                        <p class="text-xs text-gray-600 mt-0.5"><i class="fas fa-map-marker-alt fa-xs mr-1"></i>a ${hotel.distance ?? '?.?'} km del centro</p>
                     </div>
                     <div class="flex items-center justify-between mt-1 w-full">
-                        <p class="text-base font-bold text-gray-800">${hotel.price} €</p>
+                        <p class="text-base font-bold text-gray-800">${hotel.price ?? 0} €</p>
                         <button class="bg-brand-green text-white font-bold py-1 px-2 rounded-full hover:opacity-90 text-xs view-hotel-btn">Ver hotel</button>
                     </div>
                 </div>
@@ -1272,18 +1356,18 @@
 
         function createCompactHotelCard(hotel) {
             const hotelCard = document.createElement('div');
-            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating)) + '<span></span>'.repeat(5 - Math.round(hotel.rating));
+            const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating ?? 0)) + '<span></span>'.repeat(5 - Math.round(hotel.rating ?? 0));
             // MODIFICACIÓN CLAVE AQUÍ: w-full para móvil, sm:w-48 para sm+
             hotelCard.className = 'flex-shrink-0 w-full sm:w-48 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card';
             hotelCard.innerHTML = `
-                <img alt="Imagen de ${hotel.name}" src="${hotel.img}" class="w-full h-24 object-cover rounded-t-lg" onerror="this.onerror=null;this.src='https://placehold.co/192x96/cccccc/ffffff?text=Hotel';"/>
+                <img alt="Imagen de ${hotel.name || 'Hotel'}" src="${hotel.image || 'https://placehold.co/192x96/cccccc/ffffff?text=Hotel'}" class="w-full h-24 object-cover rounded-t-lg" onerror="this.onerror=null;this.src='https://placehold.co/192x96/cccccc/ffffff?text=Hotel';"/>
                 <div class="p-2 text-left">
-                    <h4 class="text-xs font-semibold text-gray-900 mb-0.5 truncate">${hotel.name}</h4>
+                    <h4 class="text-xs font-semibold text-gray-900 mb-0.5 truncate">${hotel.name || 'Hotel Desconocido'}</h4>
                     <div class="flex items-center text-xs mb-1">
                         <div class="rating-dots mr-1">${ratingDotsHtml}</div>
-                        <span class="text-gray-500">(${hotel.reviews})</span>
+                        <span class="text-gray-500">(${(hotel.reviews ?? 0).toLocaleString('es-ES')})</span>
                     </div>
-                    <p class="text-base font-bold text-gray-800">desde ${hotel.price} €</p>
+                    <p class="text-base font-bold text-gray-800">desde ${hotel.price ?? 0} €</p>
                 </div>`;
             hotelCard.addEventListener('click', () => updateMainHotelContent(hotel));
             return hotelCard;
@@ -1291,7 +1375,7 @@
 
         function populateCarousels() {
             const listSections = [
-                { id: 'popular-nearby-hotels-carousel', data: [...hotelsDB].sort((a,b) => b.reviews - a.reviews).slice(0, 10) },
+                { id: 'popular-nearby-hotels-carousel', data: [...hotelsDB].sort((a,b) => (b.reviews ?? 0) - (a.reviews ?? 0)).slice(0, 10) },
                 { id: 'similar-sponsored-establishments-carousel', data: [...hotelsDB].filter(h => h.sponsored).sort(() => 0.5 - Math.random()).slice(0, 10) },
             ];
 
@@ -1391,61 +1475,6 @@
             }
         }
 
-        // --- NEW INTEGRATED LOGIC FROM NUEVOINDEX.HTML ---
-        // (Nationalities array is already present in productdetails.html, no need to re-declare)
-
-        const loader = document.getElementById('loader');
-        const notificationContainer = document.getElementById('notification-container');
-        const developmentPopupOverlay = document.getElementById('development-popup-overlay');
-        const developmentPopupCloseBtn = document.getElementById('development-popup-close');
-        let onPopupConfirmCallback = null;
-
-        function showDevelopmentPopup(callback) {
-            onPopupConfirmCallback = callback;
-            if (developmentPopupOverlay) {
-                developmentPopupOverlay.classList.remove('hidden');
-                setTimeout(() => developmentPopupOverlay.classList.add('visible'), 10);
-            }
-        }
-
-        if (developmentPopupCloseBtn) {
-            developmentPopupCloseBtn.addEventListener('click', () => {
-                if (developmentPopupOverlay) {
-                    developmentPopupOverlay.classList.remove('visible');
-                    developmentPopupOverlay.addEventListener('transitionend', () => {
-                        developmentPopupOverlay.classList.add('hidden');
-                    }, { once: true });
-                }
-                if (typeof onPopupConfirmCallback === 'function') {
-                    onPopupConfirmCallback();
-                    onPopupConfirmCallback = null;
-                }
-            });
-        }
-        
-        if (!sessionStorage.getItem('initialPopupShown')) {
-            showDevelopmentPopup(() => {
-                sessionStorage.setItem('initialPopupShown', 'true');
-            });
-        }
-
-        function showNotification(message, type = 'error') {
-            const popup = document.createElement('div');
-            popup.className = `notification-popup ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
-            popup.textContent = message;
-            notificationContainer.appendChild(popup);
-            requestAnimationFrame(() => popup.classList.add('show'));
-            setTimeout(() => {
-                popup.classList.remove('show');
-                popup.addEventListener('transitionend', () => popup.remove());
-            }, 3000);
-        }
-
-        if (loader) {
-            loader.classList.add('hidden');
-            loader.addEventListener('transitionend', () => loader.remove());
-        }
-
         // --- Calendar & Traveler Logic for Hotel Booking Section ---
         const checkinCheckoutTrigger = document.getElementById('checkin-checkout-trigger');
         const guestsTrigger = document.getElementById('guests-trigger');
@@ -1461,7 +1490,7 @@
         const calendarMonthsContainer = document.getElementById('calendar-months-container');
         const prevMonthBtn = document.getElementById('prev-month');
         const nextMonthBtn = document.getElementById('next-month'); 
-        const closeCalendarBtn = document.getElementById('close-calendar-btn'); // This button is not present in productdetails.html, keeping for consistency if it was planned.
+        const closeCalendarBtn = document.getElementById('close-calendar-btn'); 
         const clearDatesBtn = document.getElementById('clear-dates-btn');
         const closeCalendarModalX = document.getElementById('close-calendar-modal-x');
         const calendarCheckinDisplay = document.getElementById('calendar-checkin-display');
@@ -1718,7 +1747,7 @@
                 sessionStorage.setItem('hotelBookingDetails', JSON.stringify({
                     hotelId: currentDisplayedHotel.id,
                     hotelName: currentDisplayedHotel.name,
-                    hotelImage: currentDisplayedHotel.img,
+                    hotelImage: currentDisplayedHotel.image, // Usar 'image' para el checkout
                     price: currentDisplayedHotel.price,
                     checkin: selectedDeparture.toISOString().split('T')[0],
                     checkout: selectedReturn.toISOString().split('T')[0],
@@ -1748,13 +1777,48 @@
         }
 
         // --- Initial setup ---
-        const storedHotelData = sessionStorage.getItem('selectedHotelData');
-        if (storedHotelData) {
-            const hotel = JSON.parse(storedHotelData);
-            updateMainHotelContent(hotel);
-            sessionStorage.removeItem('selectedHotelData');
-        } else if (hotelsDB.length > 0) {
-            const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0];
+        console.log('Attempting to hide loader and initialize content.'); // DEBUG: Mensaje antes de intentar ocultar el loader
+        const loader = document.getElementById('loader');
+        if (loader) {
+            loader.classList.add('hidden');
+            loader.addEventListener('transitionend', function() {
+                loader.remove();
+                console.log('Loader removed from DOM.'); // DEBUG: Confirma que el loader fue removido
+            }, { once: true });
+        } else {
+            console.warn('Loader element not found, cannot hide it.'); // DEBUG: Si el loader no se encuentra
+        }
+        console.log('Loader hiding logic initiated.'); // DEBUG: Mensaje después de intentar ocultar el loader
+
+
+        // MODIFICACIÓN CLAVE: Cambiar 'selectedHotelData' a 'selectedPropertyData'
+        const storedPropertyData = sessionStorage.getItem('selectedPropertyData'); 
+        console.log('Stored property data from sessionStorage:', storedPropertyData); // DEBUG: Check the raw string
+
+        if (storedPropertyData) {
+            try {
+                const hotel = JSON.parse(storedPropertyData);
+                console.log('Parsed property object:', hotel); // DEBUG: Check the parsed object
+                // Si el objeto de hotel de sessionStorage no tiene todas las propiedades,
+                // intenta encontrar el hotel completo en hotelsDB por ID.
+                // Asegúrate de que hotelsDB use 'img' o 'image' consistentemente.
+                // Aquí asumimos que hotelsDB usa 'img' y sessionStorage usa 'image',
+                // por lo que si hay un 'image' en sessionStorage, lo usamos como 'img' para buscar en hotelsDB
+                const fullHotelData = hotelsDB.find(h => h.id === hotel.id) || hotelsDB.find(h => h.img === hotel.image) || hotel;
+                updateMainHotelContent(fullHotelData);
+                // Opcional: eliminar después de usar si no se necesita persistir en esta página
+                // sessionStorage.removeItem('selectedPropertyData');
+            } catch (e) {
+                console.error('Error parsing stored property data from sessionStorage:', e); // DEBUG: Catch parsing errors
+                console.warn('No se pudieron cargar los datos de la propiedad desde sessionStorage. Cargando propiedad predeterminada.');
+                const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0]; // Load hotel with ID 11 or the first one
+                updateMainHotelContent(initialHotel);
+            }
+        } else {
+            // Si no hay datos en sessionStorage (ej. acceso directo a la página),
+            // cargar una propiedad predeterminada o redirigir.
+            console.warn('No se encontraron datos de la propiedad en sessionStorage. Cargando propiedad predeterminada.');
+            const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0]; // Load hotel with ID 11 or the first one
             updateMainHotelContent(initialHotel);
         }
         populateCarousels();
