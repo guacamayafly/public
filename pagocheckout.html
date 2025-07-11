@@ -313,15 +313,18 @@
     <div
       class="max-w-[1200px] mx-auto px-3 py-3 sm:px-6 flex flex-col sm:flex-row items-center justify-between relative"
     >
-      <div id="auth-status-container" class="absolute top-3 right-3 sm:relative sm:top-0 sm:right-0 sm:order-last">
+      <div class="w-full flex justify-between items-center lg:w-auto lg:static">
+          <a href="index.html" class="lg:hidden text-guacamayafly-orange"><i class="fas fa-arrow-left fa-lg"></i></a>
+          <div class="flex items-center space-x-2 lg:mx-0">
+              <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
+              <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
+          </div>
+          <div id="auth-status-container-mobile" class="lg:hidden">
+              <!-- Mobile Auth Button/Avatar will be injected here -->
+          </div>
       </div>
 
-      <div class="flex items-center space-x-2 mb-4 sm:mb-0 mx-auto sm:mx-0">
-          <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
-          <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
-      </div>
-
-      <nav class="flex items-start relative flex-1 justify-center w-full sm:w-auto mt-2 sm:mt-0">
+      <nav class="hidden lg:flex items-start relative flex-1 justify-center w-full sm:w-auto mt-2 sm:mt-0">
         <div class="absolute w-full h-0.5 bg-gray-300 top-[12px] left-0 right-0"></div>
         <div id="progress-fill" class="absolute h-0.5 bg-guacamayafly-orange top-[12px] left-0 w-[16.5%] transition-all duration-300 ease-in-out"></div>
 
@@ -352,6 +355,9 @@
           <span class="text-gray-600 text-[9px] sm:text-sm mt-1 whitespace-nowrap">¡Reserva confirmada!</span>
         </div>
       </nav>
+      <div id="auth-status-container-desktop" class="hidden lg:block">
+          <!-- Desktop Auth Button/Avatar will be injected here -->
+      </div>
     </div>
   </header>
 
@@ -956,36 +962,38 @@
         const initialTimeInSeconds = 20 * 60;
         let timeLeft = initialTimeInSeconds;
 
-        const authStatusContainer = document.getElementById('auth-status-container');
-        authStatusContainer.addEventListener('click', (event) => {
-            if (event.target.id === 'login-btn') {
-                localStorage.setItem('isLoggedIn', 'true');
-                location.reload();
-            } else if (event.target.id === 'logout-btn') {
-                localStorage.setItem('isLoggedIn', 'false');
-                location.reload();
-            }
-        });
+        const authStatusContainerDesktop = document.getElementById('auth-status-container-desktop');
+        const authStatusContainerMobile = document.getElementById('auth-status-container-mobile');
+
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
         function renderAuthStatus() {
-            authStatusContainer.innerHTML = '';
-            if (isLoggedIn) {
-                authStatusContainer.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <img src="https://placehold.co/32x32/FF7F00/FFFFFF?text=AV" alt="User Avatar" class="rounded-full w-8 h-8 cursor-pointer" id="avatar-btn">
-                        <button id="logout-btn" class="hidden sm:block text-guacamayafly-orange border border-guacamayafly-orange rounded-full px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-guacamayafly-orange hover:text-white transition">
-                            Cerrar sesión
-                        </button>
-                    </div>
-                `;
-            } else {
-                authStatusContainer.innerHTML = `
-                    <button id="login-btn" class="text-guacamayafly-orange border border-guacamayafly-orange rounded-full px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-guacamayafly-orange hover:text-white transition">
-                        Iniciar sesión
+            const loggedInHTML = `
+                <div class="flex items-center space-x-2">
+                    <img src="https://placehold.co/32x32/FF7F00/FFFFFF?text=AV" alt="User Avatar" class="rounded-full w-8 h-8 cursor-pointer" id="avatar-btn">
+                    <button id="logout-btn" class="hidden lg:block text-blue-600 border border-blue-600 rounded-full px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-blue-600 hover:text-white transition">
+                        Cerrar sesión
                     </button>
-                `;
-            }
+                </div>
+            `;
+            const loggedOutHTML = `
+                <button id="login-btn" class="bg-blue-600 text-white rounded-full px-4 py-1.5 text-sm font-semibold hover:bg-blue-700 transition">
+                    Iniciar sesión
+                </button>
+            `;
+
+            authStatusContainerDesktop.innerHTML = isLoggedIn ? loggedInHTML : loggedOutHTML;
+            authStatusContainerMobile.innerHTML = isLoggedIn ? `<img src="https://placehold.co/32x32/FF7F00/FFFFFF?text=AV" alt="User Avatar" class="rounded-full w-8 h-8 cursor-pointer" id="avatar-btn-mobile">` : loggedOutHTML;
+
+            document.body.addEventListener('click', (event) => {
+                if (event.target.id === 'login-btn') {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    location.reload();
+                } else if (event.target.id === 'logout-btn') {
+                    localStorage.setItem('isLoggedIn', 'false');
+                    location.reload();
+                }
+            });
         }
 
         let currentStep = 1;
