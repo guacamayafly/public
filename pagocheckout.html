@@ -323,7 +323,7 @@
 
       <nav class="flex items-start relative flex-1 justify-center w-full sm:w-auto mt-2 sm:mt-0">
         <div class="absolute w-full h-0.5 bg-gray-300 top-[12px] left-0 right-0"></div>
-        <div id="progress-fill" class="absolute h-0.5 bg-guacamayafly-orange top-[12px] left-0 w-[33%] transition-all duration-300 ease-in-out"></div>
+        <div id="progress-fill" class="absolute h-0.5 bg-guacamayafly-orange top-[12px] left-0 w-[16.5%] transition-all duration-300 ease-in-out"></div>
 
         <div id="step-1-header" class="flex flex-col items-center relative z-10 px-0.5 sm:px-2">
           <div
@@ -378,19 +378,19 @@
         <div class="header-cell text-right"></div>
 
         <div class="flex flex-col items-start">
-          <div id="display-checkin-date" class="font-semibold text-base text-[#222222]">Vie, 11 de julio</div>
+          <div id="display-checkin-date" class="font-semibold text-base text-[#222222]"></div>
           <div id="display-checkin-time" class="text-xs font-normal text-gray-600">14:00</div>
         </div>
 
         <div class="text-xl text-gray-600 flex-shrink-0">→</div>
         
         <div class="flex flex-col items-start">
-          <div id="display-checkout-date" class="font-semibold text-base text-[#222222]">Sábado 19 de julio</div>
+          <div id="display-checkout-date" class="font-semibold text-base text-[#222222]"></div>
           <div id="display-checkout-time" class="text-xs font-normal text-gray-600">13:00</div>
         </div>
         
         <div class="flex flex-col items-end">
-          <div id="display-nights" class="font-bold text-2xl text-[#222222]">8</div>
+          <div id="display-nights" class="font-bold text-2xl text-[#222222]"></div>
           <div class="text-xs font-normal text-gray-600">nights</div>
         </div>
       </div>
@@ -398,14 +398,15 @@
       <div class="bg-white border border-gray-300 rounded-xl p-5 shadow-sm mb-6">
         <div class="flex gap-3 mb-4 pb-4 border-b border-gray-300">
           <img
-            alt="Collage de fotos del interior del apartamento"
+            id="summary-hotel-image"
+            alt="Foto del hotel"
             class="w-20 h-20 rounded-md object-cover flex-shrink-0"
             height="80"
-            src="https://storage.googleapis.com/a1aa/image/bd0ca2eb-5c60-48b0-7b47-cd427e61bf46.jpg"
+            src="https://placehold.co/80x80/cccccc/ffffff?text=Hotel"
             width="80"
           />
           <div class="flex-1 text-sm">
-            <h3 class="font-semibold text-[#222222] mb-1">Lomas de las Mercedes</h3>
+            <h3 id="summary-hotel-name" class="font-semibold text-[#222222] mb-1">Cargando hotel...</h3>
             <div class="flex items-center text-gray-500 text-xs mb-1 space-x-1">
               <i class="fas fa-circle-notch fa-spin text-green-600 text-[10px]"></i>
               <span>Apartamento/Piso</span>
@@ -420,8 +421,8 @@
               9.7 Excepcional
               <span class="text-gray-400 font-normal ml-1 text-xs">49 reseñas</span>
             </div>
-            <div class="text-xs text-gray-500 mb-1 truncate max-w-[220px]">
-              San Agustín Del Norte, Caracas, Capital Venezolana, Venezuela
+            <div id="summary-hotel-location" class="text-xs text-gray-500 mb-1 truncate max-w-[220px]">
+              Cargando ubicación...
             </div>
             <a
               href="#"
@@ -445,7 +446,7 @@
             </div>
           </div>
           <div class="py-1">Superficie: 50 m²</div>
-          <div class="py-1">Máx: 1 adulto, 1 niño (0-17 años)</div>
+          <div id="summary-guests" class="py-1">Máx: 2 adultos</div>
           <div class="py-1 mb-2">1 cama doble</div>
           <div class="flex items-center space-x-1 text-gray-500 text-xs py-1">
             <i class="fas fa-door-open"></i>
@@ -489,36 +490,18 @@
         </div>
 
         <div class="p-4">
-          <div class="flex justify-between mb-1"><span class="font-medium">Precio original ( 8 noches )</span><span class="font-semibold">669,77 €</span></div>
-          <div class="flex justify-between mb-1"><span class="font-medium">Precio de la habitación ( 8 noches )</span><span class="font-semibold">503,76 €</span></div>
-          <div class="flex justify-between items-center border-t border-gray-200 pt-3 mt-3"><span class="font-semibold text-base">Precio final <i class="fas fa-info-circle text-xs ml-1"></i></span><span class="font-bold text-base">507,56 €</span></div>
-          <p class="text-[10px] text-gray-400 mb-3">Incluido en el precio total: Tasa de limpieza 17,07 €, IVA 52,56 €</p>
+          <div class="flex justify-between mb-1"><span class="font-medium">Precio original (<span id="price-nights-1"></span> noches)</span><span id="price-original" class="font-semibold"></span></div>
+          <div class="flex justify-between mb-1"><span class="font-medium">Precio de la habitación (<span id="price-nights-2"></span> noches)</span><span id="price-room" class="font-semibold"></span></div>
+          <div class="flex justify-between items-center border-t border-gray-200 pt-3 mt-3"><span class="font-semibold text-base">Precio final <i class="fas fa-info-circle text-xs ml-1"></i></span><span id="price-final" class="font-bold text-base"></span></div>
+          <p class="text-[10px] text-gray-400 mb-3">
+            Incluido en el precio total: Tasa de limpieza 17,07 €, IVA 52,56 €
+          </p>
           <div class="border-t border-gray-200 pt-4 mt-4">
-              <div class="flex justify-between mb-1"><span class="font-semibold text-base">Pagar en la Propiedad</span><span class="font-bold text-base">507,56 €</span></div>
-              <p class="text-xs text-gray-500 mb-3">Pagarás el Apartamento cerca del Boulevard de Sabana Grande y zona comercial en la moneda de la propiedad (los tipos de cambio pueden variar): USD 594,52 = € 507,56</p>
+              <div class="flex justify-between mb-1"><span class="font-semibold text-base">Pagar en la Propiedad</span><span id="price-pay-at-property" class="font-bold text-base"></span></div>
+              <p class="text-xs text-gray-500 mb-3">Pagarás en la moneda de la propiedad (los tipos de cambio pueden variar).</p>
           </div>
           <div class="bg-[#0b5e07] bg-opacity-10 rounded-xl p-3 text-xs text-[#0b5e07] font-semibold mt-4">Igualamos los precios. ¡Si lo encuentras por menos, lo igualamos! <i class="fas fa-info-circle text-xs"></i></div>
-          <p class="text-[10px] text-gray-400 mt-2">¡Sabía elección! Has ahorrado 18,07 USD.</p>
         </div>
-      </div>
-
-      <div class="bg-[#d9f0d9] rounded-xl p-4 text-sm text-[#0b5e07] flex items-center gap-2 font-semibold mb-6">
-        <i class="fas fa-thumbs-up text-base"></i>
-        <span>¡Excelente elección! <span class="font-normal">Has elegido nuestra tarifa más baja en Lomas de las Mercedes.</span></span>
-      </div>
-      <div class="bg-[#d9f0d9] rounded-xl p-4 text-sm text-[#0b5e07] flex items-center gap-2 font-semibold mb-6">
-        <i class="fas fa-thumbs-up text-base"></i>
-        <span>Gran variedad de propiedades, <span class="font-normal">con una calificación promedio de los huéspedes de</span> <span class="font-semibold text-guacamayafly-orange">9,7</span></span>
-      </div>
-      <div class="bg-[#fddede] rounded-xl p-4 text-sm text-[#b33a3a] space-y-2 mb-6"><p class="flex items-center gap-2 font-semibold"><i class="fas fa-clock text-base"></i> ¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</p></div>
-      <div class="bg-[#ffe3d3] rounded-xl p-4 text-sm text-[#b35a0b] space-y-2 mb-6"><p class="flex items-center gap-2 font-semibold"><i class="fas fa-clock text-base"></i> Faltan solo <span class="font-bold">2 días</span> para tu llegada. <span class="font-bold">Las tarifas podrían aumentar si no reservas ahora.</span></p></div>
-
-      <div class="bg-white rounded-xl border border-gray-200 p-4 text-sm">
-        <h3 class="font-semibold text-base mb-2">Sobre el pago</h3>
-        <p class="text-xs text-gray-500">
-          El pago de esta reserva será cobrado por la propiedad, no por Guacamayafly. Compartiremos los detalles de tu tarjeta de crédito con nuestro proveedor y con la propiedad para asegurar tu reserva y completar la transacción.
-          <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">Ver condiciones de reserva.</a>
-        </p>
       </div>
     </aside>
 
@@ -669,11 +652,6 @@
             <div class="md:w-2/3">
                 <h3 class="font-bold text-gray-700 mb-3 text-lg">Resumen de la Reserva</h3>
                 <div id="crypto-summary-details" class="text-sm space-y-2 text-gray-600">
-                    <p><strong>Hotel:</strong> Lomas de las Mercedes</p>
-                    <p><strong>Check-in:</strong> Vie, 11 de julio</p>
-                    <p><strong>Check-out:</strong> Sábado 19 de julio</p>
-                    <p><strong>Noches:</strong> 8</p>
-                    <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar: 507.56 €</p>
                 </div>
             </div>
             <div class="md:w-1/2 flex flex-col items-center">
@@ -691,7 +669,6 @@
               <label class="block text-sm font-semibold text-gray-600 mb-1" for="comprobante-pago">Cargar Comprobante de Pago (opcional)</label>
               <input type="file" id="comprobante-pago" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
             </div>
-            <!-- CAMBIO: Botón "He pagado" ahora es naranja -->
             <button id="payment-received-btn" class="w-full bg-guacamayafly-orange text-white text-lg font-bold py-3 rounded-full hover:bg-guacamayafly-dark-orange transition mt-6">He pagado</button>
             <p id="payment-validation-message" class="text-center text-sm text-gray-600 mt-2 hidden">Validando pago... <span id="countdown-timer"></span></p>
         </div>
@@ -813,6 +790,98 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // --- START OF DYNAMIC DATA LOGIC ---
+
+        // Global variable to hold booking details
+        let bookingDetails = {};
+
+        // Function to parse URL parameters
+        function getBookingDetailsFromSession() {
+            const detailsString = sessionStorage.getItem('hotelBookingDetails');
+            if (detailsString) {
+                try {
+                    return JSON.parse(detailsString);
+                } catch (e) {
+                    console.error("Error parsing booking details from sessionStorage:", e);
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        // Function to update all dynamic elements on the page
+        function populatePage(details) {
+            if (!details) {
+                console.error("No booking details found to populate page.");
+                // Optionally, hide the main content and show an error message
+                document.getElementById('main-content').innerHTML = '<p class="text-center text-red-500">Error: No se pudieron cargar los detalles de la reserva. Por favor, vuelve a la página anterior e inténtalo de nuevo.</p>';
+                return;
+            }
+
+            bookingDetails = details;
+            
+            // --- Dates and Nights ---
+            const checkin = new Date(details.checkin + 'T00:00:00');
+            const checkout = new Date(details.checkout + 'T00:00:00');
+            selectedDeparture = checkin;
+            selectedReturn = checkout;
+            updateDateDisplayInSummary();
+
+
+            // --- Summary Aside ---
+            document.getElementById('summary-hotel-image').src = details.hotelImage || 'https://placehold.co/80x80/cccccc/ffffff?text=Hotel';
+            document.getElementById('summary-hotel-name').textContent = details.hotelName || 'Nombre no disponible';
+            document.getElementById('summary-hotel-location').textContent = details.hotelLocation || 'Ubicación no disponible';
+            document.getElementById('summary-guests').textContent = `Máx: ${details.adults} adulto(s), ${details.children} niño(s)`;
+
+            // --- Price Calculation and Display ---
+            updatePriceSummary();
+
+            // --- Crypto Checkout Summary ---
+            const cryptoSummaryContainer = document.getElementById('crypto-summary-details');
+            if (cryptoSummaryContainer) {
+                cryptoSummaryContainer.innerHTML = `
+                    <p><strong>Hotel:</strong> ${details.hotelName}</p>
+                    <p><strong>Check-in:</strong> ${checkin.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'long' })}</p>
+                    <p><strong>Check-out:</strong> ${checkout.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'long' })}</p>
+                    <p><strong>Noches:</strong> ${calculateNights(checkin, checkout)}</p>
+                    <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar: ${calculateTotalPrice(checkin, checkout, details.price).final.toFixed(2)} €</p>
+                `;
+            }
+        }
+        
+        function calculateNights(start, end) {
+            if (!start || !end) return 0;
+            const diffTime = Math.abs(end - start);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function calculateTotalPrice(start, end, pricePerNight) {
+            const nights = calculateNights(start, end);
+            const roomPrice = nights * (pricePerNight || 0);
+            const originalPrice = roomPrice / (1 - 0.21); // Assuming 21% discount
+            const finalPrice = roomPrice + 17.07 + 52.56; // Adding fixed fees
+            return {
+                original: originalPrice,
+                room: roomPrice,
+                final: finalPrice,
+                nights: nights
+            };
+        }
+
+        function updatePriceSummary() {
+            const prices = calculateTotalPrice(selectedDeparture, selectedReturn, bookingDetails.price);
+            document.getElementById('price-nights-1').textContent = prices.nights;
+            document.getElementById('price-nights-2').textContent = prices.nights;
+            document.getElementById('price-original').textContent = `${prices.original.toFixed(2)} €`;
+            document.getElementById('price-room').textContent = `${prices.room.toFixed(2)} €`;
+            document.getElementById('price-final').textContent = `${prices.final.toFixed(2)} €`;
+            document.getElementById('price-pay-at-property').textContent = `${prices.final.toFixed(2)} €`;
+        }
+
+        // --- END OF DYNAMIC DATA LOGIC ---
+
+
         const devPopupOverlay = document.getElementById('development-popup-overlay');
         const devPopupCloseBtn = document.getElementById('development-popup-close');
         let onPopupConfirmCallback = null;
@@ -883,10 +952,6 @@
         const tonightBtn = document.getElementById('tonight-btn');
         const nextWeekendBtn = document.getElementById('next-weekend-btn');
 
-        const displayCheckinDate = document.getElementById('display-checkin-date');
-        const displayCheckoutDate = document.getElementById('display-checkout-date');
-        const displayNights = document.getElementById('display-nights');
-
         let timerInterval;
         const initialTimeInSeconds = 20 * 60;
         let timeLeft = initialTimeInSeconds;
@@ -924,8 +989,6 @@
         }
 
         let currentStep = 1;
-        let selectedDeparture = null;
-        let selectedReturn = null;
         let currentMonthDate = new Date();
 
         function showNotification(message, type = 'success') {
@@ -1062,7 +1125,6 @@
                 if (validateStep(1)) {
                     currentStep = 2;
                     updateStepVisibility();
-                    // CAMBIO: Añadido scroll suave hacia arriba
                     form.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             } else if (currentStep === 2) {
@@ -1249,6 +1311,7 @@
             calendarModal.classList.remove('visible');
             calendarModal.classList.add('hidden');
             updateDateDisplayInSummary();
+            updatePriceSummary();
         });
         if (closeCalendarModalX) closeCalendarModalX.addEventListener('click', () => {
             calendarModal.classList.remove('visible');
@@ -1259,7 +1322,6 @@
             selectedReturn = null;
             renderCalendar();
             updateCalendarSelection();
-            updateDateDisplayInSummary();
         });
         if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => {
             currentMonthDate.setMonth(currentMonthDate.getMonth() - 1);
@@ -1276,9 +1338,6 @@
             selectedDeparture = today;
             selectedReturn = tomorrow;
             updateCalendarSelection();
-            calendarModal.classList.remove('visible');
-            calendarModal.classList.add('hidden');
-            updateDateDisplayInSummary();
         });
         if (nextWeekendBtn) nextWeekendBtn.addEventListener('click', () => {
             const today = new Date();
@@ -1291,9 +1350,6 @@
             selectedDeparture = nextFriday;
             selectedReturn = nextSunday;
             updateCalendarSelection();
-            calendarModal.classList.remove('visible');
-            calendarModal.classList.add('hidden');
-            updateDateDisplayInSummary();
         });
 
         function renderCalendar() {
@@ -1377,28 +1433,14 @@
             const formatOptionsDate = { weekday: 'short', day: 'numeric', month: 'long' };
             
             if (selectedDeparture) {
-                if(displayCheckinDate) displayCheckinDate.textContent = selectedDeparture.toLocaleDateString('es-ES', formatOptionsDate);
-                document.getElementById('display-checkin-time').textContent = '14:00';
-            } else {
-                if(displayCheckinDate) displayCheckinDate.textContent = 'Vie, 11 de julio';
-                document.getElementById('display-checkin-time').textContent = '14:00';
+                document.getElementById('display-checkin-date').textContent = selectedDeparture.toLocaleDateString('es-ES', formatOptionsDate);
             }
-
             if (selectedReturn) {
-                if(displayCheckoutDate) displayCheckoutDate.textContent = selectedReturn.toLocaleDateString('es-ES', formatOptionsDate);
-                document.getElementById('display-checkout-time').textContent = '13:00';
-            } else {
-                if(displayCheckoutDate) displayCheckoutDate.textContent = 'Sábado 19 de julio';
-                document.getElementById('display-checkout-time').textContent = '13:00';
+                document.getElementById('display-checkout-date').textContent = selectedReturn.toLocaleDateString('es-ES', formatOptionsDate);
             }
-
-            if (selectedDeparture && selectedReturn) {
-                const diffTime = Math.abs(selectedReturn - selectedDeparture);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                if(displayNights) displayNights.textContent = diffDays;
-            } else {
-                if(displayNights) displayNights.textContent = '8';
-            }
+            
+            const nights = calculateNights(selectedDeparture, selectedReturn);
+            document.getElementById('display-nights').textContent = nights;
         }
         
         const specialRequestsFieldset = document.querySelector('fieldset[aria-label="Solicitudes especiales"]');
@@ -1414,8 +1456,10 @@
         }
 
 
+        // --- INITIALIZATION ---
+        const initialBookingDetails = getBookingDetailsFromSession();
+        populatePage(initialBookingDetails);
         updateStepVisibility();
-        updateDateDisplayInSummary();
         startTimer();
         renderAuthStatus();
     });
