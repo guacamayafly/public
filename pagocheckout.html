@@ -447,7 +447,8 @@
           </div>
           <div class="py-1">Superficie: 50 m²</div>
           <div id="summary-guests" class="py-1">Máx: 2 adultos</div>
-          <div class="py-1 mb-2">1 cama doble</div>
+          <!-- NUEVO: Contenedor para el tipo de cama seleccionado -->
+          <div id="summary-bed-type" class="py-1 font-semibold">1 cama doble</div>
           <div class="flex items-center space-x-1 text-gray-500 text-xs py-1">
             <i class="fas fa-door-open"></i>
             <span>Último check-in antes de las 20:30</span>
@@ -459,19 +460,6 @@
           <div class="text-orange-600 text-xs font-semibold py-1 mt-2">
             <i class="fas fa-exclamation-triangle"></i>
             <span>¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</span>
-          </div>
-          <ul class="list-none space-y-1 text-green-700 text-xs font-semibold pt-2">
-            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Aparcamiento</span></li>
-            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Café y té</span></li>
-            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Check-in exprés</span></li>
-            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Wifi gratis</span></li>
-            <li class="flex items-center space-x-1"><i class="fas fa-check"></i><span>Agua potable</span></li>
-          </ul>
-          <div class="grid grid-cols-2 gap-3 mt-3">
-            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition"><i class="fas fa-desktop"></i> Escritorio</span>
-            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition"><i class="fas fa-bottle-water"></i> Agua embotellada gratis</span>
-            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition"><i class="fas fa-parking"></i> Aparcamiento</span>
-            <span class="flex items-center justify-center gap-1 border border-green-700 text-green-700 rounded px-3 py-1 text-xs font-semibold hover:bg-green-50 transition"><i class="fas fa-wifi"></i> Wi-Fi gratis</span>
           </div>
         </div>
 
@@ -794,6 +782,7 @@
 
         // Global variable to hold booking details
         let bookingDetails = {};
+        let selectedDeparture, selectedReturn;
 
         // Function to parse URL parameters
         function getBookingDetailsFromSession() {
@@ -806,52 +795,49 @@
                     return null;
                 }
             }
-            return null;
+            // Fallback for testing if sessionStorage is empty
+            return {
+                hotelId: 1,
+                hotelName: 'Hotel de Prueba',
+                hotelImage: 'https://placehold.co/80x80/FF7F00/FFFFFF?text=Hotel',
+                hotelLocation: 'Ubicación de Prueba',
+                price: 150, // Default price per night
+                checkin: new Date().toISOString().split('T')[0],
+                checkout: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString().split('T')[0],
+                adults: 2,
+                children: 0
+            };
         }
 
         // Function to update all dynamic elements on the page
         function populatePage(details) {
             if (!details) {
                 console.error("No booking details found to populate page.");
-                // Optionally, hide the main content and show an error message
                 document.getElementById('main-content').innerHTML = '<p class="text-center text-red-500">Error: No se pudieron cargar los detalles de la reserva. Por favor, vuelve a la página anterior e inténtalo de nuevo.</p>';
                 return;
             }
 
             bookingDetails = details;
             
-            // --- Dates and Nights ---
-            const checkin = new Date(details.checkin + 'T00:00:00');
-            const checkout = new Date(details.checkout + 'T00:00:00');
-            selectedDeparture = checkin;
-            selectedReturn = checkout;
+            selectedDeparture = new Date(details.checkin + 'T00:00:00');
+            selectedReturn = new Date(details.checkout + 'T00:00:00');
             updateDateDisplayInSummary();
 
-
-            // --- Summary Aside ---
             document.getElementById('summary-hotel-image').src = details.hotelImage || 'https://placehold.co/80x80/cccccc/ffffff?text=Hotel';
             document.getElementById('summary-hotel-name').textContent = details.hotelName || 'Nombre no disponible';
             document.getElementById('summary-hotel-location').textContent = details.hotelLocation || 'Ubicación no disponible';
-            document.getElementById('summary-guests').textContent = `Máx: ${details.adults} adulto(s), ${details.children} niño(s)`;
-
-            // --- Price Calculation and Display ---
+            document.getElementById('summary-guests').textContent = `Máx: ${details.adults} adulto(s), ${details.children > 0 ? `${details.children} niño(s)` : ''}`;
+            
             updatePriceSummary();
 
-            // --- Crypto Checkout Summary ---
             const cryptoSummaryContainer = document.getElementById('crypto-summary-details');
             if (cryptoSummaryContainer) {
-                cryptoSummaryContainer.innerHTML = `
-                    <p><strong>Hotel:</strong> ${details.hotelName}</p>
-                    <p><strong>Check-in:</strong> ${checkin.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'long' })}</p>
-                    <p><strong>Check-out:</strong> ${checkout.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'long' })}</p>
-                    <p><strong>Noches:</strong> ${calculateNights(checkin, checkout)}</p>
-                    <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar: ${calculateTotalPrice(checkin, checkout, details.price).final.toFixed(2)} €</p>
-                `;
+                updateCryptoSummary();
             }
         }
         
         function calculateNights(start, end) {
-            if (!start || !end) return 0;
+            if (!start || !end || end <= start) return 0;
             const diffTime = Math.abs(end - start);
             return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
@@ -877,6 +863,21 @@
             document.getElementById('price-room').textContent = `${prices.room.toFixed(2)} €`;
             document.getElementById('price-final').textContent = `${prices.final.toFixed(2)} €`;
             document.getElementById('price-pay-at-property').textContent = `${prices.final.toFixed(2)} €`;
+            updateCryptoSummary();
+        }
+
+        function updateCryptoSummary() {
+            const cryptoSummaryContainer = document.getElementById('crypto-summary-details');
+            if (cryptoSummaryContainer) {
+                 const prices = calculateTotalPrice(selectedDeparture, selectedReturn, bookingDetails.price);
+                 cryptoSummaryContainer.innerHTML = `
+                    <p><strong>Hotel:</strong> ${bookingDetails.hotelName}</p>
+                    <p><strong>Check-in:</strong> ${selectedDeparture.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'long' })}</p>
+                    <p><strong>Check-out:</strong> ${selectedReturn.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'long' })}</p>
+                    <p><strong>Noches:</strong> ${prices.nights}</p>
+                    <p class="font-bold mt-2 text-lg text-guacamayafly-orange">Monto a Pagar: ${prices.final.toFixed(2)} €</p>
+                `;
+            }
         }
 
         // --- END OF DYNAMIC DATA LOGIC ---
@@ -1446,11 +1447,16 @@
         const specialRequestsFieldset = document.querySelector('fieldset[aria-label="Solicitudes especiales"]');
         if (specialRequestsFieldset) {
             specialRequestsFieldset.addEventListener('change', function(event) {
+                const summaryBedType = document.getElementById('summary-bed-type');
                 if (event.target.name === 'fumadores') {
                     const camaGrandeRadio = document.getElementById('cama-grande');
                     if (camaGrandeRadio) {
                         camaGrandeRadio.checked = true;
+                        summaryBedType.textContent = "1 cama doble";
                     }
+                }
+                if (event.target.name === 'camas') {
+                    summaryBedType.textContent = event.target.nextElementSibling.textContent.trim();
                 }
             });
         }
