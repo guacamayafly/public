@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,8 +26,8 @@
     </script>
 
     <!-- Favicon y Fonts -->
-    <link rel="shortcut icon" type="image/x-icon" href="https://storage.googleapis.com/a1aa/image/upload/v1719868571/logo-6.svg" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://guacamayafly.github.io/public/assets/img/logo-6.svg" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
     <!-- Estilos Globales y de Componentes -->
@@ -52,20 +51,18 @@
             -webkit-overflow-scrolling: touch; 
             scrollbar-width: none; 
             padding-bottom: 1rem; 
-            /* Añadido para indicar scrollability */
             position: relative;
         }
-        /* Indicador visual de scrollability */
         .carousel-content-wrapper::after {
             content: '';
             position: absolute;
             top: 0;
             right: 0;
             bottom: 0;
-            width: 30px; /* Ancho del degradado */
+            width: 30px; 
             background: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0));
-            pointer-events: none; /* Permite hacer clic a través del degradado */
-            z-index: 5; /* Asegura que esté por encima del contenido pero debajo de los botones de navegación */
+            pointer-events: none; 
+            z-index: 5; 
         }
         .carousel-content-wrapper::-webkit-scrollbar { display: none; }
         .carousel-content-wrapper > * { scroll-snap-align: start; flex-shrink: 0; }
@@ -86,7 +83,7 @@
             animation: hop 0.6s ease-out;
         }
         .initial-hop-animation {
-            animation: hop 1.2s ease-in-out 2; /* Un "hop-hop" más pronunciado */
+            animation: hop 1.2s ease-in-out 2; 
             animation-delay: 0.5s;
         }
 
@@ -121,35 +118,33 @@
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 40;
         }
-        .faq-item-header, .review-item-header { /* Added review-item-header */
+        .faq-item-header, .review-item-header { 
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .faq-item-body, .review-item-body { /* Added review-item-body */
+        .faq-item-body, .review-item-body { 
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease-out;
         }
-        .faq-item-body.open, .review-item-body.open { /* Added review-item-body.open */
+        .faq-item-body.open, .review-item-body.open { 
             max-height: 500px;
         }
-        .faq-arrow, .review-arrow { /* Added review-arrow */
+        .faq-arrow, .review-arrow { 
             transition: transform 0.4s ease;
         }
-        .faq-arrow.rotated, .review-arrow.rotated { /* Added review-arrow.rotated */
+        .faq-arrow.rotated, .review-arrow.rotated { 
             transform: rotate(180deg);
         }
 
-        /* Popover (Viajeros y Equipaje) */
         .popover-modal { position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); width: 320px; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 6000; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; }
         .popover-modal.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
         .popover-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
         .counter-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #d1d5db; display: flex; align-items: center; justify-content: center; cursor: pointer; background-color: white; color: #4b5563; font-size: 1.25rem; }
         .counter-btn:disabled { cursor: not-allowed; background-color: #f3f4f6; color: #9ca3af; }
 
-        /* Estilos del Modal de Calendario Mejorado */
         .calendar-modal .modal-container {
             padding: 0;
             max-height: 90vh;
@@ -239,7 +234,6 @@
         .calendar-day.range-start { border-top-left-radius: 50%; border-bottom-left-radius: 50%; }
         .calendar-day.range-end { border-top-right-radius: 50%; border-bottom-right-radius: 50%; }
         
-        /* Modal de Pago (Este modal ya no se usará para iniciar la reserva, pero se mantiene por si se necesita en el futuro) */
         .payment-option { border: 1px solid #e5e7eb; padding: 0.75rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s ease; }
         .payment-option:hover { border-color: #FF7F00; background-color: #fff7ed; }
         .payment-option.selected { border-color: #FF7F00; background-color: #fff7ed; box-shadow: 0 0 0 2px #FF7F00; }
@@ -247,7 +241,6 @@
         .payment-info-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2d3748; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 11000; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
         .payment-info-popup.show { opacity: 1; transform: translateX(-50%) translateY(-10px); pointer-events: auto; }
 
-        /* Modales */
         #notification-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
         .notification-popup { background-color: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.5s ease-in-out; margin-top: 10px; }
         .notification-popup.show { transform: translateX(0); }
@@ -256,16 +249,14 @@
         .modal-container { background-color: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 90%; max-width: 800px; transform: scale(0.95); transition: transform 0.3s ease; display: flex; flex-direction: column; }
         .modal-overlay.visible .modal-container { transform: scale(1); }
 
-        /* Loader */
         .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 1s ease-out; }
         .loader-overlay.hidden { opacity: 0; pointer-events: none; }
         .loader-plane { font-size: 4rem; color: #FF7F00; animation: fly-across 3s infinite ease-in-out; }
         @keyframes fly-across { 0% { transform: translateX(-100vw); } 50% { transform: translateX(0); } 100% { transform: translateX(100vw); } }
 
-        /* Saved Result Bar */
         .saved-result-bar {
-            background-color: #e6f7f3; /* Light green background */
-            color: #00a680; /* Brand green text */
+            background-color: #e6f7f3;
+            color: #00a680;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
             margin-top: 1.5rem;
@@ -296,6 +287,26 @@
         }
         .saved-result-bar button:hover {
             background-color: #008f6b;
+        }
+        
+        .attribute-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #374151;
+            background-color: white;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .attribute-pill:hover {
+            background-color: #f9fafb;
+        }
+        .attribute-pill i {
+            color: #4b5563;
         }
     </style>
 </head>
@@ -365,7 +376,6 @@
             </div>
             <div class="calendar-modal-footer">
                 <button id="clear-dates-btn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 font-semibold">Limpiar</button>
-                <!-- Removed "Solicitar" button as per user request -->
             </div>
         </div>
     </div>
@@ -394,10 +404,9 @@
                 <button type="button" class="counter-btn" data-type="children" data-action="increment">+</button>
             </div>
         </div>
-        <!-- Removed "Aceptar" button as per user request -->
     </div>
 
-    <!-- Modal de Reserva de Hotel (Este modal ya no se usará para iniciar la reserva, pero se mantiene por si se necesita) -->
+    <!-- Modal de Reserva de Hotel -->
     <div id="hotel-card-booking-modal" class="modal-overlay hidden calendar-modal">
         <div class="modal-container">
             <div class="calendar-modal-header">
@@ -405,11 +414,9 @@
                 <button id="close-hotel-modal-btn" class="p-2 rounded-full hover:bg-gray-200 text-2xl leading-none">&times;</button>
             </div>
             <div id="hotel-calendar-top-info" class="calendar-modal-top-info">
-                <!-- Contenido se genera con JS -->
             </div>
             <div class="calendar-modal-body">
                 <div id="hotel-modal-calendar-container">
-                    <!-- El calendario del modal se renderizará aquí -->
                 </div>
             </div>
             <div id="hotel-modal-form-container" class="p-4 border-t overflow-y-auto" style="max-height: 35vh;">
@@ -468,7 +475,7 @@
     
     <div id="payment-info-popup" class="payment-info-popup"></div>
 
-    <!-- NUEVO: Sección de Checkout para Criptomonedas -->
+    <!-- Sección de Checkout para Criptomonedas -->
     <div id="crypto-checkout-section" class="modal-overlay hidden">
         <div class="modal-container max-w-4xl max-h-[90vh] overflow-y-auto">
              <div class="flex justify-between items-center mb-6">
@@ -482,7 +489,6 @@
                     <div class="md:w-2/3">
                         <h3 class="font-bold text-gray-700 mb-3 text-lg">Resumen de la Reserva</h3>
                         <div id="crypto-summary-details" class="text-sm space-y-2 text-gray-600">
-                            <!-- El resumen se llenará dinámicamente -->
                         </div>
                     </div>
                     <div class="md:w-1/2 flex flex-col items-center">
@@ -496,7 +502,6 @@
                 <div class="mt-6 border-t pt-6">
                     <h3 class="font-bold text-gray-700 mb-3 text-lg">O Pagar a la Siguiente Dirección</h3>
                     <div id="crypto-wallets-list" class="space-y-3">
-                        <!-- Las billeteras se llenarán dinámicamente -->
                     </div>
                 </div>
             </div>
@@ -504,24 +509,45 @@
     </div>
 
 
-    <header class="bg-white shadow-sm flex items-center justify-between px-4 sm:px-6 py-3 sticky top-0 z-40">
-        <div class="flex items-center space-x-2">
-            <a href="index.html" class="back-button"><i class="fas fa-chevron-left"></i> <span id="back-button-text" class="hidden sm:block">Ver todos los hoteles</span></a>
-        </div>
-        <div class="flex-1 max-w-xl hidden sm:block">
-            <div class="relative">
-                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="search" placeholder="Buscar hoteles, vuelos, etc." class="w-full pl-10 p-2 border border-gray-300 rounded-full bg-gray-100 focus:bg-white focus:ring-2 focus:ring-guacamayafly-orange focus:border-transparent transition">
+    <header class="bg-white shadow-sm sticky top-0 z-40 px-4 sm:px-6 py-3">
+        <!-- Mobile Header -->
+        <div class="flex items-center justify-between md:hidden">
+            <div class="flex items-center space-x-3">
+                <button class="text-gray-800 hover:text-guacamayafly-orange">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <a href="index.html">
+                    <img src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" alt="Guacamayafly Logo" class="h-8 w-auto">
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-1.5 text-sm font-semibold" type="button">Iniciar sesión</button>
+                <button class="text-gray-800 hover:text-guacamayafly-orange">
+                    <i class="fas fa-search fa-lg"></i>
+                </button>
             </div>
         </div>
-        <div class="flex items-center space-x-4">
-             <button class="action-icon hidden sm:flex"><i class="fas fa-share-alt"></i></button>
-             <button class="action-icon hidden sm:flex"><i class="far fa-heart"></i></button>
-             <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-1.5 text-sm font-semibold" type="button">Iniciar sesión</button>
+    
+        <!-- Desktop Header -->
+        <div class="hidden md:flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="back-button"><i class="fas fa-chevron-left"></i> <span id="back-button-text">Ver todos los hoteles</span></a>
+            </div>
+            <div class="flex-1 max-w-xl mx-4">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="search" placeholder="Buscar hoteles, vuelos, etc." class="w-full pl-10 p-2 border border-gray-300 rounded-full bg-gray-100 focus:bg-white focus:ring-2 focus:ring-guacamayafly-orange focus:border-transparent transition">
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="action-icon"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+                <button class="action-icon"><i class="far fa-heart"></i></button>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-1.5 text-sm font-semibold" type="button">Iniciar sesión</button>
+            </div>
         </div>
     </header>
 
-    <nav id="section-nav" class="sticky-nav hidden md:block">
+    <nav id="section-nav" class="sticky-nav hidden md:block" style="top: 68px;"> <!-- Adjusted top position for desktop nav -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8">
             <a href="#photo-gallery-section" class="active">Fotos</a>
             <a href="#booking-section">Reservar</a>
@@ -532,7 +558,7 @@
         </div>
     </nav>
 
-    <nav id="section-nav-mobile" class="sticky-nav md:hidden">
+    <nav id="section-nav-mobile" class="sticky-nav md:hidden" style="top: 60px;"> <!-- Adjusted top position for mobile nav -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 overflow-x-auto">
             <a href="#photo-gallery-section" class="active">Fotos</a>
             <a href="#booking-section">Reservar</a>
@@ -572,9 +598,7 @@
         
         <section id="booking-section" class="bg-white p-4 md:p-6 rounded-lg shadow-sm mb-8">
             <h2 class="font-bold text-lg md:text-xl mb-3 md:mb-4">Consulte los precios para las fechas de su viaje</h2>
-            <!-- Modified section to match the image layout -->
             <div class="flex flex-col sm:flex-row border border-gray-200 rounded-lg mb-4">
-                <!-- Left side: Llegada and Salida -->
                 <div id="checkin-checkout-trigger" class="w-full sm:w-1/2 flex justify-between items-center p-3 text-left hover:bg-gray-50 cursor-pointer">
                     <div class="flex-1">
                         <span class="text-xs font-semibold text-gray-500">Llegada</span>
@@ -585,14 +609,12 @@
                         <p id="main-checkout-display" class="font-semibold text-gray-900">Añadir fecha</p>
                     </div>
                 </div>
-                <!-- Right side: Habitaciones/Huéspedes -->
                 <div id="guests-trigger" class="w-full sm:w-1/2 flex items-center justify-between p-3 text-left hover:bg-gray-50 relative border-t sm:border-t-0 sm:border-l border-gray-200 cursor-pointer">
                     <div>
                         <span class="text-xs font-semibold text-gray-500">Habitaciones/Huéspedes</span>
                         <p id="main-guests-display" class="font-semibold text-gray-900">1 habitación, 2 adultos</p>
                     </div>
                     <i class="fas fa-chevron-down text-gray-500 text-sm"></i>
-                    <!-- Popover de viajeros se insertará aquí -->
                     <div id="hotel-travelers-modal" class="popover-modal hidden">
                         <div class="popover-row">
                             <div>
@@ -616,11 +638,9 @@
                                 <button type="button" class="counter-btn" data-type="children" data-action="increment">+</button>
                             </div>
                         </div>
-                        <!-- Removed "Aceptar" button as per user request -->
                     </div>
                 </div>
             </div>
-            <!-- Saved Result Bar -->
             <div id="saved-result-bar" class="saved-result-bar hidden">
                 <div>
                     <i class="fas fa-check-circle"></i>
@@ -631,7 +651,6 @@
             <div class="border-t my-4"></div>
             <div>
                 <h3 class="font-semibold text-md mb-3">Reservo directamente con el hotel</h3>
-                <!-- MODIFICACIÓN CLAVE AQUÍ: flex-col para móvil, flex-row para sm+ -->
                 <div class="flex flex-col sm:flex-row justify-between items-center border border-gray-200 p-3 rounded-lg gap-3">
                     <div class="flex items-center gap-3">
                         <i class="fas fa-globe text-gray-500"></i>
@@ -643,20 +662,17 @@
                     <div class="text-right">
                         <p id="direct-booking-price" class="font-bold text-lg"></p>
                     </div>
-                    <!-- Botón "Reservar" con w-full en móvil -->
                     <button id="book-direct-btn" class="bg-guacamayafly-orange text-white font-bold py-2 px-4 rounded-lg hover:bg-guacamayafly-dark-orange heartbeat-animation w-full sm:w-auto">Reservar</button>
                 </div>
             </div>
             <div class="space-y-3 mt-6">
                 <h3 class="font-semibold text-md">Ofertas destacadas</h3>
-                <!-- MODIFICACIÓN CLAVE AQUÍ: flex-wrap para móvil, flex-nowrap para sm+ -->
                 <div class="flex flex-wrap sm:flex-nowrap justify-between items-center border border-gray-200 p-3 rounded-lg gap-2">
                     <div class="w-full sm:w-auto text-center sm:text-left"><img src="https://www.expedia.es/_dms/header/logo.svg?locale=es_ES&siteid=9&2&6f9ec7db" alt="Booking.com" class="h-4 mx-auto sm:mx-0"></div>
                     <div class="w-full sm:w-auto text-center sm:text-right"><p class="font-bold text-lg">168 €</p></div>
                     <a href="#" class="bg-brand-green text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 w-full sm:w-auto text-center">Ver oferta</a>
                 </div>
                 <div id="hidden-offers" class="accordion-content space-y-3 pt-3">
-                     <!-- MODIFICACIÓN CLAVE AQUÍ: flex-wrap para móvil, flex-nowrap para sm+ -->
                      <div class="flex flex-wrap sm:flex-nowrap justify-between items-center border border-gray-200 p-3 rounded-lg gap-2">
                         <div class="w-full sm:w-auto text-center sm:text-left"><img src="https://www.expedia.es/_dms/header/logo.svg?locale=es_ES&siteid=9&2&6f9ec7db" alt="Expedia" class="h-5 mx-auto sm:mx-0"></div>
                         <div class="w-full sm:w-auto text-center sm:text-right"><p class="font-bold text-lg">190 €</p></div>
@@ -692,33 +708,33 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-gray-800 mb-4">Servicios de la propiedad</h3>
-                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
-                        <div class="flex items-center gap-3"><i class="fas fa-parking text-brand-green w-5 text-center"></i><span>Aparcamiento</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-wifi text-brand-green w-5 text-center"></i><span>Wifi gratis</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-dumbbell text-brand-green w-5 text-center"></i><span>Gimnasio</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-utensils text-brand-green w-5 text-center"></i><span>Restaurante</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-child text-brand-green w-5 text-center"></i><span>Ideal para niños</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-paw text-brand-green w-5 text-center"></i><span>Admite mascotas</span></div>
+                    <div class="flex flex-wrap gap-3 text-sm">
+                        <div class="attribute-pill"><i class="fas fa-parking"></i><span>Aparcamiento</span></div>
+                        <div class="attribute-pill"><i class="fas fa-wifi"></i><span>Wifi gratis</span></div>
+                        <div class="attribute-pill"><i class="fas fa-dumbbell"></i><span>Gimnasio</span></div>
+                        <div class="attribute-pill"><i class="fas fa-utensils"></i><span>Restaurante</span></div>
+                        <div class="attribute-pill"><i class="fas fa-child"></i><span>Ideal para niños</span></div>
+                        <div class="attribute-pill"><i class="fas fa-paw"></i><span>Admite mascotas</span></div>
                     </div>
                     <button class="text-sm font-semibold mt-4 hover:underline">Mostrar más <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
                     
                     <h3 class="font-semibold text-gray-800 mb-4 mt-6">Servicios de habitación</h3>
-                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
-                        <div class="flex items-center gap-3"><i class="fas fa-moon text-brand-green w-5 text-center"></i><span>Cortinas opacas</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-desktop text-brand-green w-5 text-center"></i><span>Mesa de escritorio</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-snowflake text-brand-green w-5 text-center"></i><span>Aire acondicionado</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-concierge-bell text-brand-green w-5 text-center"></i><span>Servicio de habitaciones</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-tv text-brand-green w-5 text-center"></i><span>Televisor de pantalla plana</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-bath text-brand-green w-5 text-center"></i><span>Bañera/ducha</span></div>
+                    <div class="flex flex-wrap gap-3 text-sm">
+                        <div class="attribute-pill"><i class="fas fa-moon"></i><span>Cortinas opacas</span></div>
+                        <div class="attribute-pill"><i class="fas fa-desktop"></i><span>Mesa de escritorio</span></div>
+                        <div class="attribute-pill"><i class="fas fa-snowflake"></i><span>Aire acondicionado</span></div>
+                        <div class="attribute-pill"><i class="fas fa-concierge-bell"></i><span>Servicio de habitaciones</span></div>
+                        <div class="attribute-pill"><i class="fas fa-tv"></i><span>Televisor de pantalla plana</span></div>
+                        <div class="attribute-pill"><i class="fas fa-bath"></i><span>Bañera/ducha</span></div>
                     </div>
                     <button class="text-sm font-semibold mt-4 hover:underline">Mostrar más <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
 
                     <h3 class="font-semibold text-gray-800 mb-4 mt-6">Tipos de habitación</h3>
-                    <div class="grid grid-cols-2 gap-4 text-sm text-gray-700">
-                        <div class="flex items-center gap-3"><i class="fas fa-city text-brand-green w-5 text-center"></i><span>Vistas a la ciudad</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-bed text-brand-green w-5 text-center"></i><span>Suites</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-ban smoking-icon text-brand-green w-5 text-center"></i><span>Habitaciones de no fumadores</span></div>
-                        <div class="flex items-center gap-3"><i class="fas fa-users text-brand-green w-5 text-center"></i><span>Habitaciones para familias</span></div>
+                    <div class="flex flex-wrap gap-3 text-sm">
+                        <div class="attribute-pill"><i class="fas fa-city"></i><span>Vistas a la ciudad</span></div>
+                        <div class="attribute-pill"><i class="fas fa-bed"></i><span>Suites</span></div>
+                        <div class="attribute-pill"><i class="fas fa-ban"></i><span>Habitaciones de no fumadores</span></div>
+                        <div class="attribute-pill"><i class="fas fa-users"></i><span>Habitaciones para familias</span></div>
                     </div>
                 </div>
             </div>
@@ -729,7 +745,6 @@
             <p id="location-address" class="text-sm text-gray-600 mb-4 flex items-center gap-2"><i class="fas fa-map-marker-alt"></i><span></span></p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="md:col-span-1 h-96 rounded-lg overflow-hidden relative">
-                    <!-- Se ha actualizado la imagen del mapa para una mejor visualización en desktop -->
                     <img id="location-map-image" src="" alt="Mapa de ubicación" class="w-full h-full object-cover object-center" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Mapa+no+disponible';"/>
                     <div class="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow-md">
                         <h4 id="map-hotel-name" class="font-bold text-sm"></h4>
@@ -763,7 +778,6 @@
             <section id="popular-nearby-hotels" class="bg-white p-6 rounded-lg shadow-sm mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Populares cercanos</h2>
             <div id="popular-nearby-hotels-container" class="carousel-container">
-                <!-- Se ha modificado el ancho de las tarjetas para mostrar dos en móvil -->
                 <div id="popular-nearby-hotels-carousel" class="carousel-content-wrapper grid grid-flow-col auto-cols-[48%] sm:auto-cols-[300px] gap-4">
                 </div>
                 <button class="carousel-nav-button left" data-carousel-id="popular-nearby-hotels-carousel" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
@@ -774,7 +788,6 @@
         <section id="similar-sponsored-establishments" class="bg-white p-6 rounded-lg shadow-sm mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Establecimientos patrocinados similares</h2>
             <div id="similar-sponsored-establishments-container" class="carousel-container">
-                 <!-- Se ha modificado el ancho de las tarjetas para mostrar dos en móvil -->
                  <div id="similar-sponsored-establishments-carousel" class="carousel-content-wrapper grid grid-flow-col auto-cols-[48%] sm:auto-cols-[300px] gap-4">
                 </div>
                 <button class="carousel-nav-button left" data-carousel-id="similar-sponsored-establishments-carousel" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
@@ -784,7 +797,6 @@
         <section id="reviews" class="bg-white p-6 rounded-lg shadow-sm mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Opiniones</h2>
              <div id="reviews-container" class="space-y-6">
-                <!-- Reviews will be populated by JavaScript -->
             </div>
             <button id="toggle-reviews-btn" class="text-sm font-semibold mt-4 hover:underline">Ver todas las opiniones <i class="review-arrow fas fa-chevron-down ml-1 text-xs"></i></button>
         </section>
@@ -869,7 +881,6 @@
             <p id="sticky-footer-price" class="font-bold text-lg"></p>
             <a href="#" class="text-xs text-brand-green font-semibold hover:underline">Ver detalles</a>
         </div>
-        <!-- Botón "Reservar" con w-full en móvil y padding ajustado -->
         <a href="#" id="sticky-footer-offer-btn" class="bg-brand-green text-white font-bold py-2 px-4 rounded-full hover:opacity-90 w-auto">Reservar</a>
     </div>
 
@@ -938,15 +949,13 @@
             closeButton.addEventListener('click', handleClose);
             overlay.addEventListener('click', handleOverlayClick);
         } else {
-            if (callback) callback(); // If popup elements not found, just proceed
+            if (callback) callback(); 
         }
     }
 
 
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOMContentLoaded fired. Initializing app...'); // DEBUG: Confirma que el evento DOMContentLoaded se ha disparado.
         
-        // --- UPDATED DATABASE WITH VALID IMAGE URLs AND MORE REVIEWS ---
         const hotelsDB = [
             { id: 1, name: 'Amora Hotel Jamison Sydney', price: 211, rating: 4.3, reviews: 11514, location: 'Sydney, Australia', address: '11 Jamison Street, Sydney, Nueva Gales del Sur 2000 Australia', img: 'https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg', description: "La búsqueda del hotel boutique ideal en Sídney no tiene por qué ser complicada. Bienvenido a Amora Hotel Jamison Sydney, una fantástica opción para viajeros como tú...", mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://storage.googleapis.com/a1aa/image/6e9e056a-5fd2-4ea6-815a-78664462ecf5.jpg', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 1.2, sponsored: true, 
                 faq: [
@@ -969,49 +978,49 @@
                 ]
             },
             { id: 3, name: 'Prince Smart Inn Naha', price: 311, rating: 4.6, reviews: 752, location: 'Naha, Japan', address: '3-chōme-2-23 Asahimachi, Naha, Okinawa 900-0029, Japan', img: 'https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg', description: 'Un hotel moderno y funcional.', mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://storage.googleapis.com/a1aa/image/7a929508-b8a7-464d-485a-0f7cb09feee6.jpg', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 2.1, sponsored: true, 
-                faq: [], // Empty FAQ for this hotel
+                faq: [], 
                 reviewsData: [
                     { rating: 4, title: "Buena relación calidad-precio", text: "Las habitaciones son pequeñas pero muy limpias y modernas. Ideal para una estancia corta.", author: "Sofía M.", date: "05 de Junio, 2025" }
                 ]
             },
             { id: 4, name: 'HOTEL ANTEROOM Naha', price: 360, rating: 4.6, reviews: 497, location: 'Naha, Japan', address: '3-chōme-27-11 Maejima, Naha, Okinawa 900-0016, Japan', img: 'https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg', description: 'Un hotel que fusiona arte y cultura.', mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://storage.googleapis.com/a1aa/image/29e6ba83-28a5-4826-88e9-07aba0f18e8b.jpg', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/95/d4/04/hotel-indigo-sydney.jpg?w=1000&h=-1&s=1'], distance: 3.5, sponsored: false, 
-                faq: [], // Empty FAQ for this hotel
+                faq: [], 
                 reviewsData: [
                     { rating: 5, title: "Diseño increíble", text: "Me encantó el concepto artístico del hotel. Cada rincón es una obra de arte. Muy recomendable.", author: "Pablo G.", date: "10 de Junio, 2025" }
                 ]
             },
             { id: 5, name: 'Hotel Mirador Puerta del Sol', price: 137, rating: 4.3, reviews: 353, location: 'Madrid, España', address: 'Calle Mayor 1, 28013 Madrid, España', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg?w=1000&h=600&s=1', description: 'Un hotel acogedor y céntrico.', mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/72/bf/4b/frente.jpg', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/62/39/1c/hostal-providencia.jpg?w=1000&h=-1&s=1', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/95/d4/04/hotel-indigo-sydney.jpg?w=1000&h=-1&s=1'], distance: 0.1, sponsored: true, 
-                faq: [], // Empty FAQ for this hotel
+                faq: [], 
                 reviewsData: [
                     { rating: 4, title: "Perfecta ubicación", text: "No se puede pedir una ubicación mejor. Cerca de todo. Las habitaciones son cómodas.", author: "Laura F.", date: "03 de Julio, 2025" }
                 ]
             },
             { id: 6, name: 'Hotel Eurobuilding Caracas', price: 212, rating: 4.5, reviews: 2500, location: 'Caracas, Venezuela', address: 'Final Calle La Guairita, Chuao, Caracas', img: 'https://storage.googleapis.com/a1aa/image/image_0f4854.jpg-50873270-28bc-4dd8-9be4-bd7433517505', description: 'Lujo y confort en el corazón financiero de Caracas.', mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://storage.googleapis.com/a1aa/image/image_0f4854.jpg-50873270-28bc-4dd8-9be4-bd7433517505', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 4.5, sponsored: false, 
-                faq: [], // Empty FAQ for this hotel
+                faq: [], 
                 reviewsData: [
                     { rating: 5, title: "Impecable", text: "Un hotel de lujo con todas las comodidades. El personal muy atento y profesional.", author: "Roberto V.", date: "25 de Junio, 2025" }
                 ]
             },
             { id: 7, name: 'Hesperia WTC Valencia', price: 160, rating: 4.4, reviews: 950, location: 'Valencia, Venezuela', address: 'Avenida Salvador Feo La Cruz, Naguanagua', img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/656975661.jpg?k=d4594331cf38698eca36c082de6a38a94ebabe4f979b26198c1bf3fdbe43f6f5&o=', description: 'El hotel más grande de Venezuela, ideal para negocios y eventos.', mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://cf.bstatic.com/xdata/images/hotel/max1024x768/656975661.jpg?k=d4594331cf38698eca36c082de6a38a94ebabe4f979b26198c1bf3fdbe43f6f5&o=', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 8.2, sponsored: true, 
-                faq: [], // Empty FAQ for this hotel
+                faq: [], 
                 reviewsData: [
                     { rating: 4, title: "Ideal para eventos", text: "Las instalaciones para conferencias son excelentes. Las habitaciones son amplias y cómodas.", author: "Gabriela P.", date: "18 de Junio, 2025" }
                 ]
             },
             { id: 8, name: 'Tibu Hotel Boutique', price: 120, rating: 4.7, reviews: 250, location: 'Margarita, Venezuela', address: 'Playa El Agua, Isla de Margarita', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/d2/05/7e/20180420-192822-largejpg.jpg?w=800&h=-1&s=1', description: 'Un escape encantador con atención personalizada en la perla del Caribe.', mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/d2/05/7e/20180420-192822-largejpg.jpg?w=800&h=-1&s=1', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 1.8, sponsored: false, 
-                faq: [], // Empty FAQ for this hotel
+                faq: [], 
                 reviewsData: [
                     { rating: 5, title: "Paraíso en la playa", text: "Un hotel pequeño pero con un encanto único. La atención es muy personalizada y la playa está a un paso.", author: "Andrea C.", date: "08 de Julio, 2025" }
                 ]
             },
             { id: 9, name: 'Marriott Maracay Golf Resort', price: 220, rating: 4.6, reviews: 1100, location: 'Maracay, Venezuela', address: 'Av. Las Delicias, Maracay', img: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/463619762.jpg?k=c1376a0487065ae390385ca04f15336b8d9d2318c7b7961f519d1d8505c25261&o=', description: 'Un ícono arquitectónico renovado que ofrece una experiencia de lujo.', mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://cf.bstatic.com/xdata/images/hotel/max1024x768/463619762.jpg?k=c1376a0487065ae390385ca04f15336b8d9d2318c7b7961f519d1d8505c25261&o=', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 2.5, sponsored: true, 
-                faq: [], // Empty FAQ for this hotel
+                faq: [], 
                 reviewsData: [
                     { rating: 4, title: "Resort completo", text: "Las instalaciones de golf son excelentes. Ideal para relajarse y disfrutar de la naturaleza.", author: "Fernando Q.", date: "02 de Julio, 2025" }
                 ]
             },
             { id: 10, name: 'The Ritz-Carlton, Tokyo', price: 1200, rating: 4.8, reviews: 1500, location: 'Tokyo, Japan', address: 'Tokyo Midtown 9-7-1 Akasaka, Minato-ku, Tokyo', img: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1', description: 'Vistas panorámicas y lujo incomparable en el corazón de Tokio.', mapImage: 'https://motor.elpais.com/wp-content/uploads/2022/01/google-maps-22.jpg', galleryImages: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/21/10/9c/hotel-chalet-del-brenta.jpg?w=1000&h=-1&s=1', 'https://storage.googleapis.com/a1aa/image/49e5886d-2903-48c5-3649-78607fede91a.jpg', 'https://storage.googleapis.com/a1aa/image/ee5c710a-dee9-4dce-b960-ac814d36ff0d.jpg'], distance: 0.8, sponsored: false, 
-                faq: [], // Empty FAQ for this hotel
+                faq: [], 
                 reviewsData: [
                     { rating: 5, title: "Lujo en su máxima expresión", text: "Las vistas desde la habitación eran impresionantes. El servicio es de otro nivel. Una experiencia inolvidable.", author: "Kenji T.", date: "29 de Junio, 2025" }
                 ]
@@ -1057,22 +1066,20 @@
         ];
         
         let currentDisplayedHotel = null;
-        let autoplayIntervals = {}; // Objeto para almacenar los intervalos de autoplay
+        let autoplayIntervals = {};
 
         function startAutoplay(carouselId, intervalTime = 3000) {
             const carousel = document.getElementById(carouselId);
             if (!carousel) return;
 
-            // Limpiar cualquier intervalo existente para este carrusel
             if (autoplayIntervals[carouselId]) {
                 clearInterval(autoplayIntervals[carouselId]);
             }
 
             autoplayIntervals[carouselId] = setInterval(() => {
-                const scrollAmount = carousel.offsetWidth * 0.5; // Desplazarse la mitad del ancho del carrusel para mostrar la siguiente tarjeta
+                const scrollAmount = carousel.offsetWidth * 0.5;
                 carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 
-                // Si llega al final, volver al principio
                 if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth) {
                     carousel.scrollTo({ left: 0, behavior: 'smooth' });
                 }
@@ -1117,7 +1124,6 @@
             const faqSection = document.getElementById('faq');
             if (!container || !faqSection) return;
 
-            // Siempre mostrar la sección de FAQ
             faqSection.style.display = 'block'; 
             container.innerHTML = '';
 
@@ -1146,14 +1152,12 @@
                     const body = header.nextElementSibling;
                     const arrow = header.querySelector('.faq-arrow');
                     
-                    // Solo togglea el acordeón clicado, no cierra los demás
                     body.classList.toggle('open');
                     arrow.classList.toggle('rotated');
                 });
             });
         }
 
-        // Function to populate and manage reviews
         function populateReviews(reviewsData) {
             const container = document.getElementById('reviews-container');
             const reviewsSection = document.getElementById('reviews');
@@ -1161,17 +1165,15 @@
 
             if (!container || !reviewsSection) return;
 
-            // Siempre mostrar la sección de opiniones
             reviewsSection.style.display = 'block';
             container.innerHTML = '';
 
             if (!reviewsData || reviewsData.length === 0) {
                 container.innerHTML = '<p class="text-gray-600 text-sm italic">No hay opiniones disponibles para este hotel.</p>';
-                toggleReviewsBtn.style.display = 'none'; // Hide toggle button if no reviews
+                toggleReviewsBtn.style.display = 'none';
                 return;
             }
 
-            // Display first 2 reviews initially, hide the rest
             reviewsData.forEach((review, index) => {
                 const reviewItem = document.createElement('div');
                 reviewItem.className = 'border-b pb-4';
@@ -1193,14 +1195,13 @@
                 `;
                 container.appendChild(reviewItem);
 
-                if (index >= 2) { // Hide reviews beyond the first two
-                    reviewItem.classList.add('hidden-review'); // Add class to manage visibility
+                if (index >= 2) { 
+                    reviewItem.classList.add('hidden-review'); 
                     reviewItem.querySelector('.review-item-body').style.maxHeight = '0';
                     reviewItem.querySelector('.review-item-body').style.overflow = 'hidden';
                 }
             });
 
-            // Toggle button visibility based on actual review count
             if (reviewsData.length > 2) {
                 toggleReviewsBtn.style.display = 'block';
                 toggleReviewsBtn.innerHTML = 'Ver todas las opiniones <i class="review-arrow fas fa-chevron-down ml-1 text-xs"></i>';
@@ -1208,7 +1209,6 @@
                 toggleReviewsBtn.style.display = 'none';
             }
 
-            // Add event listeners for review accordions
             container.querySelectorAll('.review-item-header').forEach(header => {
                 header.addEventListener('click', () => {
                     const body = header.nextElementSibling;
@@ -1219,22 +1219,20 @@
                 });
             });
 
-            // Toggle "Ver todas las opiniones" button functionality
             let reviewsExpanded = false;
-            toggleReviewsBtn.onclick = null; // Remove previous listener to prevent duplicates
+            toggleReviewsBtn.onclick = null; 
             toggleReviewsBtn.addEventListener('click', () => {
                 reviewsExpanded = !reviewsExpanded;
                 container.querySelectorAll('.hidden-review').forEach(reviewItem => {
                     const reviewBody = reviewItem.querySelector('.review-item-body');
                     if (reviewsExpanded) {
-                        reviewItem.style.display = 'block'; // Ensure the hidden review item itself is visible
+                        reviewItem.style.display = 'block'; 
                         reviewBody.classList.add('open');
                     } else {
                         reviewBody.classList.remove('open');
-                        // Use a timeout to hide the element after the transition
                         setTimeout(() => {
                              reviewItem.style.display = 'none';
-                        }, 400); // Match transition duration
+                        }, 400); 
                     }
                 });
                 toggleReviewsBtn.innerHTML = reviewsExpanded ? 'Ver menos opiniones <i class="review-arrow fas fa-chevron-up ml-1 text-xs"></i>' : 'Ver todas las opiniones <i class="review-arrow fas fa-chevron-down ml-1 text-xs"></i>';
@@ -1243,30 +1241,24 @@
 
 
         function updateMainHotelContent(hotel) {
-            console.log('Updating main hotel content with:', hotel); // DEBUG: Check what hotel object is received
             currentDisplayedHotel = hotel;
             const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
             const setSrc = (id, src) => { const el = document.getElementById(id); if (el) el.src = src; };
             const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
 
-            // Use default values if properties are missing from the passed hotel object
             const hotelName = hotel.name || 'Hotel Desconocido';
             const hotelLocation = hotel.location || 'Ubicación Desconocida';
-            const hotelRating = hotel.rating ?? 0; // Use nullish coalescing for numbers
+            const hotelRating = hotel.rating ?? 0;
             const hotelReviews = hotel.reviews ?? 0;
             const hotelDescription = hotel.description || 'No hay descripción disponible para este hotel.';
             const hotelAddress = hotel.address || 'Dirección no disponible';
             const hotelPrice = hotel.price ?? 0;
 
-            // --- IMAGE HANDLING ---
-            // Prioritize the 'image' property from the passed hotel object for the main image
             const mainImageSrc = hotel.image || 'https://placehold.co/600x400/cccccc/ffffff?text=Imagen+no+disponible';
 
-            // Use galleryImages for sub-images, falling back to placeholders
             const hotelGalleryImages = hotel.galleryImages || [];
             const subImage1Src = hotelGalleryImages[1] || 'https://placehold.co/400x300/cccccc/ffffff?text=Imagen+2';
             const subImage2Src = hotelGalleryImages[2] || 'https://placehold.co/400x300/cccccc/ffffff?text=Imagen+3';
-            // --- END IMAGE HANDLING ---
 
             const hotelMapImage = hotel.mapImage || 'https://placehold.co/600x400/cccccc/ffffff?text=Mapa+no+disponible';
             const hotelFaq = hotel.faq || [];
@@ -1300,15 +1292,14 @@
             setText('sticky-footer-price', `${hotelPrice} €`); 
             setText('sticky-footer-price-desktop', `${hotelPrice} €`); 
             
-            // Apply the image sources
             setSrc('mobile-main-image', mainImageSrc);
             setSrc('desktop-main-image', mainImageSrc);
             setSrc('desktop-sub-image1', subImage1Src);
             setSrc('desktop-sub-image2', subImage2Src);
-            setSrc('location-map-image', hotelMapImage); // Usar la URL de mapa proporcionada
+            setSrc('location-map-image', hotelMapImage); 
             
             populateFAQ(hotelFaq);
-            populateReviews(hotelReviewsData); // Populate reviews for the selected hotel
+            populateReviews(hotelReviewsData);
 
             selectedDeparture = null;
             selectedReturn = null;
@@ -1316,7 +1307,6 @@
             hotelChildrenCount = 0;
             updateMainBookingDisplays();
 
-            // Scroll to the top of the main content area after updating hotel content
             const mainContent = document.querySelector('main');
             if (mainContent) {
                 mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1327,8 +1317,6 @@
             const hotelCard = document.createElement('div');
             const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating ?? 0)) + '<span></span>'.repeat(5 - Math.round(hotel.rating ?? 0));
             
-            // Modified classes for better mobile layout and minimalist design
-            // w-full para mobile, flex-shrink-0 para que no se encojan, y se ajusta el padding y gap
             hotelCard.className = 'bg-white rounded-lg shadow-sm border interactive-card flex flex-col items-center sm:items-start gap-2 p-2 cursor-pointer flex-shrink-0 w-full';
             
             hotelCard.innerHTML = `
@@ -1357,7 +1345,6 @@
         function createCompactHotelCard(hotel) {
             const hotelCard = document.createElement('div');
             const ratingDotsHtml = '<span class="filled"></span>'.repeat(Math.round(hotel.rating ?? 0)) + '<span></span>'.repeat(5 - Math.round(hotel.rating ?? 0));
-            // MODIFICACIÓN CLAVE AQUÍ: w-full para móvil, sm:w-48 para sm+
             hotelCard.className = 'flex-shrink-0 w-full sm:w-48 bg-white rounded-lg shadow-sm cursor-pointer border interactive-card';
             hotelCard.innerHTML = `
                 <img alt="Imagen de ${hotel.name || 'Hotel'}" src="${hotel.image || 'https://placehold.co/192x96/cccccc/ffffff?text=Hotel'}" class="w-full h-24 object-cover rounded-t-lg" onerror="this.onerror=null;this.src='https://placehold.co/192x96/cccccc/ffffff?text=Hotel';"/>
@@ -1387,7 +1374,6 @@
                     if (container.firstChild) {
                         container.firstChild.classList.add('initial-hop-animation');
                     }
-                    // Habilitar autoplay de nuevo
                     startAutoplay(sectionConfig.id);
                     setupCarouselObserver(sectionConfig.id);
                 }
@@ -1405,7 +1391,6 @@
                     if (container.firstChild) {
                         container.firstChild.classList.add('initial-hop-animation');
                     }
-                    // Habilitar autoplay de nuevo
                     startAutoplay(config.id);
                     setupCarouselObserver(config.id);
                 }
@@ -1417,9 +1402,10 @@
         
         window.addEventListener('scroll', () => {
             let current = '';
+            const navHeight = document.querySelector('header').offsetHeight + document.querySelector('#section-nav-mobile').offsetHeight;
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 150) {
+                if (pageYOffset >= sectionTop - navHeight) {
                     current = section.getAttribute('id');
                 }
             });
@@ -1438,7 +1424,6 @@
                 const direction = parseInt(button.dataset.direction, 10);
                 const carousel = document.getElementById(carouselId);
                 if (carousel) {
-                    // Ajustar el scroll para mostrar la siguiente tarjeta completamente en móvil
                     const scrollAmount = (window.innerWidth < 640 ? carousel.querySelector('.interactive-card').offsetWidth + 16 : carousel.offsetWidth * 0.8) * direction;
                     carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
                 }
@@ -1456,7 +1441,7 @@
         if (toggleDescriptionBtn) {
             const description = document.getElementById('hotel-description');
             const originalText = description.textContent;
-            const limit = 300; // Character limit
+            const limit = 300; 
             if (originalText.length > limit) {
                 const shortText = originalText.substring(0, limit) + '...';
                 description.textContent = shortText;
@@ -1475,7 +1460,6 @@
             }
         }
 
-        // --- Calendar & Traveler Logic for Hotel Booking Section ---
         const checkinCheckoutTrigger = document.getElementById('checkin-checkout-trigger');
         const guestsTrigger = document.getElementById('guests-trigger');
         const mainCheckinDisplay = document.getElementById('main-checkin-display');
@@ -1705,35 +1689,30 @@
             });
         }
 
-        // --- Lógica de redirección a Checkout (MEJORADA) ---
         function redirectToCheckout(event) {
             if (event) {
                 event.preventDefault();
             }
 
-            // Validar que las fechas han sido seleccionadas
             if (!selectedDeparture || !selectedReturn) {
                 showNotification('Por favor, selecciona las fechas de llegada y salida.', 'error');
                 
                 const bookingSection = document.getElementById('booking-section');
                 if (bookingSection) {
-                    // Scroll a la sección de reserva para dar contexto al usuario
                     bookingSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     
-                    // Opcional: añadir un efecto de resaltado temporal
                     bookingSection.style.transition = 'background-color 0.3s';
-                    bookingSection.style.backgroundColor = '#fffbeb'; // Un amarillo claro
+                    bookingSection.style.backgroundColor = '#fffbeb'; 
                     setTimeout(() => {
-                        bookingSection.style.backgroundColor = ''; // Volver al color original
+                        bookingSection.style.backgroundColor = ''; 
                     }, 2000);
                 }
 
-                // Abrir el calendario después de un breve retraso para que el scroll se complete
                 setTimeout(() => {
                     if(checkinCheckoutTrigger) {
                         checkinCheckoutTrigger.click();
                     }
-                }, 600); // 600ms de retraso
+                }, 600); 
 
                 return;
             }
@@ -1747,7 +1726,7 @@
                 sessionStorage.setItem('hotelBookingDetails', JSON.stringify({
                     hotelId: currentDisplayedHotel.id,
                     hotelName: currentDisplayedHotel.name,
-                    hotelImage: currentDisplayedHotel.image, // Usar 'image' para el checkout
+                    hotelImage: currentDisplayedHotel.image, 
                     price: currentDisplayedHotel.price,
                     checkin: selectedDeparture.toISOString().split('T')[0],
                     checkout: selectedReturn.toISOString().split('T')[0],
@@ -1758,7 +1737,6 @@
             });
         }
 
-        // --- Lógica del botón principal "Reservar" ---
         const bookDirectBtn = document.getElementById('book-direct-btn');
         const bookNowDesktopBtn = document.getElementById('book-now-desktop-btn');
         const stickyFooterOfferBtn = document.getElementById('sticky-footer-offer-btn');
@@ -1776,49 +1754,28 @@
             stickyFooterOfferBtn.addEventListener('click', redirectToCheckout);
         }
 
-        // --- Initial setup ---
-        console.log('Attempting to hide loader and initialize content.'); // DEBUG: Mensaje antes de intentar ocultar el loader
         const loader = document.getElementById('loader');
         if (loader) {
             loader.classList.add('hidden');
             loader.addEventListener('transitionend', function() {
                 loader.remove();
-                console.log('Loader removed from DOM.'); // DEBUG: Confirma que el loader fue removido
             }, { once: true });
-        } else {
-            console.warn('Loader element not found, cannot hide it.'); // DEBUG: Si el loader no se encuentra
         }
-        console.log('Loader hiding logic initiated.'); // DEBUG: Mensaje después de intentar ocultar el loader
-
-
-        // MODIFICACIÓN CLAVE: Cambiar 'selectedHotelData' a 'selectedPropertyData'
+        
         const storedPropertyData = sessionStorage.getItem('selectedPropertyData'); 
-        console.log('Stored property data from sessionStorage:', storedPropertyData); // DEBUG: Check the raw string
 
         if (storedPropertyData) {
             try {
                 const hotel = JSON.parse(storedPropertyData);
-                console.log('Parsed property object:', hotel); // DEBUG: Check the parsed object
-                // Si el objeto de hotel de sessionStorage no tiene todas las propiedades,
-                // intenta encontrar el hotel completo en hotelsDB por ID.
-                // Asegúrate de que hotelsDB use 'img' o 'image' consistentemente.
-                // Aquí asumimos que hotelsDB usa 'img' y sessionStorage usa 'image',
-                // por lo que si hay un 'image' en sessionStorage, lo usamos como 'img' para buscar en hotelsDB
                 const fullHotelData = hotelsDB.find(h => h.id === hotel.id) || hotelsDB.find(h => h.img === hotel.image) || hotel;
                 updateMainHotelContent(fullHotelData);
-                // Opcional: eliminar después de usar si no se necesita persistir en esta página
-                // sessionStorage.removeItem('selectedPropertyData');
             } catch (e) {
-                console.error('Error parsing stored property data from sessionStorage:', e); // DEBUG: Catch parsing errors
-                console.warn('No se pudieron cargar los datos de la propiedad desde sessionStorage. Cargando propiedad predeterminada.');
-                const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0]; // Load hotel with ID 11 or the first one
+                console.error('Error parsing stored property data from sessionStorage:', e);
+                const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0];
                 updateMainHotelContent(initialHotel);
             }
         } else {
-            // Si no hay datos en sessionStorage (ej. acceso directo a la página),
-            // cargar una propiedad predeterminada o redirigir.
-            console.warn('No se encontraron datos de la propiedad en sessionStorage. Cargando propiedad predeterminada.');
-            const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0]; // Load hotel with ID 11 or the first one
+            const initialHotel = hotelsDB.find(h => h.id === 11) || hotelsDB[0];
             updateMainHotelContent(initialHotel);
         }
         populateCarousels();
