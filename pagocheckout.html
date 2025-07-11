@@ -311,52 +311,47 @@
 
   <header class="bg-white border-b border-gray-200">
     <div
-      class="max-w-[1200px] mx-auto px-3 py-3 sm:px-6 flex flex-col sm:flex-row items-center justify-between relative"
+      class="max-w-[1200px] mx-auto px-3 py-3 sm:px-6 flex items-center justify-between relative"
     >
-      <div class="w-full flex justify-between items-center lg:w-auto lg:static">
-          <a href="index.html" class="lg:hidden text-guacamayafly-orange"><i class="fas fa-arrow-left fa-lg"></i></a>
-          <div class="flex items-center space-x-2 lg:mx-0">
-              <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
-              <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
-          </div>
-          <div id="auth-status-container-mobile" class="lg:hidden">
-              <!-- Mobile Auth Button/Avatar will be injected here -->
-          </div>
+      <!-- CAMBIO: Estructura de Header modificada para mobile y desktop -->
+      <div class="flex items-center gap-4">
+        <button class="hidden lg:block text-gray-700">
+            <i class="fas fa-bars fa-lg"></i>
+        </button>
+        <a href="productdetails.html" class="lg:hidden text-guacamayafly-orange"><i class="fas fa-arrow-left fa-lg"></i></a>
+        <div class="flex items-center space-x-2">
+            <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
+            <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
+        </div>
       </div>
-
-      <nav class="hidden lg:flex items-start relative flex-1 justify-center w-full sm:w-auto mt-2 sm:mt-0">
+      
+      <nav class="hidden lg:flex items-center relative flex-1 justify-center w-auto mx-8">
         <div class="absolute w-full h-0.5 bg-gray-300 top-[12px] left-0 right-0"></div>
         <div id="progress-fill" class="absolute h-0.5 bg-guacamayafly-orange top-[12px] left-0 w-[16.5%] transition-all duration-300 ease-in-out"></div>
 
-        <div id="step-1-header" class="flex flex-col items-center relative z-10 px-0.5 sm:px-2">
-          <div
-            class="flex items-center justify-center w-6 h-6 rounded-full bg-guacamayafly-orange text-white text-xs font-semibold border-2 border-guacamayafly-orange"
-          >
-            1
-          </div>
-          <span class="text-guacamayafly-orange font-semibold text-[9px] sm:text-sm mt-1 whitespace-nowrap">Información del cliente</span>
+        <div id="step-1-header" class="flex flex-col items-center relative z-10 px-2">
+          <div class="flex items-center justify-center w-6 h-6 rounded-full bg-guacamayafly-orange text-white text-xs font-semibold border-2 border-guacamayafly-orange">1</div>
+          <span class="text-guacamayafly-orange font-semibold text-sm mt-1 whitespace-nowrap">Información del cliente</span>
         </div>
 
-        <div id="step-2-header" class="flex flex-col items-center relative z-10 px-0.5 sm:px-2">
-          <div
-            class="flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 bg-white text-xs text-gray-400"
-          >
-            2
-          </div>
-          <span class="text-gray-600 text-[9px] sm:text-sm mt-1 whitespace-nowrap">Información de pago</span>
+        <div id="step-2-header" class="flex flex-col items-center relative z-10 px-2">
+          <div class="flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 bg-white text-xs text-gray-400">2</div>
+          <span class="text-gray-600 text-sm mt-1 whitespace-nowrap">Información de pago</span>
         </div>
 
-        <div id="step-3-header" class="flex flex-col items-center relative z-10 px-0.5 sm:px-2">
-          <div
-            class="flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 bg-white text-xs text-gray-400"
-          >
-            <i class="fas fa-check"></i>
-          </div>
-          <span class="text-gray-600 text-[9px] sm:text-sm mt-1 whitespace-nowrap">¡Reserva confirmada!</span>
+        <div id="step-3-header" class="flex flex-col items-center relative z-10 px-2">
+          <div class="flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 bg-white text-xs text-gray-400"><i class="fas fa-check"></i></div>
+          <span class="text-gray-600 text-sm mt-1 whitespace-nowrap">¡Reserva confirmada!</span>
         </div>
       </nav>
-      <div id="auth-status-container-desktop" class="hidden lg:block">
-          <!-- Desktop Auth Button/Avatar will be injected here -->
+      
+      <div class="flex items-center gap-4">
+        <div id="auth-status-container">
+            <!-- Auth Button/Avatar will be injected here by JS -->
+        </div>
+        <button class="lg:hidden text-gray-700">
+            <i class="fas fa-bars fa-lg"></i>
+        </button>
       </div>
     </div>
   </header>
@@ -496,6 +491,33 @@
           <div class="bg-[#0b5e07] bg-opacity-10 rounded-xl p-3 text-xs text-[#0b5e07] font-semibold mt-4">Igualamos los precios. ¡Si lo encuentras por menos, lo igualamos! <i class="fas fa-info-circle text-xs"></i></div>
         </div>
       </div>
+      
+      <!-- CAMBIO: Secciones de información restauradas -->
+      <div id="restored-info-boxes" class="space-y-6">
+          <div class="bg-[#d9f0d9] rounded-xl p-4 text-sm text-[#0b5e07] flex items-center gap-2 font-semibold">
+            <i class="fas fa-thumbs-up text-base"></i>
+            <span>¡Excelente elección! <span class="font-normal">Has elegido nuestra tarifa más baja.</span></span>
+          </div>
+          <div class="bg-[#d9f0d9] rounded-xl p-4 text-sm text-[#0b5e07] flex items-center gap-2 font-semibold">
+            <i class="fas fa-thumbs-up text-base"></i>
+            <span>Gran variedad de propiedades, <span class="font-normal">con una calificación promedio de 9,7</span></span>
+          </div>
+          <div class="bg-[#fddede] rounded-xl p-4 text-sm text-[#b33a3a] flex items-center gap-2 font-semibold">
+            <i class="fas fa-clock text-base"></i> ¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!
+          </div>
+          <div class="bg-[#ffe3d3] rounded-xl p-4 text-sm text-[#b35a0b] flex items-center gap-2 font-semibold">
+            <i class="fas fa-clock text-base"></i>
+            <span>Faltan solo <span id="days-left" class="font-bold">2</span> días para tu llegada. <span class="font-bold">Las tarifas podrían aumentar si no reservas ahora.</span></span>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-4 text-sm">
+            <h3 class="font-semibold text-base mb-2">Sobre el pago</h3>
+            <p class="text-xs text-gray-500">
+              El pago de esta reserva será cobrado por la propiedad, no por Guacamayafly. Compartiremos los detalles de tu tarjeta de crédito con nuestro proveedor y con la propiedad para asegurar tu reserva y completar la transacción.
+              <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">Ver condiciones de reserva.</a>
+            </p>
+          </div>
+      </div>
+
     </aside>
 
     <section class="flex-1 bg-white rounded-xl border border-gray-200 p-6 max-w-full">
@@ -595,7 +617,6 @@
               </div>
               <button type="button" class="mt-3 text-sm text-guacamayafly-orange font-semibold hover:underline flex items-center gap-1">Haz clic aquí para más solicitudes.<i class="fas fa-chevron-down text-sm"></i></button>
             </fieldset>
-            <p class="text-sm text-[#b33a3a] font-semibold mb-3">¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</p>
             
             <div id="hospitality-info" class="bg-white rounded-xl border border-gray-200 p-6 my-6">
               <h2 class="text-base font-semibold mb-2">Información adicional sobre hospitalidad</h2>
@@ -607,29 +628,30 @@
               </select>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-200 p-6 my-6">
-              <div class="flex items-center mb-4">
-                  <input type="checkbox" id="guacamayafly-updates" class="w-5 h-5 text-guacamayafly-orange rounded focus:ring-guacamayafly-orange">
-                  <label for="guacamayafly-updates" class="ml-2 text-sm text-gray-700">
-                      Acepto recibir actualizaciones y promociones de Guacamayafly y sus afiliados o socios comerciales a través de diversos canales, incluido WhatsApp. Puede cancelar su suscripción en cualquier momento.
-                      <a href="#" class="text-guacamayafly-orange hover:underline">Lea más en la Política de Privacidad.</a>
-                  </label>
-              </div>
-              <div class="bg-green-100 border border-green-200 text-green-800 text-sm p-4 rounded-xl flex items-center gap-2 font-semibold">
-                  <i class="fas fa-check-circle text-base"></i>
-                  <span>¡No necesitas tarjeta de crédito para reservar! <span class="font-normal">Puedes reservar ahora sin proporcionar detalles de pago y pagar en el establecimiento durante tu estancia.</span></span>
-              </div>
+            <div id="info-boxes-container-form">
+                <div class="bg-white rounded-xl border border-gray-200 p-6 my-6">
+                  <div class="flex items-center mb-4">
+                      <input type="checkbox" id="guacamayafly-updates" class="w-5 h-5 text-guacamayafly-orange rounded focus:ring-guacamayafly-orange">
+                      <label for="guacamayafly-updates" class="ml-2 text-sm text-gray-700">
+                          Acepto recibir actualizaciones y promociones de Guacamayafly y sus afiliados o socios comerciales a través de diversos canales, incluido WhatsApp. Puede cancelar su suscripción en cualquier momento.
+                          <a href="#" class="text-guacamayafly-orange hover:underline">Lea más en la Política de Privacidad.</a>
+                      </label>
+                  </div>
+                  <div class="bg-green-100 border border-green-200 text-green-800 text-sm p-4 rounded-xl flex items-center gap-2 font-semibold">
+                      <i class="fas fa-check-circle text-base"></i>
+                      <span>¡No necesitas tarjeta de crédito para reservar! <span class="font-normal">Puedes reservar ahora sin proporcionar detalles de pago y pagar en el establecimiento durante tu estancia.</span></span>
+                  </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 p-6 my-6">
+                  <p class="text-sm text-gray-600 mb-3">
+                      Al continuar con esta reserva, acepto los términos y condiciones de Guacamayafly. 
+                      <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">Condiciones de uso</a> y
+                      <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">política de privacidad</a>.
+                  </p>
+                </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-200 p-6 my-6">
-              <p class="text-sm text-gray-600 mb-3">
-                  Al continuar con esta reserva, acepto los términos y condiciones de Guacamayafly. 
-                  <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">Condiciones de uso</a> y
-                  <a href="#" class="text-guacamayafly-orange font-semibold hover:underline">política de privacidad</a>.
-              </p>
-              <p class="text-orange-600 text-xs font-semibold py-1 mt-2"><i class="fas fa-exclamation-triangle"></i><span>¡Date prisa! ¡Tenemos la última habitación disponible para tus fechas a este precio!</span></p>
-              <div class="flex items-center gap-2 text-gray-500 text-sm mt-4"><i class="fas fa-envelope text-lg"></i><span>Le enviaremos la confirmación de su reserva a la dirección de correo electrónico proporcionada.</span></div>
-            </div>
           </div>
       </div>
     </section>
@@ -962,9 +984,8 @@
         const initialTimeInSeconds = 20 * 60;
         let timeLeft = initialTimeInSeconds;
 
-        const authStatusContainerDesktop = document.getElementById('auth-status-container-desktop');
-        const authStatusContainerMobile = document.getElementById('auth-status-container-mobile');
-
+        const authStatusContainer = document.getElementById('auth-status-container');
+        
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
         function renderAuthStatus() {
@@ -982,8 +1003,9 @@
                 </button>
             `;
 
-            authStatusContainerDesktop.innerHTML = isLoggedIn ? loggedInHTML : loggedOutHTML;
-            authStatusContainerMobile.innerHTML = isLoggedIn ? `<img src="https://placehold.co/32x32/FF7F00/FFFFFF?text=AV" alt="User Avatar" class="rounded-full w-8 h-8 cursor-pointer" id="avatar-btn-mobile">` : loggedOutHTML;
+            if(authStatusContainer) {
+                authStatusContainer.innerHTML = isLoggedIn ? loggedInHTML : loggedOutHTML;
+            }
 
             document.body.addEventListener('click', (event) => {
                 if (event.target.id === 'login-btn') {
