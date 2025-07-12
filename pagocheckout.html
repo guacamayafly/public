@@ -213,9 +213,8 @@
         transform: scale(1);
     }
 
-    /* --- ESTILOS DEL BOTÓN FIJO --- */
     #sticky-reserve-btn-container {
-        position: fixed; /* Mantenemos el botón fijo en la pantalla */
+        position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
@@ -346,32 +345,40 @@
   </div>
 
   <header class="bg-white border-b border-gray-200">
-    <div class="max-w-[1200px] mx-auto px-3 py-3 sm:px-6 flex items-center justify-between relative">
-      
-      <!-- Left side -->
+    <!-- New Mobile Header (lg:hidden) -->
+    <div class="max-w-[1200px] mx-auto px-3 sm:px-6 lg:hidden">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center gap-2">
+                <button id="hamburger-btn" class="text-gray-700">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <a href="index.html">
+                    <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
+                </a>
+            </div>
+            <div class="flex-1 mx-4">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="search" placeholder="Buscar" class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full bg-gray-100 text-sm focus:bg-white focus:ring-1 focus:ring-guacamayafly-orange focus:border-guacamayafly-orange transition-colors">
+                </div>
+            </div>
+            <div class="flex items-center">
+                <div id="auth-status-container-mobile"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Original Desktop Header (hidden lg:flex) -->
+    <div class="hidden lg:flex max-w-[1200px] mx-auto px-3 py-3 sm:px-6 items-center justify-between relative">
       <div class="flex items-center gap-3">
-        <!-- Back arrow - All screens -->
         <a href="productdetails.html" class="text-guacamayafly-orange"><i class="fas fa-arrow-left fa-lg"></i></a>
-        <!-- Hamburger Icon - Mobile only -->
-        <button id="hamburger-btn" class="text-gray-700 lg:hidden">
-            <i class="fas fa-bars fa-lg"></i>
-        </button>
-        <!-- Logo - Desktop only (in this position) -->
-        <div class="hidden lg:flex items-center space-x-2">
+        <div class="flex items-center space-x-2">
             <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
             <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
         </div>
       </div>
-
-      <!-- Center (Logo for mobile) -->
-      <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
-        <a href="#" class="flex items-center space-x-2">
-            <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
-        </a>
-      </div>
       
-      <!-- Desktop Nav -->
-      <nav class="hidden lg:flex items-center relative flex-1 justify-center w-auto mx-8">
+      <nav class="flex items-center relative flex-1 justify-center w-auto mx-8">
         <div class="absolute w-full h-0.5 bg-gray-300 top-[12px] left-0 right-0"></div>
         <div id="progress-fill" class="absolute h-0.5 bg-guacamayafly-orange top-[12px] left-0 w-[16.5%] transition-all duration-300 ease-in-out"></div>
 
@@ -391,14 +398,9 @@
         </div>
       </nav>
       
-      <!-- Right side -->
       <div class="flex items-center gap-4">
-        <div id="auth-status-container">
-            <!-- Auth Button/Avatar will be injected here by JS -->
+        <div id="auth-status-container-desktop">
         </div>
-        <button class="text-gray-700">
-            <i class="fas fa-search fa-lg"></i>
-        </button>
       </div>
     </div>
   </header>
@@ -1033,41 +1035,7 @@
         let timerInterval;
         const initialTimeInSeconds = 20 * 60;
         let timeLeft = initialTimeInSeconds;
-
-        const authStatusContainer = document.getElementById('auth-status-container');
         
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-        function renderAuthStatus() {
-            const loggedInHTML = `
-                <div class="flex items-center space-x-2">
-                    <img src="https://placehold.co/32x32/FF7F00/FFFFFF?text=AV" alt="User Avatar" class="rounded-full w-8 h-8 cursor-pointer" id="avatar-btn">
-                    <button id="logout-btn" class="hidden lg:block text-blue-600 border border-blue-600 rounded-full px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-blue-600 hover:text-white transition">
-                        Cerrar sesión
-                    </button>
-                </div>
-            `;
-            const loggedOutHTML = `
-                <button id="login-btn" class="bg-blue-600 text-white rounded-full px-4 py-1.5 text-sm font-semibold hover:bg-blue-700 transition">
-                    Iniciar sesión
-                </button>
-            `;
-
-            if(authStatusContainer) {
-                authStatusContainer.innerHTML = isLoggedIn ? loggedInHTML : loggedOutHTML;
-            }
-
-            document.body.addEventListener('click', (event) => {
-                if (event.target.id === 'login-btn') {
-                    localStorage.setItem('isLoggedIn', 'true');
-                    location.reload();
-                } else if (event.target.id === 'logout-btn') {
-                    localStorage.setItem('isLoggedIn', 'false');
-                    location.reload();
-                }
-            });
-        }
-
         let currentStep = 1;
         let currentMonthDate = new Date();
 
@@ -1112,6 +1080,59 @@
                 }
             }, 1000);
         }
+        
+        function renderAuthStatus() {
+            const authStatusContainerDesktop = document.getElementById('auth-status-container-desktop');
+            const authStatusContainerMobile = document.getElementById('auth-status-container-mobile');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+            // Desktop HTML
+            const loggedInHTMLDesktop = `
+                <div class="flex items-center space-x-2">
+                    <img src="https://placehold.co/32x32/FF7F00/FFFFFF?text=AV" alt="User Avatar" class="rounded-full w-8 h-8 cursor-pointer" id="avatar-btn">
+                    <button id="logout-btn" class="text-blue-600 border border-blue-600 rounded-full px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-blue-600 hover:text-white transition">
+                        Cerrar sesión
+                    </button>
+                </div>
+            `;
+            const loggedOutHTMLDesktop = `
+                <button id="login-btn-desktop" class="bg-blue-600 text-white rounded-full px-4 py-1.5 text-sm font-semibold hover:bg-blue-700 transition">
+                    Iniciar sesión
+                </button>
+            `;
+
+            // Mobile HTML
+            const loggedInHTMLMobile = `
+                <img src="https://placehold.co/32x32/FF7F00/FFFFFF?text=AV" alt="User Avatar" class="rounded-full w-8 h-8 cursor-pointer" id="avatar-btn-mobile">
+            `;
+            const loggedOutHTMLMobile = `
+                <button id="login-btn-mobile" class="bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center">
+                    <i class="fas fa-user text-white"></i>
+                </button>
+            `;
+
+            if(authStatusContainerDesktop) {
+                authStatusContainerDesktop.innerHTML = isLoggedIn ? loggedInHTMLDesktop : loggedOutHTMLDesktop;
+            }
+            if(authStatusContainerMobile) {
+                authStatusContainerMobile.innerHTML = isLoggedIn ? loggedInHTMLMobile : loggedOutHTMLMobile;
+            }
+        }
+        
+        // Event listener for all auth buttons
+        document.body.addEventListener('click', (event) => {
+            const target = event.target.closest('button');
+            if (!target) return;
+
+            const targetId = target.id;
+            if (targetId === 'login-btn-desktop' || targetId === 'login-btn-mobile') {
+                localStorage.setItem('isLoggedIn', 'true');
+                location.reload();
+            } else if (targetId === 'logout-btn') {
+                localStorage.setItem('isLoggedIn', 'false');
+                location.reload();
+            }
+        });
         
         function updateStepVisibility() {
             mainContent.classList.remove('hidden');
@@ -1540,11 +1561,6 @@
             });
         }
         
-        // --- LÓGICA DEL BOTÓN FIJO ELIMINADA ---
-        // Se ha eliminado el IntersectionObserver que cambiaba la posición del botón.
-        // Ahora el botón siempre tendrá 'position: fixed' gracias al CSS.
-
-        // --- Mobile Menu Logic ---
         const hamburgerBtn = document.getElementById('hamburger-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
