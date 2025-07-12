@@ -213,8 +213,9 @@
         transform: scale(1);
     }
 
+    /* --- ESTILOS DEL BOTÓN FIJO --- */
     #sticky-reserve-btn-container {
-        position: fixed;
+        position: fixed; /* Mantenemos el botón fijo en la pantalla */
         bottom: 0;
         left: 0;
         right: 0;
@@ -252,21 +253,6 @@
         background-color: #E67300;
     }
     
-    #sticky-reserve-btn::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 200%;
-        height: 100%;
-        background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.4) 50%, transparent 75%);
-        transition: left 0.8s ease-in-out;
-    }
-    #sticky-reserve-btn:hover::after {
-        left: 100%;
-    }
-
-
     #sticky-reserve-info {
         font-size: 0.75rem;
         color: #6b7280;
@@ -309,16 +295,41 @@
         }
     }
     
-    @keyframes heartbeat {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-    }
-    .heartbeat-animation {
-        animation: heartbeat 1.5s infinite ease-in-out;
-    }
   </style>
 </head>
 <body class="bg-[#f7f8fa] text-[#222222]">
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="fixed top-0 left-0 h-full w-4/5 max-w-sm bg-white shadow-lg p-6 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
+      <div class="flex justify-between items-center mb-6">
+          <div class="flex items-center space-x-2">
+            <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
+            <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
+          </div>
+          <button id="close-mobile-menu" class="text-2xl">×</button>
+      </div>
+       <button class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full py-2 font-semibold mb-4" type="button">Iniciar sesión</button>
+      <nav class="flex flex-col space-y-4">
+          <a href="#" class="text-gray-700 hover:text-guacamayafly-orange">Escribe una opinión</a>
+          <a href="#" class="text-gray-700 hover:text-guacamayafly-orange">Viajes</a>
+          <a href="#" class="text-gray-700 hover:text-guacamayafly-orange">Convierte en anfitrión</a>
+          <hr>
+          <h3 class="font-semibold text-gray-500 uppercase text-sm pt-2">Categorías</h3>
+          <a href="#" class="flex items-center gap-3 text-gray-700 hover:text-guacamayafly-orange"><i class="fas fa-building w-5"></i> Hoteles</a>
+          <a href="#" class="flex items-center gap-3 text-gray-700 hover:text-guacamayafly-orange"><i class="fas fa-star w-5"></i> Cosas que hacer</a>
+          <a href="#" class="flex items-center gap-3 text-gray-700 hover:text-guacamayafly-orange"><i class="fas fa-utensils w-5"></i> Restaurantes</a>
+          <a href="#" class="flex items-center gap-3 text-gray-700 hover:text-guacamayafly-orange"><i class="fas fa-plane w-5"></i> Vuelos</a>
+          <a href="#" class="flex items-center gap-3 text-gray-700 hover:text-guacamayafly-orange"><i class="fas fa-house-user w-5"></i> Alquileres vacacionales</a>
+          <a href="#" class="flex items-center gap-3 text-gray-700 hover:text-guacamayafly-orange"><i class="fas fa-ship w-5"></i> Cruceros</a>
+          <a href="#" class="flex items-center gap-3 text-gray-700 hover:text-guacamayafly-orange"><i class="fas fa-car w-5"></i> Coches de alquiler</a>
+          <a href="#" class="flex items-center gap-3 text-gray-700 hover:text-guacamayafly-orange"><i class="far fa-comments w-5"></i> Foros</a>
+      </nav>
+  </div>
+
+
   <div id="development-popup-overlay" class="modal-overlay hidden">
       <div class="modal-container">
           <div class="text-yellow-500 mb-4">
@@ -335,17 +346,31 @@
   </div>
 
   <header class="bg-white border-b border-gray-200">
-    <div
-      class="max-w-[1200px] mx-auto px-3 py-3 sm:px-6 flex items-center justify-between relative"
-    >
-      <div class="flex items-center gap-4">
+    <div class="max-w-[1200px] mx-auto px-3 py-3 sm:px-6 flex items-center justify-between relative">
+      
+      <!-- Left side -->
+      <div class="flex items-center gap-3">
+        <!-- Back arrow - All screens -->
         <a href="productdetails.html" class="text-guacamayafly-orange"><i class="fas fa-arrow-left fa-lg"></i></a>
-        <div class="flex items-center space-x-2">
+        <!-- Hamburger Icon - Mobile only -->
+        <button id="hamburger-btn" class="text-gray-700 lg:hidden">
+            <i class="fas fa-bars fa-lg"></i>
+        </button>
+        <!-- Logo - Desktop only (in this position) -->
+        <div class="hidden lg:flex items-center space-x-2">
             <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
             <span class="font-extrabold text-lg select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
         </div>
       </div>
+
+      <!-- Center (Logo for mobile) -->
+      <div class="absolute left-1/2 -translate-x-1/2 lg:hidden">
+        <a href="#" class="flex items-center space-x-2">
+            <img alt="Logo Guacamayafly" height="32" src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" width="32"/>
+        </a>
+      </div>
       
+      <!-- Desktop Nav -->
       <nav class="hidden lg:flex items-center relative flex-1 justify-center w-auto mx-8">
         <div class="absolute w-full h-0.5 bg-gray-300 top-[12px] left-0 right-0"></div>
         <div id="progress-fill" class="absolute h-0.5 bg-guacamayafly-orange top-[12px] left-0 w-[16.5%] transition-all duration-300 ease-in-out"></div>
@@ -366,20 +391,22 @@
         </div>
       </nav>
       
+      <!-- Right side -->
       <div class="flex items-center gap-4">
         <div id="auth-status-container">
             <!-- Auth Button/Avatar will be injected here by JS -->
         </div>
         <button class="text-gray-700">
-            <i class="fas fa-bars fa-lg"></i>
+            <i class="fas fa-search fa-lg"></i>
         </button>
       </div>
     </div>
   </header>
 
+  <!-- Se eliminó la clase 'heartbeat-animation' para quitar el pulso -->
   <div
     id="timer-bar"
-    class="bg-[#fff0eb] border border-[#fcd9cc] text-[#b33a3a] text-sm font-semibold flex items-center justify-center space-x-2 py-2 heartbeat-animation"
+    class="bg-[#fff0eb] border border-[#fcd9cc] text-[#b33a3a] text-sm font-semibold flex items-center justify-center space-x-2 py-2"
   >
     <i class="far fa-clock"></i>
     <span>Estamos manteniendo tu precio...</span>
@@ -1513,22 +1540,39 @@
             });
         }
         
-        // Sticky button logic
-        const footerSentinel = document.getElementById('footer-sentinel');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    stickyReserveBtnContainer.style.position = 'absolute';
-                } else {
-                    stickyReserveBtnContainer.style.position = 'fixed';
-                }
-            });
-        }, { threshold: [0.1] });
+        // --- LÓGICA DEL BOTÓN FIJO ELIMINADA ---
+        // Se ha eliminado el IntersectionObserver que cambiaba la posición del botón.
+        // Ahora el botón siempre tendrá 'position: fixed' gracias al CSS.
 
-        if (footerSentinel) {
-            observer.observe(footerSentinel);
+        // --- Mobile Menu Logic ---
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function openMenu() {
+            if (mobileMenu && mobileMenuOverlay) {
+                mobileMenu.classList.remove('-translate-x-full');
+                mobileMenuOverlay.classList.remove('hidden');
+            }
         }
 
+        function closeMenu() {
+            if (mobileMenu && mobileMenuOverlay) {
+                mobileMenu.classList.add('-translate-x-full');
+                mobileMenuOverlay.classList.add('hidden');
+            }
+        }
+
+        if (hamburgerBtn) {
+            hamburgerBtn.addEventListener('click', openMenu);
+        }
+        if (closeMobileMenuBtn) {
+            closeMobileMenuBtn.addEventListener('click', closeMenu);
+        }
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.addEventListener('click', closeMenu);
+        }
 
         // --- INITIALIZATION ---
         const initialBookingDetails = getBookingDetailsFromSession();
