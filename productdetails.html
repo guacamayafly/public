@@ -69,8 +69,8 @@
         .carousel-content-wrapper > * { scroll-snap-align: start; flex-shrink: 0; }
         .back-button { display: flex; align-items: center; gap: 0.5rem; color: #4a5568; font-weight: 500; transition: color 0.2s; }
         .back-button:hover { color: #1a203c; }
-        .action-icon { background-color: rgba(255, 255, 255, 0.9); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: background-color 0.2s, transform 0.2s; }
-        .action-icon:hover { background-color: white; transform: scale(1.05); }
+        .action-icon { background-color: white; border: 1px solid #e2e8f0; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; transition: all 0.2s; }
+        .action-icon:hover { background-color: #f7fafc; transform: scale(1.05); }
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
         .accordion-content.open { max-height: 1000px; }
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
@@ -542,26 +542,31 @@
         <!-- Top bar -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Mobile Header -->
-            <div class="flex items-center justify-between h-16 md:hidden relative">
-                <div class="flex items-center gap-4">
-                    <a href="index.html" class="text-gray-800 hover:text-guacamayafly-orange"><i class="fas fa-arrow-left fa-lg"></i></a>
-                    <button id="hamburger-btn" class="text-gray-800 hover:text-guacamayafly-orange"><i class="fas fa-bars fa-lg"></i></button>
+            <div class="flex items-center justify-between h-16 md:hidden">
+                <div class="flex items-center gap-2">
+                    <button id="hamburger-btn" class="text-gray-800"><i class="fas fa-bars fa-lg"></i></button>
+                    <a href="index.html">
+                        <img src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" alt="Guacamayafly Logo" class="h-8 w-auto">
+                    </a>
                 </div>
-                <a href="index.html" class="absolute left-1/2 -translate-x-1/2">
-                    <img src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" alt="Guacamayafly Logo" class="h-8 w-auto">
-                </a>
-                <div class="flex items-center space-x-4">
-                    <button class="text-gray-800 hover:text-guacamayafly-orange"><i class="fas fa-search fa-lg"></i></button>
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-4 py-1.5 text-sm font-semibold" type="button">Iniciar sesión</button>
+                <div class="flex-1 mx-4">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="search" placeholder="Buscar" class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full bg-gray-100 text-sm focus:bg-white">
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </button>
                 </div>
             </div>
             <!-- Desktop Header -->
             <div class="hidden md:flex items-center justify-between h-16">
-                <div class="flex items-center space-x-2">
-                     <a href="index.html">
-                        <img src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" alt="Guacamayafly Logo" class="h-10 w-auto">
-                    </a>
-                </div>
+                 <a href="index.html" class="flex items-center gap-2">
+                    <img src="https://guacamayafly.github.io/public/assets/img/logo-6.svg" alt="Guacamayafly Logo" class="h-8 w-auto">
+                    <span class="font-extrabold text-xl select-none text-guacamayafly-orange">GUACAMAYAFLY</span>
+                </a>
                 <div class="flex-1 max-w-lg mx-8">
                     <div class="relative">
                         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -593,8 +598,9 @@
         </nav>
     </header>
 
-    <nav id="section-nav" class="sticky-nav hidden md:block" style="top: 108px;">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8">
+    <!-- Sticky Section Nav -->
+    <nav id="section-nav" class="sticky-nav" style="top: 64px;">
+         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 overflow-x-auto">
             <a href="#photo-gallery-section" class="active">Fotos</a>
             <a href="#booking-section">Reservar</a>
             <a href="#information">Información</a>
@@ -604,18 +610,18 @@
         </div>
     </nav>
 
-    <nav id="section-nav-mobile" class="sticky-nav md:hidden" style="top: 64px;">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 overflow-x-auto">
-            <a href="#photo-gallery-section" class="active">Fotos</a>
-            <a href="#booking-section">Reservar</a>
-            <a href="#information">Información</a>
-            <a href="#location">Ubicación</a>
-            <a href="#reviews">Opiniones</a>
-            <a href="#faq">Preguntas</a>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <!-- Back to list + Share/Fav -->
+        <div class="flex justify-between items-center mb-4">
+            <a href="index.html" class="back-button text-sm">
+                <i class="fas fa-chevron-left text-sm"></i>
+                <span id="back-button-text">Ver todos los hoteles en Madrid</span>
+            </a>
+            <div class="flex items-center space-x-2">
+                <button class="action-icon" aria-label="Compartir"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+                <button class="action-icon" aria-label="Añadir a favoritos"><i class="far fa-heart"></i></button>
+            </div>
         </div>
-    </nav>
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         <div class="md:hidden">
             <h1 id="mobile-hotel-name" class="text-2xl font-bold text-gray-900 mb-1"></h1>
@@ -1445,14 +1451,17 @@
         }
         
         const sections = document.querySelectorAll('main section[id]');
-        const navLinks = document.querySelectorAll('#section-nav a, #section-nav-mobile a');
+        const navLinks = document.querySelectorAll('#section-nav a');
         
         window.addEventListener('scroll', () => {
             let current = '';
-            const navHeight = document.querySelector('header').offsetHeight + document.querySelector('#section-nav-mobile').offsetHeight;
+            const header = document.querySelector('header');
+            const sectionNav = document.querySelector('#section-nav');
+            const navHeight = (header?.offsetHeight || 0) + (sectionNav?.offsetHeight || 0);
+
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - navHeight) {
+                if (pageYOffset >= sectionTop - navHeight - 20) { // Added a 20px offset for better accuracy
                     current = section.getAttribute('id');
                 }
             });
@@ -1866,3 +1875,4 @@
     </script>
 </body>
 </html>
+"
