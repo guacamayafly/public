@@ -1,5 +1,4 @@
-
-   // --- Variables Globales ---
+    // --- Variables Globales ---
     const WHATSAPP_PHONE_NUMBER = '5804120403343'; // N\u00FAmero de tel\u00E9fono de WhatsApp (sin + ni espacios)
     let cart = []; // Array para almacenar los productos en el carrito
 
@@ -401,4 +400,5 @@
             floatingButtons.classList.remove("show-on-scroll");
         }
     };
+
 
